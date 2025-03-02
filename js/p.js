@@ -1,5 +1,6 @@
 const address1 = document.getElementById('gointospace');
 const address2 = document.getElementById('gointospace2');
+
 const urlPattern = new RegExp(
 	'^(https?:\\/\\/)?' +
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
@@ -10,48 +11,20 @@ const urlPattern = new RegExp(
 	'i'
 );
 
-const proxySetting =
-	localStorage.getItem('dropdown-selected-text-proxy') ??
-	'Ultraviolet (default)';
+async function executeSearch(query) {
+	const encodedUrl = search(query); // search() function will handle query
+	localStorage.setItem('input', query);
+	localStorage.setItem('output', encodedUrl);
 
-const swConfig = {
-	'Ultraviolet (default)': { file: '/@/sw.js', config: __uv$config }
-};
-
-const { file: swFile, config: swConfigSettings } = swConfig[proxySetting] ?? {
-	file: '/@/sw.js',
-	config: __uv$config
-};
-
-const connection = new BareMux.BareMuxConnection('/baremux/worker.js');
-
-var defWisp =
-	(location.protocol === 'https:' ? 'wss' : 'ws') +
-	'://' +
-	location.host +
-	'/wisp/';
-var wispUrl = localStorage.getItem('wisp') || defWisp;
-
-async function setTransports() {
-	const transports =
-		localStorage.getItem('dropdown-selected-text-transport') || 'Libcurl';
-	if (transports === 'Libcurl') {
-		await connection.setTransport('/libcurl/index.mjs', [
-			{ wisp: wispUrl }
-		]);
-	} else if (transports === 'Epoxy') {
-		await connection.setTransport('/epoxy/index.mjs', [{ wisp: wispUrl }]);
-	} else {
-		await connection.setTransport('/libcurl/index.mjs', [
-			{ wisp: wispUrl }
-		]);
-	}
+	// This is where we send the search query to the '/@/?uul=...' format
+	window.location.href = `/@/?uul=${encodeURIComponent(encodedUrl)}`;
 }
 
 function search(input) {
 	input = input.trim();
 	let searchTemplate;
 
+	// Define search engines for query if it's not a URL
 	switch (localStorage.getItem('dropdown-selected-text-searchEngine')) {
 		case 'Google':
 			searchTemplate = 'https://google.com/search?q=%s';
@@ -69,10 +42,50 @@ function search(input) {
 			searchTemplate = 'https://duckduckgo.com/?q=%s';
 	}
 
+	// Check if input is a valid URL
 	if (urlPattern.test(input)) {
 		const url = new URL(input.includes('://') ? input : `http://${input}`);
 		return url.toString();
 	} else {
+		// If not a valid URL, return the search URL
 		return searchTemplate.replace('%s', encodeURIComponent(input));
 	}
 }
+
+// Event listeners for searching via the input fields
+address1.addEventListener('keydown', function (event) {
+	if (event.key === 'Enter') {
+		event.preventDefault();
+		let query = address1.value;
+		executeSearch(query);
+	}
+});
+
+address2.addEventListener('keydown', function (event) {
+	if (event.key === 'Enter') {
+		event.preventDefault();
+		let query = address2.value;
+		executeSearch(query);
+	}
+});
+
+// Make it so that if the user goes to /&.html?q= it searches it directly
+document.addEventListener('DOMContentLoaded', function () {
+	const urlParams = new URLSearchParams(window.location.search);
+	const queryParam = urlParams.get('q');
+	if (queryParam) {
+		executeSearch(queryParam);
+		document.querySelector('.utilityBar').style.display = 'none';
+		document.getElementById('intospace').style.height = '100vh';
+		document.getElementById('intospace').style.top = '0';
+	} else {
+		// Default UI setup if no query param
+		if (localStorage.getItem('utilBarHidden') === 'true') {
+			document.querySelector('.utilityBar').style.display = 'none';
+			document.getElementById('intospace').style.height = '100%';
+		} else {
+			document.querySelector('.utilityBar').style.display = 'block';
+			document.getElementById('intospace').style.height = 'calc(100% - 3.633em)';
+		}
+	}
+});

@@ -14,9 +14,9 @@ function setupObserver(selector) {
 
 						if (pathname.includes('~')) {
 							animationDelay = (index * 0.1).toFixed(2);
-						} else if (pathname === '/g' || pathname === '/a') {
+						} else if (pathname === '/g.html' || pathname === '/a.html') {
 							animationDelay = (index * 0.04).toFixed(2);
-						} else if (pathname === '/&') {
+						} else if (pathname === '/&.html') {
 							animationDelay = (index * 0.05).toFixed(2);
 						} else {
 							animationDelay = (index * 0.1).toFixed(2);
@@ -84,11 +84,11 @@ if (pathname.includes('~')) {
 	}
 
 	initializeObservers();
-} else if (pathname === '/g') {
+} else if (pathname === '/g.html') {
 	setupObserver('.gameImage');
-} else if (pathname === '/a') {
+} else if (pathname === '/a.html') {
 	setupObserver('.appImage');
-} else if (pathname === '/&') {
+} else if (pathname === '/&.html') {
 	setupObserver('.shortcut');
 	setupObserver('.shortcutBigimg');
 }

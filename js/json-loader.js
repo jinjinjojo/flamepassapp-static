@@ -3,7 +3,7 @@
 localforage.setItem('e', 'e');
 
 document.addEventListener('DOMContentLoaded', () => {
-	if (window.location.pathname === '/g') {
+	if (window.location.pathname === '/g.html') {
 		fetch('/json/g.json')
 			.then(response => response.json())
 			.then(data => {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				data.forEach(game => {
 					const gameLink = document.createElement('a');
-					gameLink.href = `/&?q=${encodeURIComponent(game.name)}`;
+					gameLink.href = `/&.html?q=${encodeURIComponent(game.name)}`;
 					gameLink.className = 'gameAnchor';
 
 					if (game.categories && game.name) {
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	if (
-		window.location.pathname === '/&' &&
+		window.location.pathname === '/&.html' &&
 		localStorage.getItem('smallIcons') === 'true'
 	) {
 		fetch('/json/s.json')
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					if (shortcut.name.toLowerCase() === 'settings') {
 						shortcutLink.href = '/~/#/proxy';
 					} else {
-						shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
+						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.name)}`;
 					}
 
 					const shortcutImage = document.createElement('img');
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 			.catch(error => console.error('Error loading shortcut :( ', error));
 	} else if (
-		window.location.pathname === '/&' &&
+		window.location.pathname === '/&.html' &&
 		(localStorage.getItem('smallIcons') === 'false' ||
 			!localStorage.getItem('smallIcons'))
 	) {
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					if (shortcut.name.toLowerCase() === 'settings') {
 						shortcutLink.href = '/~/#/proxy';
 					} else {
-						shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
+						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.name)}`;
 					}
 
 					const shortcutImage = document.createElement('img');
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			.catch(error => console.error('Error loading shortcut :( ', error));
 	}
 
-	if (window.location.pathname === '/a') {
+	if (window.location.pathname === '/a.html') {
 		fetch('/json/a.json')
 			.then(response => response.json())
 			.then(data => {
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				data.forEach(app => {
 					const appLink = document.createElement('a');
-					appLink.href = `/&?q=${encodeURIComponent(app.name)}`;
+					appLink.href = `/&.html?q=${encodeURIComponent(app.name)}`;
 
 					if (app.categories && app.name) {
 						app.categories.forEach(category => {
