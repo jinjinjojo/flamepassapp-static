@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				data.forEach(game => {
 					const gameLink = document.createElement('a');
-					gameLink.href = `/&.html?q=${encodeURIComponent(game.name)}`;
+					gameLink.href = `/&.html?q=${encodeURIComponent(game.url)}`;
 					gameLink.className = 'gameAnchor';
 
 					if (game.categories && game.name) {
