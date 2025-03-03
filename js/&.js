@@ -43,7 +43,7 @@ const backButton = document.querySelector('.backButton');
 const forwardButton = document.querySelector('.forwardButton');
 
 refreshButton.addEventListener('click', function () {
-	iframe.contentWindow.location.reload();
+	document.querySelector("#intospace").contentWindow.location.reload();
 });
 
 homeButton.addEventListener('click', function () {
