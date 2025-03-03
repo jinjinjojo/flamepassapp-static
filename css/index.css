@@ -77,16 +77,7 @@
 	--dshadow4: #ff0000;
 }
 
-#changelogfy-launcher {
-	background: rgba(247, 0, 255, 0.514) !important;
-	background: linear-gradient(
-		101deg,
-		#de5c347e 0%,
-		rgba(242, 0, 255, 0.336) 100%
-	) !important;
-	backdrop-filter: blur(7px);
-	opacity: 0.9;
-}
+
 
 .flex.flex-1.justify-between.relative.z-10.px-5.py-5.sm\:px-8 {
 	background: rgba(247, 0, 255, 0.514) !important;
