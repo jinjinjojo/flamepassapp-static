@@ -18,7 +18,7 @@
 		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
 		<script
 			async
-			src="https://www.googletagmanager.com/gtag/js?id=G-3DTW1KTNCF"
+			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
 		></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -27,7 +27,7 @@
 			}
 			gtag('js', new Date());
 
-			gtag('config', 'G-3DTW1KTNCF');
+			gtag('config', 'G-SPVQHBL4J1');
 		</script>
 		<link
 			rel="preload"
@@ -673,131 +673,109 @@
 						<span class="slider round"></span>
 					</label>
 				</div>
-				<!--
-				<div
-					class="settingsection settingsection7"
-					style="transition: all 0.2s ease-in-out !important"
-				>
-					<h1>Ad Types</h1>
-					<p>
-						Toggles the types of ads that will be shown. These will
-						be added and randomized within the site for a more
-						personalized experience.
-					</p>
-					<p>
-						By enabling more ad types you allow us to gain more CPM
-						(cost per 1K impressions).
-					</p>
-					<div>
-						<div
-							style="
-								display: flex;
-								align-items: center;
-								margin-bottom: -13px;
-							"
-						>
-							<div class="cntr">
-								<input
-									class="hidden-xs-up"
-									id="cbx"
-									type="checkbox"
-									checked=""
-								/>
-								<label class="cbx" for="cbx"></label>
-							</div>
-							<p style="margin-left: 5px">Erotic Ads</p>
-						</div>
-						<div
-							style="
-								display: flex;
-								align-items: center;
-								margin-bottom: -13px;
-							"
-						>
-							<div class="cntr">
-								<input
-									class="hidden-xs-up"
-									id="cbx"
-									type="checkbox"
-									checked=""
-								/>
-								<label class="cbx" for="cbx"></label>
-							</div>
-							<p style="margin-left: 5px">Ads with Sound</p>
-						</div>
-						<div
-							style="
-								display: flex;
-								align-items: center;
-								margin-bottom: -13px;
-							"
-						>
-							<div class="cntr">
-								<input
-									class="hidden-xs-up"
-									id="cbx"
-									type="checkbox"
-									checked=""
-								/>
-								<label class="cbx" for="cbx"></label>
-							</div>
-							<p style="margin-left: 5px">Software Ads</p>
-						</div>
-						<div
-							style="
-								display: flex;
-								align-items: center;
-								margin-bottom: -13px;
-							"
-						>
-							<div class="cntr">
-								<input
-									class="hidden-xs-up"
-									id="cbx"
-									type="checkbox"
-									checked=""
-								/>
-								<label class="cbx" for="cbx"></label>
-							</div>
-							<p style="margin-left: 5px">Gambling Ads</p>
-						</div>
-						<div
-							style="
-								display: flex;
-								align-items: center;
-								margin-bottom: -13px;
-							"
-						>
-							<div class="cntr">
-								<input
-									class="hidden-xs-up"
-									id="cbx"
-									type="checkbox"
-									checked=""
-								/>
-								<label class="cbx" for="cbx"></label>
-							</div>
-							<p style="margin-left: 5px">Alert Ads</p>
-						</div>
-					</div>
-				</div>
-			-->
 			</div>
 
 			<div class="scontent" id="account">
 				<h1 style="animation: fade-in-left 1s" class="settingsection9">
 					Account Settings
 				</h1>
-				<!--
 				<div class="settingsection settingsection9">
-					<h1>Two-Factor Authentication</h1>
-					<p>Add another layer of security to your account.</p>
-					<label class="switch">
-						<input class="checkbox" type="checkbox" />
-						<span class="slider round"></span>
-					</label>
+					<h1>My Account</h1>
+					<div id="account-info">
+						<p>Email: <span id="account-email"></span></p>
+						<p>
+							Key: 
+							<span id="account-key-blur" style="filter: blur(5px); cursor: pointer;">••••••••••••••••</span>
+							<span id="account-key" style="display: none;"></span>
+						</p>
+						<p>Expiration: <span id="account-expiration"></span></p>
+						<div style="display: flex">
+							<button
+							class="splitbutton manageMembershipBtn"
+							>
+							Manage Membership
+							</button>
+						
+							<button
+							class="splitbutton signOutBtn"
+							>
+							Sign Out
+							</button>
+						</div>
+						
+					</div>
+					<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							const accountInfoSection = document.getElementById('account-info').parentElement;
+							const accountEmail = document.getElementById('account-email');
+							const accountKeyBlur = document.getElementById('account-key-blur');
+							const accountKey = document.getElementById('account-key');
+							const accountExpiration = document.getElementById('account-expiration');
+							const signOutBtn = document.querySelector('.signOutBtn');
+							const manageMembershipBtn = document.querySelector('.manageMembershipBtn');
+    
+							// Check if loginData exists in localStorage
+							const loginDataString = localStorage.getItem('loginData');
+							
+							if (loginDataString) {
+								try {
+									const loginData = JSON.parse(loginDataString);
+									
+									// Populate account info
+									accountEmail.textContent = loginData.email || 'N/A';
+									accountKey.textContent = loginData.token || 'N/A';
+									
+									// Format expiration date
+									if (loginData.expiration) {
+										const expirationDate = new Date(loginData.expiration);
+										const options = { month: 'long', day: 'numeric', year: 'numeric' };
+										accountExpiration.textContent = expirationDate.toLocaleDateString('en-US', options);
+									} else {
+										accountExpiration.textContent = 'N/A';
+									}
+									
+									// Toggle key visibility on click
+									accountKeyBlur.addEventListener('click', function() {
+										if (accountKey.style.display === 'none') {
+											accountKey.style.display = 'inline';
+											accountKeyBlur.style.display = 'none';
+										}
+									});
+									
+									accountKey.addEventListener('click', function() {
+										accountKey.style.display = 'none';
+										accountKeyBlur.style.display = 'inline';
+									});
+
+									// Add event listener to handle sign out
+									if (signOutBtn) {
+										signOutBtn.addEventListener('click', function() {
+											// Remove the loginData from localStorage
+											localStorage.removeItem('loginData');
+											
+											// Redirect to the homepage
+											window.location.href = '/';
+										});
+									}
+
+									if (manageMembershipBtn) {
+										manageMembershipBtn.addEventListener('click', function() { 
+											window.open("https://billing.stripe.com/p/login/dR69CV76bgiH0wMeUU")
+										})
+
+									}
+									
+								} catch (error) {
+									// If there's an error parsing JSON, hide the section
+									accountInfoSection.style.display = 'none';
+								}
+							} else {
+								// If loginData doesn't exist, hide the section
+								accountInfoSection.style.display = 'none';
+							}
+						});
+					</script>
 				</div>
-			-->
 				<div class="settingsection settingsection9">
 					<h1>Password Protection</h1>
 					<p>
@@ -921,7 +899,7 @@
 							<span
 								style="
 									position: absolute;
-									transform: translateY(-22px);
+									transform: translateY(-13px);
 								"
 								class="material-symbols-outlined"
 								>cloud_upload</span
@@ -932,7 +910,7 @@
 							<span
 								style="
 									position: absolute;
-									transform: translateY(-22px);
+									transform: translateY(-13px);
 								"
 								class="material-symbols-outlined"
 								>cloud_download</span
@@ -1042,7 +1020,7 @@
 						[can be found in contributing.md].
 					</p>
 					<p>
-						If you want to join the TDG Team, please open a ticket
+						If you want to join the Flamepass Team, please open a ticket
 						in our
 						<a href="https://discord.com/invite/gVaXCTqJDq/">Discord</a>.
 					</p>
@@ -1285,9 +1263,9 @@
 				style="display: block; position: absolute; bottom: 0"
 			>
 				<p class="banner">
-					Enjoying Flamepass? Unlock more with premium! 🚀 &nbsp;<a href="https://flamepass.com/"
-						>[Learn More]</a
-					>
+					Join The Official&nbsp;<a href="https://discord.com/invite/gVaXCTqJDq/"
+						>Discord Server!</a
+					>&nbsp;🚀 
 				</p>
 				<button id="bannerClose">
 					<i class="fa-solid fa-xmark" style="color: #525252"></i>

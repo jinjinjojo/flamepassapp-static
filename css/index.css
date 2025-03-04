@@ -548,8 +548,7 @@ p {
 
 span.material-symbols-outlined {
 	font-size: 20px;
-	margin-top: 10px;
-	margin-bottom: -6px;
+
 	padding: 10px;
 	color: var(--text-color);
 }

@@ -1,344 +1,357 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<link rel="stylesheet" href="/css/index.css" />
-		<link rel="stylesheet" href="/css/themes.css" />
-
-		<script src="https://unpkg.com/lucide@latest"></script>
-
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-		/>
-		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-		<title>Flamepass</title>
-		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=6.0, user-scalable=yes"
-		/>
-		<meta
-			name="description"
-			content="Launch into Flamepass, the next gen proxy."
-		/>
-		<meta
-			name="keywords"
-			content="Proxy, Unblocker, Flamepass Unblocker, Flamepass"
-		/>
-		<meta property="og:image" content="/assets/logo.webp" />
-		<!-- Google Analytics DO NOT REMOVE -->
-		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
-		<script
-			async
-			src="https://www.googletagmanager.com/gtag/js?id=G-3DTW1KTNCF"
-		></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
-			}
-			gtag('js', new Date());
-
-			gtag('config', 'G-3DTW1KTNCF');
-		</script>
-		<link
-			rel="preload"
-			as="style"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-		/>
-		<link
-			rel="preload"
-			as="style"
-			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
-		/>
-		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-	</head>
-
-	<body style="overflow: hidden">
-		<div class="failtoast">
-			<div class="failtoast-content">
-				<i class="fa fa-solid fa-circle-exclamation fail"></i>
-				<div class="failmessage">
-					<span class="failtext text-1" id="text-1">Failed</span>
-					<span class="failtext text-2" id="text-2"
-						>Something went wrong. Please try again.</span
-					>
-				</div>
-			</div>
-			<i class="fa-solid fa-xmark failclose"></i>
-			<div class="failprogress"></div>
-		</div>
-		<ul class="navbar">
-			<li style="margin-left: -1px; margin-top: 2px">
-				<a href="/"
-					><img class="logo" src="/assets/logo.webp" alt="Logo"
-				/></a>
-			</li>
-			<hr style="margin-top: 5px" />
-			<li>
-				<a href="/"
-					><span
-						id="navactive"
-						style="margin-top: 0px"
-						class="material-symbols-outlined"
-						>cottage</span
-					></a
-				>
-			</li>
-			<li>
-				<a href="/g.html"
-					><span class="material-symbols-outlined">joystick</span></a
-				>
-			</li>
-			<li>
-				<a href="/a.html"
-					><span class="material-symbols-outlined">apps</span></a
-				>
-			</li>
-			<li>
-				<a href="/&.html"
-					><span class="material-symbols-outlined">public</span></a
-				>
-			</li>
-
-			<hr />
-			<li>
-				<a href="/~.html"
-					><span
-						style="margin-top: 0"
-						class="material-symbols-outlined"
-						>tune</span
-					></a
-				>
-			</li>
-			<li>
-				<a
-					aria-label="Discord"
-					target="_blank"
-					href="https://discord.com/invite/gVaXCTqJDq"
-					><i class="fa-brands fa-discord"></i
-				></a>
-			</li>
-		</ul>
-		<a href="/~/#/news">
-			<i data-lucide="megaphone" class="sparkles"></i>
-		</a>
-		<div
-			class="header"
-			style="
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				width: 800px;
-			"
-		>
-		<img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8; animation: fadeIn 3s forwards;">
-
-			<h1
-				style="
-					text-align: center;
-					margin: -10px;
-					animation: fade-in-top 0.6s ease-in-out;
-					-webkit-animation: fade-in-top 0.6s ease-in-out;
-				"
-			>
-				Welcome to
-				<span style="cursor: text">
-					<span
-						class="typewrite"
-						data-period="2000"
-						data-type='[ "Flamepass.", "Internet Freedom.", "The Ultimate Hub.", "Endless Fun." ]'
-					>
-						<span class="wrap"></span>
-					</span>
-				</span>
-			</h1>
-			<div style="text-align: center">
-				<p
-					style="
-						opacity: 0;
-						animation: fade-in-top 0.6s ease-in-out 3s forwards;
-						animation-fill-mode: visible;
-						animation-delay: 0.5s;
-					"
-				>
-					The #1 Hub for Games, Tools & More
-				</p>
-				<button
-					style="
-						opacity: 0;
-						animation: fade-in-bottom 0.6s ease-in-out forwards;
-						animation-fill-mode: visible;
-						animation-delay: 1.2s;
-						display: inline-flex;
-						margin-top:20px;
-					"
-					class="btn"
-				>
-					<a style="text-decoration: none" href="/&.html">
-						<p
-							style="
-								font-weight: 600;
-								margin: 7px;
-								font-size: 14px;
-
-								display: flex;
-								align-items: center;
-								font-family: 'DM Sans', sans-serif;
-							"
-						>
-							Get Started<i
-								style="width: 18px; margin-left: 5px"
-								alt="Get started icon"
-								data-lucide="sparkles"
-							></i>
-						</p>
-					</a>
-				</button>
-			</div>
-		</div>
-		<div style="z-index: -998">
-			<div class="blob"></div>
-			<div class="blobbig"></div>
-			<div class="blobsmall"></div>
-			<div class="blobtop"></div>
-			<div style="z-index: -999; position: fixed" id="particles-js"></div>
-		</div>
-		<script>
-			particlesJS('particles-js', {
-				particles: {
-					number: {
-						value: 86,
-						density: {
-							enable: true,
-							value_area: 800
-						}
-					},
-					color: {
-						value: '#ffffff'
-					},
-					shape: {
-						type: 'circle',
-						stroke: {
-							width: 0,
-							color: '#000000'
-						},
-						polygon: {
-							nb_sides: 5
-						},
-						image: {
-							src: 'img/github.svg',
-							width: 100,
-							height: 100
-						}
-					},
-					opacity: {
-						value: 1,
-						random: true,
-						anim: {
-							enable: false,
-							speed: 1,
-							opacity_min: 0.1,
-							sync: false
-						}
-					},
-					size: {
-						value: 2,
-						random: true,
-						anim: {
-							enable: false,
-							speed: 40,
-							size_min: 0.1,
-							sync: false
-						}
-					},
-					line_linked: {
-						enable: false,
-						distance: 150,
-						color: '#ffffff',
-						opacity: 0.4,
-						width: 1
-					},
-					move: {
-						enable: true,
-						speed: 0.5,
-						direction: 'top',
-						random: false,
-						straight: false,
-						out_mode: 'out',
-						bounce: false,
-						attract: {
-							enable: false,
-							rotateX: 318.0130544358847,
-							rotateY: 556.5228452627983
-						}
-					}
-				},
-				interactivity: {
-					detect_on: 'window',
-					events: {
-						onhover: {
-							enable: false,
-							mode: 'repulse'
-						},
-						onclick: {
-							enable: true,
-							mode: 'push'
-						},
-						resize: true
-					},
-					modes: {
-						grab: {
-							distance: 400,
-							line_linked: {
-								opacity: 1
-							}
-						},
-						bubble: {
-							distance: 400,
-							size: 40,
-							duration: 2,
-							opacity: 8,
-							speed: 3
-						},
-						repulse: {
-							distance: 200,
-							duration: 0.4
-						},
-						push: {
-							particles_nb: 10
-						},
-						remove: {
-							particles_nb: 10
-						}
-					}
-				},
-				retina_detect: true
-			});
-		</script>
-		<script src="/js/localforage.min.js"></script>
-		<script src="/js/index.js"></script>
-		<script src="/js/themes.js"></script>
-		<script src="/js/c.js"></script>
-		<script>
-			lucide.createIcons();
-		</script>
-		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function () {
-				let hideAds = localStorage.getItem('hideAds');
-
-				if (hideAds === null || hideAds === 'false') {
-					let script = document.createElement('script');
-					script.type = 'text/javascript';
-					script.src =
-						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
-					document.body.appendChild(script);
-				}
-			});
-		</script>
-	</body>
+<head>
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/themes.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <title>Flamepass</title>
+  <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=6.0, user-scalable=yes" />
+  <meta name="description" content="Launch into Flamepass, the next gen proxy." />
+  <meta name="keywords" content="Proxy, Unblocker, Flamepass Unblocker, Flamepass" />
+  <meta property="og:image" content="/assets/logo.webp" />
+  <!-- Google Analytics DO NOT REMOVE -->
+  <meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-SPVQHBL4J1');
+  </script>
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      position: relative;
+      border: 1px solid rgba(255, 102, 0, 0.3);
+    }
+    
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    .modal-header .login-logo {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+    
+    .modal-header h2 {
+      color: #ffffff;
+      margin-bottom: 10px;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .modal-header p {
+      color: #aaaaaa;
+      margin-top: 4px;
+      font-size: 16px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .modal-button {
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    
+    .login-button {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+    }
+    
+    .login-button:hover {
+      background-color: #ff8033;
+    }
+    
+    .signup-button {
+      background-color: transparent;
+      color: #ff6600;
+      border: 1px solid #ff6600;
+    }
+    
+    .signup-button:hover {
+      background-color: rgba(255, 102, 0, 0.1);
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: #aaaaaa;
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      color: #ff6600;
+    }
+    
+    .modal-button i {
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body style="overflow: hidden">
+  <div class="failtoast">
+    <div class="failtoast-content">
+      <i class="fa fa-solid fa-circle-exclamation fail"></i>
+      <div class="failmessage">
+        <span class="failtext text-1" id="text-1">Failed</span>
+        <span class="failtext text-2" id="text-2">Something went wrong. Please try again.</span>
+      </div>
+    </div>
+    <i class="fa-solid fa-xmark failclose"></i>
+    <div class="failprogress"></div>
+  </div>
+  
+  <ul class="navbar">
+    <li style="margin-left: -1px; margin-top: 2px">
+      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
+    </li>
+    <hr style="margin-top: 5px" />
+    <li>
+      <a href="/"><span id="navactive" style="margin-top: 0px" class="material-symbols-outlined">cottage</span></a>
+    </li>
+    <li>
+      <a href="/g.html"><span class="material-symbols-outlined">joystick</span></a>
+    </li>
+    <li>
+      <a href="/a.html"><span class="material-symbols-outlined">apps</span></a>
+    </li>
+    <li>
+      <a href="/&.html"><span class="material-symbols-outlined">public</span></a>
+    </li>
+    <hr />
+    <li>
+      <a href="/~.html"><span style="margin-top: 0" class="material-symbols-outlined">tune</span></a>
+    </li>
+    <li>
+      <a aria-label="Discord" target="_blank" href="https://discord.com/invite/gVaXCTqJDq"><i class="fa-brands fa-discord"></i></a>
+    </li>
+  </ul>
+  
+  <a href="/~/#/news" id="newsButton">
+    <i data-lucide="megaphone" class="sparkles"></i>
+  </a>
+  
+  <div class="header" style="display: flex; flex-direction: column; align-items: center; width: 800px;">
+    <img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8; animation: fadeIn 3s forwards;">
+    <h1 style="text-align: center; margin: -10px; animation: fade-in-top 0.6s ease-in-out; -webkit-animation: fade-in-top 0.6s ease-in-out;">
+      <span id="welcomeText">Welcome to</span> <span style="cursor: text">
+        <span class="typewrite" data-period="2000" data-type='[ "Flamepass.", "Internet Freedom.", "The Ultimate Hub.", "Endless Fun." ]'>
+          <span class="wrap"></span>
+        </span>
+      </span>
+    </h1>
+    <div style="text-align: center">
+      <p style="opacity: 0; animation: fade-in-top 0.6s ease-in-out 3s forwards; animation-fill-mode: visible; animation-delay: 0.5s;">
+        The #1 Hub for Games, Tools & More
+      </p>
+      <button style="opacity: 0; animation: fade-in-bottom 0.6s ease-in-out forwards; animation-fill-mode: visible; animation-delay: 1.2s; display: inline-flex; margin-top:20px;" class="btn" id="getStartedBtn">
+        <p style="font-weight: 600; margin: 7px; font-size: 14px; display: flex; align-items: center; font-family: 'DM Sans', sans-serif;">
+          Get Started<i style="width: 18px; margin-left: 5px" alt="Get started icon" data-lucide="sparkles"></i>
+        </p>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Auth Modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <div class="modal-close" id="closeModal">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+      <div class="modal-header">
+        <img src="/assets/logo.png" alt="Flamepass Logo" class="login-logo">
+        <h2>Welcome to Flamepass</h2>
+        <p>Continue to access all features</p>
+      </div>
+      <div class="modal-buttons">
+        <a href="/login.html" class="modal-button login-button">
+          Login <i data-lucide="log-in"></i>
+        </a>
+        <a href="/signup.html" class="modal-button signup-button">
+          Sign Up <i data-lucide="user-plus"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div style="z-index: -998">
+    <div class="blob"></div>
+    <div class="blobbig"></div>
+    <div class="blobsmall"></div>
+    <div class="blobtop"></div>
+    <div style="z-index: -999; position: fixed" id="particles-js"></div>
+  </div>
+  
+  <script>
+    // Modal functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const getStartedBtn = document.getElementById('getStartedBtn');
+      const authModal = document.getElementById('authModal');
+      const closeModal = document.getElementById('closeModal');
+      const newsButton = document.getElementById('newsButton');
+      const welcomeText = document.getElementById('welcomeText');
+      
+      getStartedBtn.addEventListener('click', function() {
+        authModal.classList.add('active');
+      });
+      
+      closeModal.addEventListener('click', function() {
+        authModal.classList.remove('active');
+      });
+      
+      // Close modal if clicked outside
+      authModal.addEventListener('click', function(e) {
+        if (e.target === authModal) {
+          authModal.classList.remove('active');
+        }
+      });
+      
+      // Check if user is already logged in
+      checkLoginStatus();
+    });
+    
+    // Function to check if user is logged in
+    function checkLoginStatus() {
+      const loginData = getLoginFromLocalStorage();
+      if (loginData) {
+        // If user is logged in, redirect to '&.html' when clicking "Get Started"
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        getStartedBtn.addEventListener('click', function() {
+          window.location.href = '/&.html';
+        });
+        
+        // Change news button to account button
+        const newsButton = document.getElementById('newsButton');
+        newsButton.href = '/~.html#account';
+        newsButton.innerHTML = '<i data-lucide="user-circle" class="sparkles"></i>';
+        lucide.createIcons();
+        
+        // Change welcome text
+        const welcomeText = document.getElementById('welcomeText');
+        welcomeText.textContent = 'Welcome back to';
+      }
+    }
+    
+    // Function to get login data from local storage
+    function getLoginFromLocalStorage() {
+      const loginData = JSON.parse(localStorage.getItem('loginData'));
+      if (!loginData) return null;
+      
+      const now = new Date();
+      const expirationDate = new Date(loginData.expiration);
+      if (now > expirationDate) {
+        localStorage.removeItem('loginData');
+        return null;
+      }
+      return loginData;
+    }
+    
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 86, density: { enable: true, value_area: 800 } },
+        color: { value: '#ffffff' },
+        shape: { type: 'circle', stroke: { width: 0, color: '#000000' }, polygon: { nb_sides: 5 }, image: { src: 'img/github.svg', width: 100, height: 100 } },
+        opacity: { value: 1, random: true, anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false } },
+        size: { value: 2, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
+        line_linked: { enable: false, distance: 150, color: '#ffffff', opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 0.5, direction: 'top', random: false, straight: false, out_mode: 'out', bounce: false, attract: { enable: false, rotateX: 318.0130544358847, rotateY: 556.5228452627983 } }
+      },
+      interactivity: {
+        detect_on: 'window',
+        events: {
+          onhover: { enable: false, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        },
+        modes: {
+          grab: { distance: 400, line_linked: { opacity: 1 } },
+          bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+          repulse: { distance: 200, duration: 0.4 },
+          push: { particles_nb: 10 },
+          remove: { particles_nb: 10 }
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+  
+  <script src="/js/localforage.min.js"></script>
+  <script src="/js/index.js"></script>
+  <script src="/js/themes.js"></script>
+  <script src="/js/c.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      let hideAds = localStorage.getItem('hideAds');
+      if (hideAds === null || hideAds === 'false') {
+        let script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+        document.body.appendChild(script);
+      }
+    });
+  </script>
+</body>
 </html>

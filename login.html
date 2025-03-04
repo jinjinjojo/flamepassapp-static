@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/themes.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <title>Flamepass - Login</title>
+  <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=6.0, user-scalable=yes" />
+  <meta name="description" content="Login to Flamepass, the next gen proxy." />
+  <meta name="keywords" content="Proxy, Unblocker, Flamepass Unblocker, Flamepass" />
+  <meta property="og:image" content="/assets/logo.webp" />
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+  <style>
+    :root {
+      --primary-bg: #121212;
+      --secondary-bg: #1e1e1e;
+      --accent-color: #ff6b00;
+      --text-color: #ffffff;
+      --border-color: #333333;
+    }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--primary-bg);
+      color: var(--text-color);
+      margin: 0;
+      overflow: hidden;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      z-index: 10;
+      position: relative;
+    }
+    
+    .login-card {
+      background-color: var(--secondary-bg);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      z-index: 100;
+      border: 1px solid var(--border-color);
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .login-logo {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+    
+    .login-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-color);
+    }
+    
+    .login-subtitle {
+      color: #aaaaaa;
+      margin-top: 4px;
+    }
+    
+    .divider {
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 20px 0;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .form-input {
+      width: -webkit-fill-available;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-color);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+    }
+    
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--accent-color);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .btn:hover {
+      background-color: #ff8c00;
+    }
+    
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    
+    .link {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .link:hover {
+      color: #ff8c00;
+      text-decoration: underline;
+    }
+    
+    .error-message {
+      color: #ff4d4d;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    
+    .loading-message {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    
+    /* Background effects */
+    .blob, .blobbig, .blobsmall, .blobtop {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: -1;
+      opacity: 0.4;
+    }
+    
+    .blob {
+      background: var(--accent-color);
+      width: 300px;
+      height: 300px;
+      left: -150px;
+      bottom: -150px;
+    }
+    
+    .blobbig {
+      background: var(--accent-color);
+      width: 600px;
+      height: 600px;
+      right: -300px;
+      top: -300px;
+      opacity: 0.2;
+    }
+    
+    .blobsmall {
+      background: var(--accent-color);
+      width: 200px;
+      height: 200px;
+      right: 10%;
+      bottom: 10%;
+    }
+    
+    .blobtop {
+      background: var(--accent-color);
+      width: 400px;
+      height: 400px;
+      left: 30%;
+      top: -200px;
+      opacity: 0.2;
+    }
+
+    /* Back button */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      color: var(--text-color);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background-color: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(5px);
+      transition: background-color 0.3s;
+    }
+    
+    .back-button:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin: 0;
+      z-index: 1000;
+      list-style-type: none;
+    }
+
+    .navbar li {
+      margin: 5px 0;
+    }
+
+    .navbar a {
+      color: var(--text-color);
+      text-decoration: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      width: 40px;
+      height: auto;
+    }
+
+    hr {
+      width: 30px;
+      border: none;
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 5px 0;
+    }
+
+    .material-symbols-outlined {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <ul class="navbar">
+    <li style="margin-left: -1px; margin-top: 2px">
+      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
+    </li>
+    <hr style="margin-top: 5px" />
+    <li>
+      <a href="/"><span class="material-symbols-outlined">cottage</span></a>
+    </li>
+    <li>
+      <a href="/g.html"><span class="material-symbols-outlined">joystick</span></a>
+    </li>
+    <li>
+      <a href="/a.html"><span class="material-symbols-outlined">apps</span></a>
+    </li>
+    <li>
+      <a href="/&.html"><span class="material-symbols-outlined">public</span></a>
+    </li>
+    <hr />
+    <li>
+      <a href="/~.html"><span class="material-symbols-outlined">tune</span></a>
+    </li>
+    <li>
+      <a aria-label="Discord" target="_blank" href="https://discord.com/invite/gVaXCTqJDq">
+        <i class="fa-brands fa-discord"></i>
+      </a>
+    </li>
+  </ul>
+
+  <a href="/" class="back-button">
+    <span class="material-symbols-outlined">arrow_back</span>
+    Back to Home
+  </a>
+
+  <div class="container">
+    <div class="login-card">
+      <div id="login-form">
+        <div class="login-header">
+          <img src="/assets/logo.png" alt="Flamepass Logo" class="login-logo">
+          <h1 class="login-title">Login to Flamepass</h1>
+          <p class="login-subtitle">Access unlimited games and apps</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <form id="login" onsubmit="return handleLogin(event)">
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" required class="form-input" placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label for="token" class="form-label">Key</label>
+            <input type="password" id="token" name="token" required class="form-input" placeholder="Enter your key">
+          </div>
+          <button type="submit" class="btn">
+            Login <span class="material-symbols-outlined">login</span>
+          </button>
+        </form>
+
+        <div class="links">
+          <a href="#" onclick="showResetForm()" class="link">Forgot your Key?</a>
+          <a href="signup.html" class="link">Sign Up</a>
+        </div>
+      </div>
+
+      <div id="reset-form" style="display:none;">
+        <div class="login-header">
+          <img src="/assets/logo.png" alt="Flamepass Logo" class="login-logo">
+          <h1 class="login-title">Reset Your Key</h1>
+          <p class="login-subtitle">We'll email you your key</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <form id="reset" onsubmit="return handleReset(event)">
+          <div class="form-group">
+            <label for="reset-email" class="form-label">Email</label>
+            <input type="email" id="reset-email" name="reset-email" required class="form-input" placeholder="Enter your email">
+          </div>
+          <button type="submit" class="btn">
+            Email my Key <span class="material-symbols-outlined">mail</span>
+          </button>
+        </form>
+
+        <div class="links" style="justify-content: center;">
+          <a href="#" onclick="showLoginForm()" class="link">Back to Login</a>
+        </div>
+      </div>
+
+      <div id="loading-message" style="display:none;" class="loading-message">
+        <span class="material-symbols-outlined" style="font-size: 24px; animation: rotate 2s linear infinite;">progress_activity</span>
+        <p>Checking subscription status...</p>
+      </div>
+
+      <div id="error-message" style="display:none;" class="error-message"></div>
+    </div>
+  </div>
+
+  <div style="z-index: -998">
+    <div class="blob"></div>
+    <div class="blobbig"></div>
+    <div class="blobsmall"></div>
+    <div class="blobtop"></div>
+    <div style="z-index: -999; position: fixed" id="particles-js"></div>
+  </div>
+
+  <script>
+    function saveLoginToLocalStorage(email, token) {
+      const now = new Date();
+      const expirationDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+      const loginData = {
+        email: email,
+        token: token,
+        expiration: expirationDate.toISOString()
+      };
+      localStorage.setItem('loginData', JSON.stringify(loginData));
+    }
+
+    function getLoginFromLocalStorage() {
+      const loginData = JSON.parse(localStorage.getItem('loginData'));
+      if (!loginData) return null;
+      const now = new Date();
+      const expirationDate = new Date(loginData.expiration);
+      if (now > expirationDate) {
+        localStorage.removeItem('loginData');
+        return null;
+      }
+      return loginData;
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      if (isRateLimited()) {
+        showError('You are making requests too quickly. Please try again later.');
+        return;
+      }
+      const email = document.getElementById('email').value;
+      const token = document.getElementById('token').value;
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('loading-message').style.display = 'block';
+      document.getElementById('error-message').style.display = 'none';
+      try {
+        const response = await fetch('https://sellix-key-checker-2sfjgz2adq-uc.a.run.app/check-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, token })
+        });
+        const data = await response.json();
+        if (data.subscribed) {
+          saveLoginToLocalStorage(email, token);
+          window.location.href = "/&.html"; // Redirect to the same destination as "Get Started"
+        } else {
+          if (data.error === "Invalid Key") {
+            showError('Invalid Key.');
+          } else if (data.error === "No customer found with this email") {
+            showError('No customer found with this email.');
+          } else {
+            showError('You do not have an active subscription.');
+          }
+        }
+      } catch (error) {
+        showError('An error occurred while checking the subscription status.');
+      }
+      updateRateLimit();
+    }
+
+    async function handleReset(event) {
+      event.preventDefault();
+      if (isRateLimited()) {
+        showError('You are making requests too quickly. Please try again later.', 'reset');
+        return;
+      }
+      const email = document.getElementById("reset-email").value
+        .toLowerCase()
+        .replace(/\s+/g, "")  // removes all whitespace
+        .normalize("NFD")     // normalizes Unicode characters to separate diacritics
+        .replace(/[\u0300-\u036f]/g, ""); // removes diacritical marks
+      document.getElementById('reset-form').style.display = 'none';
+      document.getElementById('loading-message').style.display = 'block';
+      document.getElementById('error-message').style.display = 'none';
+      try {
+        const response = await fetch('https://sellix-key-checker-2sfjgz2adq-uc.a.run.app/reset-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+        const data = await response.json();
+        document.getElementById('loading-message').style.display = 'none';
+        if (data.success) {
+          alert('Your key has been sent to your email.');
+          showLoginForm();
+        } else {
+          showError('An error occurred. Try again later', 'reset');
+        }
+      } catch (error) {
+        showError('An error occurred. Try again later', 'reset');
+      }
+      updateRateLimit();
+    }
+
+    function isRateLimited() {
+      const now = Date.now();
+      const requestTimes = JSON.parse(localStorage.getItem('requestTimes')) || [];
+      // Filter out requests older than 20 seconds
+      const recentRequests = requestTimes.filter(time => now - time < 20000);
+      if (recentRequests.length >= 3) {
+        return true; // Too many requests in the last 20 seconds
+      }
+      return false;
+    }
+
+    function updateRateLimit() {
+      const now = Date.now();
+      const requestTimes = JSON.parse(localStorage.getItem('requestTimes')) || [];
+      // Filter out requests older than 20 seconds
+      const recentRequests = requestTimes.filter(time => now - time < 20000);
+      // Add the current time to the list of request times
+      recentRequests.push(now);
+      // Save the updated list back to local storage
+      localStorage.setItem('requestTimes', JSON.stringify(recentRequests));
+    }
+
+    function showError(message, formType = 'login') {
+      document.getElementById('loading-message').style.display = 'none';
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.style.display = 'block';
+      errorDiv.textContent = message;
+      if (formType === 'login') {
+        document.getElementById('login-form').style.display = 'block';
+      } else if (formType === 'reset') {
+        document.getElementById('reset-form').style.display = 'block';
+      }
+    }
+
+    function showResetForm() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('reset-form').style.display = 'block';
+      document.getElementById('error-message').style.display = 'none';
+    }
+
+    function showLoginForm() {
+      document.getElementById('reset-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('error-message').style.display = 'none';
+    }
+
+    // Check login status on page load
+    function checkLoginStatus() {
+      const loginData = getLoginFromLocalStorage();
+      if (loginData) {
+        window.location.href = "/&.html"; // Redirect if already logged in
+      }
+    }
+
+    // Call this function when the page loads
+    window.onload = function() {
+      checkLoginStatus();
+      initParticles();
+    };
+
+    function initParticles() {
+      particlesJS('particles-js', {
+        particles: {
+          number: {
+            value: 86,
+            density: {
+              enable: true,
+              value_area: 800
+            }
+          },
+          color: {
+            value: '#ff6b00'
+          },
+          shape: {
+            type: 'circle',
+            stroke: {
+              width: 0,
+              color: '#000000'
+            },
+            polygon: {
+              nb_sides: 5
+            }
+          },
+          opacity: {
+            value: 0.5,
+            random: true,
+            anim: {
+              enable: false,
+              speed: 1,
+              opacity_min: 0.1,
+              sync: false
+            }
+          },
+          size: {
+            value: 2,
+            random: true,
+            anim: {
+              enable: false,
+              speed: 40,
+              size_min: 0.1,
+              sync: false
+            }
+          },
+          line_linked: {
+            enable: false,
+            distance: 150,
+            color: '#ffffff',
+            opacity: 0.4,
+            width: 1
+          },
+          move: {
+            enable: true,
+            speed: 0.5,
+            direction: 'top',
+            random: false,
+            straight: false,
+            out_mode: 'out',
+            bounce: false,
+            attract: {
+              enable: false,
+              rotateX: 318.0130544358847,
+              rotateY: 556.5228452627983
+            }
+          }
+        },
+        interactivity: {
+          detect_on: 'window',
+          events: {
+            onhover: {
+              enable: false,
+              mode: 'repulse'
+            },
+            onclick: {
+              enable: true,
+              mode: 'push'
+            },
+            resize: true
+          },
+          modes: {
+            grab: {
+              distance: 400,
+              line_linked: {
+                opacity: 1
+              }
+            },
+            bubble: {
+              distance: 400,
+              size: 40,
+              duration: 2,
+              opacity: 8,
+              speed: 3
+            },
+            repulse: {
+              distance: 200,
+              duration: 0.4
+            },
+            push: {
+              particles_nb: 4
+            },
+            remove: {
+              particles_nb: 2
+            }
+          }
+        },
+        retina_detect: true
+      });
+    }
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
