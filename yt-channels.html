@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Flamepass</title>
+		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8" />
+		<meta
+			name="description"
+			content="Launch into Flamepass, the next gen proxy."
+		/>
+		<meta
+			name="keywords"
+			content="Proxy, Unblocker, Flamepass Unblocker, Flamepass"
+		/>
+		<meta property="og:image" content="/assets/logo.webp" />
+		<!-- Google Analytics DO NOT REMOVE -->
+		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-SPVQHBL4J1');
+		</script>
+
+		<link
+			rel="preload"
+			as="style"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+		/>
+		<link rel="stylesheet" href="/css/index.css" />
+		<link rel="stylesheet" href="/css/themes.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+		<style>
+			.channels-container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 100px 20px 50px 80px;
+			}
+			
+			.page-title {
+				text-align: center;
+				color: white;
+				font-size: 2.5rem;
+				font-weight: 600;
+				margin-bottom: 15px;
+			}
+			
+			.page-description {
+				text-align: center;
+				color: rgba(255, 255, 255, 0.7);
+				max-width: 800px;
+				margin: 0 auto 50px;
+				font-size: 1.1rem;
+			}
+			
+			.channels-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+				gap: 25px;
+			}
+			
+			.channel-card {
+				background-color: rgba(46, 46, 46, 0.7);
+				border-radius: 12px;
+				overflow: hidden;
+				transition: transform 0.3s, box-shadow 0.3s;
+				border: 1px solid #3a3a3a;
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.channel-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+				border-color: #de5c34;
+			}
+			
+			.channel-header {
+				display: flex;
+				align-items: center;
+				padding: 15px;
+				border-bottom: 1px solid #3a3a3a;
+			}
+			
+			.channel-avatar {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				object-fit: cover;
+				margin-right: 15px;
+				border: 2px solid #3a3a3a;
+			}
+			
+			.channel-info {
+				flex: 1;
+			}
+			
+			.channel-name {
+				color: white;
+				font-weight: 600;
+				font-size: 1.1rem;
+				margin-bottom: 5px;
+			}
+			
+			.channel-stats {
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.9rem;
+				display: flex;
+				align-items: center;
+			}
+			
+			.stats-icon {
+				margin-right: 5px;
+				color: #de5c34;
+			}
+			
+			.channel-content {
+				padding: 15px;
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.channel-description {
+				color: rgba(255, 255, 255, 0.9);
+				font-size: 0.95rem;
+				margin-bottom: 15px;
+				flex: 1;
+			}
+			
+			.channel-tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+				margin-bottom: 15px;
+			}
+			
+			.channel-tag {
+				background-color: rgba(222, 92, 52, 0.2);
+				color: #de5c34;
+				padding: 4px 10px;
+				border-radius: 15px;
+				font-size: 0.8rem;
+				white-space: nowrap;
+			}
+			
+			.channel-actions {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			
+			.visit-channel {
+				background-color: #de5c34;
+				color: white;
+				border: none;
+				border-radius: 20px;
+				padding: 8px 15px;
+				font-weight: 500;
+				cursor: pointer;
+				transition: background-color 0.3s;
+				display: flex;
+				align-items: center;
+				gap: 5px;
+			}
+			
+			.visit-channel:hover {
+				background-color: #ea6e47;
+			}
+			
+			.recommended-video {
+				padding: 15px;
+				border-top: 1px solid #3a3a3a;
+			}
+			
+			.recommended-video-title {
+				font-size: 0.9rem;
+				color: rgba(255, 255, 255, 0.7);
+				margin-bottom: 8px;
+			}
+			
+			.video-link {
+				color: white;
+				text-decoration: none;
+				font-size: 1rem;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				padding: 8px;
+				border-radius: 8px;
+				transition: background-color 0.3s;
+			}
+			
+			.video-link:hover {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+			
+			.video-icon {
+				color: #de5c34;
+			}
+
+            i.fa-brands.fa-youtube {
+                margin-top: -8px;
+            }
+			
+			.category-title {
+				color: white;
+				margin-bottom: 25px;
+				font-size: 1.5rem;
+				font-weight: 600;
+				position: relative;
+				display: flex;
+				align-items: center;
+				margin-top: 50px;
+			}
+			
+			.category-title::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				bottom: -5px;
+				width: 40px;
+				height: 3px;
+				background-color: #de5c34;
+			}
+			
+			.category-icon {
+				margin-right: 10px;
+				color: #de5c34;
+			}
+			
+			@media (max-width: 768px) {
+				.channels-grid {
+					grid-template-columns: 1fr;
+				}
+				
+				.channels-container {
+					padding: 100px 15px 50px 60px;
+				}
+				
+				.category-title {
+					margin-left: 20px;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		
+
+		<ul class="navbar">
+			<li style="margin-left: -1px; margin-top: 2px">
+				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+			</li>
+			<hr style="margin-top: 5px" />
+			<li>
+				<a href="/" title="Home">
+					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+				</a>
+			</li>
+			<li>
+				<a href="/g.html" title="Games">
+					<span class="material-symbols-outlined">joystick</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ai.html" title="AI Chat">
+					<span class="material-symbols-outlined">smart_toy</span>
+				</a>
+			</li>
+			<li>
+				<a href="/cheats.html" title="School Cheats">
+					<span class="material-symbols-outlined">book</span>
+				</a>
+			</li>
+			<li>
+				<a href="/guides.html" title="Guides and Methods">
+					<span class="material-symbols-outlined">help_outline</span>
+				</a>
+			</li>
+			<li>
+				<a href="/links.html" title="Link Generator">
+					<span class="material-symbols-outlined">link</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ultimate-links.html" title="Ultimate Link List">
+					<span class="material-symbols-outlined">list</span>
+				</a>
+			</li>
+			<li>
+				<a href="/downloadable-games.html" title="Downloadable Games">
+					<span class="material-symbols-outlined">download</span>
+				</a>
+			</li>
+			<li>
+				<a href="/exploits.html" title="Newest Exploit Methods">
+					<span class="material-symbols-outlined">security</span>
+				</a>
+			</li>
+			<li>
+				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+					<span id="navactive" class="material-symbols-outlined">play_circle</span>
+				</a>
+			</li>
+			<li>
+				<a href="/a.html" title="Apps">
+					<span class="material-symbols-outlined">apps</span>
+				</a>
+			</li>
+			<li>
+				<a href="/&.html" title="Global">
+					<span class="material-symbols-outlined">public</span>
+				</a>
+			</li>
+		
+			<hr />
+			<li>
+				<a href="/~.html" title="Settings">
+					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+				</a>
+			</li>
+			<li>
+				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+					</div>
+				</a>
+			</li>
+		</ul>
+
+		<div class="scrolltop">
+			<span class="material-symbols-outlined">arrow_upward</span>
+		</div>
+
+		<div class="channels-container">
+			<h1 class="page-title">Unblocker YouTube Channels</h1>
+			<p class="page-description">Discover YouTube channels that share the latest unblocker methods, exploits, and tutorials to bypass school restrictions.</p>
+			
+			<div class="category-title">
+				<i class="fa-solid fa-shield-halved category-icon"></i>
+				Unblocker Experts
+			</div>
+			<div class="channels-grid" id="unblocker-experts">
+				<!-- Channels will be added by JavaScript -->
+			</div>
+			
+			<div class="category-title">
+				<i class="fa-solid fa-laptop-code category-icon"></i>
+				Exploit Developers
+			</div>
+			<div class="channels-grid" id="exploit-developers">
+				<!-- Channels will be added by JavaScript -->
+			</div>
+			
+			<div class="category-title">
+				<i class="fa-solid fa-graduation-cap category-icon"></i>
+				School Bypassing Tutorials
+			</div>
+			<div class="channels-grid" id="school-tutorials">
+				<!-- Channels will be added by JavaScript -->
+			</div>
+		</div>
+
+		<div style="z-index: -998">
+			<div style="z-index: -998; position: fixed" class="blob"></div>
+			<div style="z-index: -998; position: fixed" class="blobbig"></div>
+			<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+			<div style="z-index: -998; position: fixed" class="blobtop"></div>
+			<div style="z-index: -999; position: fixed" id="particles-js"></div>
+		</div>
+
+		<script>
+			// Initialize particles.js
+			particlesJS('particles-js', {
+				particles: {
+					number: {
+						value: 86,
+						density: {
+							enable: true,
+							value_area: 800
+						}
+					},
+					color: {
+						value: '#ffffff'
+					},
+					shape: {
+						type: 'circle',
+						stroke: {
+							width: 0,
+							color: '#000000'
+						},
+						polygon: {
+							nb_sides: 5
+						},
+						image: {
+							src: 'img/github.svg',
+							width: 100,
+							height: 100
+						}
+					},
+					opacity: {
+						value: 1,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 1,
+							opacity_min: 0.1,
+							sync: false
+						}
+					},
+					size: {
+						value: 2,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 40,
+							size_min: 0.1,
+							sync: false
+						}
+					},
+					line_linked: {
+						enable: false,
+						distance: 150,
+						color: '#ffffff',
+						opacity: 0.4,
+						width: 1
+					},
+					move: {
+						enable: true,
+						speed: 0.5,
+						direction: 'top',
+						random: false,
+						straight: false,
+						out_mode: 'out',
+						bounce: false,
+						attract: {
+							enable: false,
+							rotateX: 318.0130544358847,
+							rotateY: 556.5228452627983
+						}
+					}
+				},
+				interactivity: {
+					detect_on: 'window',
+					events: {
+						onhover: {
+							enable: false,
+							mode: 'repulse'
+						},
+						onclick: {
+							enable: true,
+							mode: 'push'
+						},
+						resize: true
+					},
+					modes: {
+						grab: {
+							distance: 400,
+							line_linked: {
+								opacity: 1
+							}
+						},
+						bubble: {
+							distance: 400,
+							size: 40,
+							duration: 2,
+							opacity: 8,
+							speed: 3
+						},
+						repulse: {
+							distance: 200,
+							duration: 0.4
+						},
+						push: {
+							particles_nb: 10
+						},
+						remove: {
+							particles_nb: 10
+						}
+					}
+				},
+				retina_detect: true
+			});
+
+			document.addEventListener('DOMContentLoaded', () => {
+				// Channel data
+				const unblockerExperts = [
+					{
+						name: "Flamepass Official",
+						avatar: "/assets/logo.webp",
+						subscribers: "900",
+						description: "Official Flamepass YouTube channel with the latest updates, new proxy links, and advanced unblocker methods. Stay ahead of school filters with our weekly updates.",
+						tags: ["Proxies", "New Links", "Updates"],
+						channelUrl: "https://youtube.com/@Flamepass",
+						recommendedVideo: "Top 10 Working Proxies - March 2025 Update"
+					},
+					{
+						name: "Proxy Master",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_kLbMCQdA1GlAhCTtQHnZevP_FK8N42R4QdHg=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "120K",
+						description: "Specializing in new proxy methods and unblocker links. Known for finding loopholes in school filters and sharing tips on how to keep your browsing private.",
+						tags: ["Proxies", "Tutorials", "Privacy"],
+						channelUrl: "https://youtube.com/c/ProxyMaster",
+						recommendedVideo: "How I Found 50+ Unblocked Proxy Sites"
+					},
+					{
+						name: "Interstellar Network",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_kAIgLTeFzbWQavRqAfFYaKxSzP7-HqD3Mmaw=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "62K",
+						description: "Official channel for the Interstellar Network proxy service. Regular updates on new domain links, deployment strategies, and technical tutorials on proxy tech.",
+						tags: ["Interstellar", "Domains", "Tutorials"],
+						channelUrl: "https://youtube.com/c/InterstellarNetwork",
+						recommendedVideo: "Deploy Interstellar on Your Own Domain for Free"
+					},
+					{
+						name: "Unblocker Pro",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_m1rFGdJPZT2_LdKREuDq-2_aJOE_ghJ3_m5Q=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "98K",
+						description: "Daily uploads of new working proxy sites. Also features comprehensive guides on how different filter systems work and how to bypass them effectively.",
+						tags: ["Daily Links", "Guides", "Filter Bypass"],
+						channelUrl: "https://youtube.com/c/UnblockerPro",
+						recommendedVideo: "How School Filters Work and How to Beat Them"
+					}
+				];
+				
+				const exploitDevelopers = [
+					{
+						name: "LTMEAT Creator",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_k_7H2KjqZXQGQfFFYJTvCfJgRq_ZKSw9Pn8w=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "75K",
+						description: "Creator of the famous LTMEAT exploit that lets you disable Chrome extensions. Focuses on technical explanations of browser security and how to find exploits.",
+						tags: ["LTMEAT", "Extensions", "Security"],
+						channelUrl: "https://youtube.com/c/LTMEATCreator",
+						recommendedVideo: "New LTMEAT Variant Bypasses Recent Patches"
+					},
+					{
+						name: "ChromeOS Hacker",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_lQwDjV2PsS8-qH_IgRPKlG6Qq_J3K9XrdDuw=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "110K",
+						description: "Deep dives into ChromeOS vulnerabilities, from exploit development to deployment. Teaches technical concepts behind hacking Chrome OS for educational purposes.",
+						tags: ["ChromeOS", "Vulnerabilities", "Exploits"],
+						channelUrl: "https://youtube.com/c/ChromeOSHacker",
+						recommendedVideo: "Breaking Down the Latest ChromeOS Vulnerability"
+					},
+					{
+						name: "Filter Breaker",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_mQsP9Kn7ioHBdWQmYxC8_q9vR8oQUDj-PB5w=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "56K",
+						description: "Focuses specifically on school network filters like GoGuardian, Securly, and Lightspeed. Shows how to identify filter patterns and develop custom solutions.",
+						tags: ["GoGuardian", "Securly", "Network"],
+						channelUrl: "https://youtube.com/c/FilterBreaker",
+						recommendedVideo: "Breaking Lightspeed Filter With This One Trick"
+					},
+					{
+						name: "Sh1mmer Dev",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_mRV5dqzTzLR8Ls3JQtK8D9jKQlh3Qw7KPMZQ=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "88K",
+						description: "Creator of the Sh1mmer exploit that lets you unenroll managed Chromebooks. Covers advanced topics like RMA shims, ChromeOS internals, and recovery mode bypasses.",
+						tags: ["Sh1mmer", "Unenroll", "Advanced"],
+						channelUrl: "https://youtube.com/c/Sh1mmerDev",
+						recommendedVideo: "Creating Your Own RMA Shim to Unenroll Chromebooks"
+					}
+				];
+				
+				const schoolTutorials = [
+					{
+						name: "School Hack Life",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_lZ8cQfZ2g6Hgz9nXQ-Hh7oHe9xUcJ4LrSvMQ=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "143K",
+						description: "Practical, easy-to-follow tutorials on bypassing school restrictions. Covers everything from basic proxy usage to advanced techniques for various school environments.",
+						tags: ["Beginner Friendly", "Step-by-Step", "All Schools"],
+						channelUrl: "https://youtube.com/c/SchoolHackLife",
+						recommendedVideo: "Complete Beginner's Guide to School Bypassing in 2025"
+					},
+					{
+						name: "Chromebook Unlocker",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_nK4f2DpXWbHQTrDZXb4Z8E9bDdvYQJ2E-LXA=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "95K",
+						description: "Specializes in Chromebook-specific bypasses and tricks. Shows how to access developer mode, run Linux, and use various extensions to enhance functionality.",
+						tags: ["Chromebooks", "Developer Mode", "Tricks"],
+						channelUrl: "https://youtube.com/c/ChromebookUnlocker",
+						recommendedVideo: "10 Chromebook Tricks Your School Doesn't Want You to Know"
+					},
+					{
+						name: "School Tech Tips",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_lNxUJp6Z_oVRqDf5K_dBWn8wDW5fF9c2JtJw=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "67K",
+						description: "Focuses on responsible usage of technology in school settings. Showcases useful educational tools and teaches how to improve productivity within school guidelines.",
+						tags: ["Responsible Use", "Education", "Productivity"],
+						channelUrl: "https://youtube.com/c/SchoolTechTips",
+						recommendedVideo: "Using Proxies Responsibly: What's Allowed and What's Not"
+					},
+					{
+						name: "School Network Expert",
+						avatar: "https://yt3.googleusercontent.com/ytc/AIdro_l_lhGXHVJ4Q9v7_Qzzf_zTzB5qvL9iQZQdmQ=s176-c-k-c0x00ffffff-no-rj",
+						subscribers: "73K",
+						description: "Deep insights into school network architecture and how different blocking mechanisms work. Explores the technical side of filters and how they can be overcome.",
+						tags: ["Networking", "Technical", "Filters"],
+						channelUrl: "https://youtube.com/c/SchoolNetworkExpert",
+						recommendedVideo: "The Complete Architecture of School Network Filtering"
+					}
+				];
+				
+				// Function to create channel cards
+				function createChannelCards(channels, containerId) {
+					const container = document.getElementById(containerId);
+					container.innerHTML = ''; // Clear container
+					
+					channels.forEach(channel => {
+						const channelCard = document.createElement('div');
+						channelCard.className = 'channel-card';
+						
+						channelCard.innerHTML = `
+							<div class="channel-header">
+								<img src="${channel.avatar}" alt="${channel.name}" class="channel-avatar">
+								<div class="channel-info">
+									<h3 class="channel-name">${channel.name}</h3>
+									<div class="channel-stats">
+										<i class="fa-solid fa-users stats-icon"></i>
+										${channel.subscribers} subscribers
+									</div>
+								</div>
+							</div>
+							<div class="channel-content">
+								<p class="channel-description">${channel.description}</p>
+								<div class="channel-tags">
+									${channel.tags.map(tag => `<span class="channel-tag">${tag}</span>`).join('')}
+								</div>
+								<div class="channel-actions">
+									<a href="${channel.channelUrl}" target="_blank" class="visit-channel">
+										<i class="fa-brands fa-youtube"></i>
+										Visit Channel
+									</a>
+								</div>
+							</div>
+							<div class="recommended-video">
+								<div class="recommended-video-title">Recommended Video:</div>
+								<a href="${channel.channelUrl}/videos" target="_blank" class="video-link">
+									<i class="fa-solid fa-play video-icon"></i>
+									${channel.recommendedVideo}
+								</a>
+							</div>
+						`;
+						
+						container.appendChild(channelCard);
+					});
+				}
+				
+				// Initialize channel cards
+				createChannelCards(unblockerExperts, 'unblocker-experts');
+				createChannelCards(exploitDevelopers, 'exploit-developers');
+				createChannelCards(schoolTutorials, 'school-tutorials');
+				
+				// Handle scroll to top button
+				const scrollTop = document.querySelector('.scrolltop');
+				scrollTop.addEventListener('click', () => {
+					window.scrollTo({
+						top: 0,
+						behavior: 'smooth'
+					});
+				});
+				
+				// Show/hide scroll to top button
+				window.addEventListener('scroll', () => {
+					if (window.scrollY > 300) {
+						scrollTop.style.display = 'flex';
+					} else {
+						scrollTop.style.display = 'none';
+					}
+				});
+				
+				// Close toast button
+				const closeToast = document.querySelector('.failclose');
+				closeToast.addEventListener('click', () => {
+					document.querySelector('.failtoast').style.display = 'none';
+				});
+			});
+		</script>
+		<script src="/js/localforage.min.js"></script>
+		<script src="/js/json-loader.js"></script>
+		<script src="/js/c.js"></script>
+		<script src="/js/themes.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				let hideAds = localStorage.getItem('hideAds');
+
+				if (hideAds === null || hideAds === 'false') {
+					let script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src =
+						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+					document.body.appendChild(script);
+				}
+			});
+		</script>
+	</body>
+</html>

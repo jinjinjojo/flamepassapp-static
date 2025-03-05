@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Flamepass</title>
+		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8" />
+		<meta
+			name="description"
+			content="Launch into Flamepass, the next gen proxy."
+		/>
+		<meta
+			name="keywords"
+			content="Proxy, Unblocker, Flamepass Unblocker, Flamepass"
+		/>
+		<meta property="og:image" content="/assets/logo.webp" />
+		<!-- Google Analytics DO NOT REMOVE -->
+		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-SPVQHBL4J1');
+		</script>
+
+		<link
+			rel="preload"
+			as="style"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+		/>
+		<link rel="stylesheet" href="/css/index.css" />
+		<link rel="stylesheet" href="/css/themes.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+		<style>
+			.generator-container {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				width: 100%;
+				max-width: 500px;
+				z-index: 10;
+			}
+			
+			.generate-btn {
+				background-color: #de5c34;
+				color: white;
+				border: none;
+				border-radius: 30px;
+				padding: 15px 40px;
+				font-size: 1.2rem;
+				font-weight: 600;
+				cursor: pointer;
+				margin-top: 20px;
+				transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+				box-shadow: 0 4px 20px rgba(222, 92, 52, 0.4);
+			}
+			
+			.generate-btn:hover {
+				background-color: #ea6e47;
+				transform: translateY(-5px);
+				box-shadow: 0 8px 25px rgba(222, 92, 52, 0.5);
+			}
+			
+			.generator-title {
+				color: white;
+				font-size: 2.5rem;
+				font-weight: 700;
+				margin-bottom: 15px;
+				text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+			}
+			
+			.generator-description {
+				color: rgba(255, 255, 255, 0.8);
+				font-size: 1.1rem;
+				max-width: 400px;
+				margin-bottom: 20px;
+			}
+			
+			.modal {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.7);
+				z-index: 9999;
+				justify-content: center;
+				align-items: center;
+			}
+			
+			.modal-content {
+				background-color: #2a2a2a;
+				border-radius: 15px;
+				padding: 30px;
+				width: 90%;
+				max-width: 500px;
+				box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+				position: relative;
+				text-align: center;
+			}
+			
+			.close-btn {
+				position: absolute;
+				top: 15px;
+				right: 20px;
+				font-size: 1.5rem;
+				color: #aaa;
+				cursor: pointer;
+				transition: color 0.3s;
+			}
+			
+			.close-btn:hover {
+				color: white;
+			}
+			
+			.proxy-link {
+				background-color: #1e1e1e;
+				border-radius: 10px;
+				padding: 15px;
+				margin: 20px 0;
+				color: #de5c34;
+				font-size: 1rem;
+				word-break: break-all;
+				cursor: pointer;
+				border: 1px solid #333;
+				transition: background-color 0.3s;
+			}
+			
+			.proxy-link:hover {
+				background-color: #252525;
+			}
+			
+			.copy-msg {
+				color: #4CAF50;
+				margin-top: 10px;
+				font-size: 0.9rem;
+				display: none;
+			}
+			
+			.limit-msg {
+				margin-top: 20px;
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.9rem;
+			}
+			
+			.modal-title {
+				font-size: 1.5rem;
+				color: white;
+				margin-bottom: 20px;
+			}
+			
+			.limit-reached {
+				color: #ff6b6b;
+				font-size: 1.2rem;
+				margin-bottom: 15px;
+			}
+			
+			.reset-time {
+				color: rgba(255, 255, 255, 0.7);
+				margin-top: 15px;
+			}
+			
+			.remaining {
+				color: #4CAF50;
+				font-weight: 600;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+
+		<ul class="navbar">
+			<li style="margin-left: -1px; margin-top: 2px">
+				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+			</li>
+			<hr style="margin-top: 5px" />
+			<li>
+				<a href="/" title="Home">
+					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+				</a>
+			</li>
+			<li>
+				<a href="/g.html" title="Games">
+					<span class="material-symbols-outlined">joystick</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ai.html" title="AI Chat">
+					<span class="material-symbols-outlined">smart_toy</span>
+				</a>
+			</li>
+			<li>
+				<a href="/cheats.html" title="School Cheats">
+					<span class="material-symbols-outlined">book</span>
+				</a>
+			</li>
+			<li>
+				<a href="/guides.html" title="Guides and Methods">
+					<span class="material-symbols-outlined">help_outline</span>
+				</a>
+			</li>
+			<li>
+				<a href="/links.html" title="Link Generator">
+					<span id="navactive" class="material-symbols-outlined">link</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ultimate-links.html" title="Ultimate Link List">
+					<span class="material-symbols-outlined">list</span>
+				</a>
+			</li>
+			<li>
+				<a href="/downloadable-games.html" title="Downloadable Games">
+					<span class="material-symbols-outlined">download</span>
+				</a>
+			</li>
+			<li>
+				<a href="/exploits.html" title="Newest Exploit Methods">
+					<span class="material-symbols-outlined">security</span>
+				</a>
+			</li>
+			<li>
+				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+					<span class="material-symbols-outlined">play_circle</span>
+				</a>
+			</li>
+			<li>
+				<a href="/a.html" title="Apps">
+					<span class="material-symbols-outlined">apps</span>
+				</a>
+			</li>
+			<li>
+				<a href="/&.html" title="Global">
+					<span class="material-symbols-outlined">public</span>
+				</a>
+			</li>
+		
+			<hr />
+			<li>
+				<a href="/~.html" title="Settings">
+					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+				</a>
+			</li>
+			<li>
+				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+					</div>
+				</a>
+			</li>
+		</ul>
+
+		<div class="generator-container">
+            <img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8;">
+			<h1 class="generator-title">
+                Link Dispenser++
+            </h1>
+			<p class="generator-description">Get high-quality unblocked links that actually work at your school. Limited to 3 links per day.</p>
+			<button class="generate-btn">Generate Link</button>
+		</div>
+		
+		<!-- Modal for showing links -->
+		<div class="modal" id="linkModal">
+			<div class="modal-content">
+				<span class="close-btn">&times;</span>
+				<h2 class="modal-title">Your Unblocked Link</h2>
+				<div class="proxy-link" id="proxyLink">Loading...</div>
+				<p class="copy-msg">Copied to clipboard!</p>
+				<p class="limit-msg">You have <span class="remaining" id="remaining">0</span> links remaining today.</p>
+			</div>
+		</div>
+		
+		<!-- Modal for limit reached -->
+		<div class="modal" id="limitModal">
+			<div class="modal-content">
+				<span class="close-btn">&times;</span>
+				<h2 class="modal-title">Daily Limit Reached</h2>
+				<p class="limit-reached">You've reached your daily limit of 3 generated links.</p>
+				<p class="reset-time">New links will be available on: <br><strong id="resetTime">Loading...</strong></p>
+			</div>
+		</div>
+
+		<div style="z-index: -998">
+			<div style="z-index: -998; position: fixed" class="blob"></div>
+			<div style="z-index: -998; position: fixed" class="blobbig"></div>
+			<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+			<div style="z-index: -998; position: fixed" class="blobtop"></div>
+			<div style="z-index: -999; position: fixed" id="particles-js"></div>
+		</div>
+
+		<script>
+			// Link data from mainunblockers.md
+			const links = [
+				// Interstellar links
+				"https://gointerstellar.app",
+				"https://nomorefemboyfriday.unibutton.com/",
+				"https://matheiuslikesmen.bouncers4rent.com/",
+				"https://dipakarmani.blinklab.com/",
+				"https://alumulakakro.unibutton.com/",
+				"https://hamburgerxtreme.unibutton.com/",
+				"https://mayalu.unibutton.com/",
+				"https://sitarabhajangi.unibutton.com/",
+				"https://learningmath.pages.dev/",
+				
+				// Shadow Browser links
+				"https://dental.danielrcrawford.com/",
+				"https://you.lostbytes.me/",
+				"https://free.imdb.gq/",
+				"https://learningtiles.root.sx/",
+				"https://erase.uhane.mx/",
+				"https://bank.quarternotez.sg/",
+				"https://zxyp.02.garmanage.com/",
+				"https://zxyp.03.digitalforest.my/",
+				"https://zxyp.04.open-window.de/",
+				"https://crec.abatek.com/",
+				
+				// Doge Unblocker links
+				"https://computer-lesson.shirokuriwaki.com/",
+				"https://mainsteetbathroomsarestinky.eduinnova.cl/",
+				"https://auroraborealisdates.twilightparadox.com/",
+				"https://hs.gigaportal.pl/",
+				"https://debateinfos.chickenkiller.com/",
+				"https://portal.x-narod.ru/",
+				"https://portal.163-123-192-252.backname.io/",
+				"https://portal.www.firstclasswarranty.ca/",
+				"https://luis-has-really.qualitypoolsboulder.com/",
+				"https://brainstudy.jeesbox.com/",
+				
+				// Rammerhead links
+				"https://orchestratingzz.iii.cl/",
+				"https://r1.mcwrite.net/",
+				"https://r3.hardsoft.nu/",
+				"https://mathlessons.conifera.cl/",
+				"https://orchestratingzz.iii.cl/",
+				"https://southparkstudios.dyn.mk/",
+				"https://ronaldo.suarakeadilan.org/",
+				"https://rh4.ext.rocks/",
+				"https://rammerhead.suarakeadilan.org/",
+				"https://5akura-sit3-r3nnnn3ad.pitlobra.ro/",
+				
+				// Space links
+				"https://spongey-bob-your-late.soon.it/",
+				"https://i-ready.69.mu/",
+				"https://lowtaperfade.skibiditoi.lat/",
+				"https://grimace-shake.skibidi-rizz-gyatt-fanum-tax-sigma-ohio.ct.ws/",
+				"https://orbitmc.lol/",
+				"https://n.orbitmc.lol/",
+				"https://o.orbitmc.lol/",
+				"https://app.orbitmc.lol/",
+				"https://join.puddlehunters.net/",
+				"https://read.anjumanallana.in/"
+			];
+
+			// Initialize particles.js
+			particlesJS('particles-js', {
+				particles: {
+					number: {
+						value: 86,
+						density: {
+							enable: true,
+							value_area: 800
+						}
+					},
+					color: {
+						value: '#ffffff'
+					},
+					shape: {
+						type: 'circle',
+						stroke: {
+							width: 0,
+							color: '#000000'
+						},
+						polygon: {
+							nb_sides: 5
+						},
+						image: {
+							src: 'img/github.svg',
+							width: 100,
+							height: 100
+						}
+					},
+					opacity: {
+						value: 1,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 1,
+							opacity_min: 0.1,
+							sync: false
+						}
+					},
+					size: {
+						value: 2,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 40,
+							size_min: 0.1,
+							sync: false
+						}
+					},
+					line_linked: {
+						enable: false,
+						distance: 150,
+						color: '#ffffff',
+						opacity: 0.4,
+						width: 1
+					},
+					move: {
+						enable: true,
+						speed: 0.5,
+						direction: 'top',
+						random: false,
+						straight: false,
+						out_mode: 'out',
+						bounce: false,
+						attract: {
+							enable: false,
+							rotateX: 318.0130544358847,
+							rotateY: 556.5228452627983
+						}
+					}
+				},
+				interactivity: {
+					detect_on: 'window',
+					events: {
+						onhover: {
+							enable: false,
+							mode: 'repulse'
+						},
+						onclick: {
+							enable: true,
+							mode: 'push'
+						},
+						resize: true
+					},
+					modes: {
+						grab: {
+							distance: 400,
+							line_linked: {
+								opacity: 1
+							}
+						},
+						bubble: {
+							distance: 400,
+							size: 40,
+							duration: 2,
+							opacity: 8,
+							speed: 3
+						},
+						repulse: {
+							distance: 200,
+							duration: 0.4
+						},
+						push: {
+							particles_nb: 10
+						},
+						remove: {
+							particles_nb: 10
+						}
+					}
+				},
+				retina_detect: true
+			});
+
+			document.addEventListener('DOMContentLoaded', () => {
+				const generateBtn = document.querySelector('.generate-btn');
+				const linkModal = document.getElementById('linkModal');
+				const limitModal = document.getElementById('limitModal');
+				const closeButtons = document.querySelectorAll('.close-btn');
+				const proxyLink = document.getElementById('proxyLink');
+				const copyMsg = document.querySelector('.copy-msg');
+				const remainingSpan = document.getElementById('remaining');
+				const resetTimeSpan = document.getElementById('resetTime');
+				
+				// Check localStorage for link generation data
+				function getLinkData() {
+					const data = localStorage.getItem('linkGeneratorData');
+					if (data) {
+						return JSON.parse(data);
+					} else {
+						// Initialize new data
+						const newData = {
+							count: 0,
+							date: new Date().toDateString(),
+							generatedLinks: []
+						};
+						localStorage.setItem('linkGeneratorData', JSON.stringify(newData));
+						return newData;
+					}
+				}
+				
+				// Check if daily reset is needed
+				function checkDailyReset() {
+					const data = getLinkData();
+					const today = new Date().toDateString();
+					
+					if (data.date !== today) {
+						// Reset for a new day
+						data.count = 0;
+						data.date = today;
+						data.generatedLinks = [];
+						localStorage.setItem('linkGeneratorData', JSON.stringify(data));
+					}
+					
+					return data;
+				}
+				
+				// Get random link that hasn't been generated today
+				function getRandomLink(data) {
+					let availableLinks = links.filter(link => !data.generatedLinks.includes(link));
+					
+					// If all links have been used, reset from the full pool
+					if (availableLinks.length === 0) {
+						availableLinks = [...links];
+					}
+					
+					const randomIndex = Math.floor(Math.random() * availableLinks.length);
+					return availableLinks[randomIndex];
+				}
+				
+				// Update link generator data
+				function updateLinkData(newLink) {
+					const data = getLinkData();
+					data.count++;
+					data.generatedLinks.push(newLink);
+					localStorage.setItem('linkGeneratorData', JSON.stringify(data));
+					return data;
+				}
+				
+				// Get tomorrow's date as string
+				function getTomorrowDateString() {
+					const tomorrow = new Date();
+					tomorrow.setDate(tomorrow.getDate() + 1);
+					tomorrow.setHours(0, 0, 0, 0);
+					return tomorrow.toLocaleString();
+				}
+				
+				// Set up click handlers
+				generateBtn.addEventListener('click', () => {
+					const data = checkDailyReset();
+					
+					if (data.count >= 3) {
+						// Show limit reached modal
+						resetTimeSpan.textContent = getTomorrowDateString();
+						limitModal.style.display = 'flex';
+					} else {
+						// Generate new link
+						const link = getRandomLink(data);
+						const updatedData = updateLinkData(link);
+						
+						// Show link in modal
+						proxyLink.textContent = link;
+						remainingSpan.textContent = 3 - updatedData.count;
+						linkModal.style.display = 'flex';
+					}
+				});
+				
+				// Set up copy functionality
+				proxyLink.addEventListener('click', () => {
+					const link = proxyLink.textContent;
+					navigator.clipboard.writeText(link)
+						.then(() => {
+							copyMsg.style.display = 'block';
+							setTimeout(() => {
+								copyMsg.style.display = 'none';
+							}, 2000);
+						})
+						.catch(err => {
+							console.error('Failed to copy: ', err);
+						});
+				});
+				
+				// Close modals when clicking the close button
+				closeButtons.forEach(button => {
+					button.addEventListener('click', () => {
+						linkModal.style.display = 'none';
+						limitModal.style.display = 'none';
+					});
+				});
+				
+				// Close modals when clicking outside the content
+				window.addEventListener('click', (event) => {
+					if (event.target === linkModal) {
+						linkModal.style.display = 'none';
+					}
+					if (event.target === limitModal) {
+						limitModal.style.display = 'none';
+					}
+				});
+			});
+		</script>
+		<script src="/js/localforage.min.js"></script>
+		<script src="/js/json-loader.js"></script>
+		<script src="/js/c.js"></script>
+		<script src="/js/themes.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				let hideAds = localStorage.getItem('hideAds');
+
+				if (hideAds === null || hideAds === 'false') {
+					let script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src =
+						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+					document.body.appendChild(script);
+				}
+			});
+		</script>
+	</body>
+</html>

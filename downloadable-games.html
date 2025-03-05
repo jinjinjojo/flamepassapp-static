@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Flamepass</title>
+		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8" />
+		<meta
+			name="description"
+			content="Launch into Flamepass, the next gen proxy."
+		/>
+		<meta
+			name="keywords"
+			content="Proxy, Unblocker, Flamepass Unblocker, Flamepass"
+		/>
+		<meta property="og:image" content="/assets/logo.webp" />
+		<!-- Google Analytics DO NOT REMOVE -->
+		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-SPVQHBL4J1');
+		</script>
+
+		<link
+			rel="preload"
+			as="style"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+		/>
+		<link rel="stylesheet" href="/css/index.css" />
+		<link rel="stylesheet" href="/css/themes.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+		<style>
+			.game-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+				gap: 20px;
+				padding: 20px;
+				max-width: 1200px;
+				margin: 0 auto;
+				margin-top: 100px;
+			}
+			
+			.game-card {
+				position: relative;
+				border-radius: 12px;
+				overflow: hidden;
+				background-color: rgba(46, 46, 46, 0.7);
+				transition: transform 0.3s, box-shadow 0.3s;
+				aspect-ratio: 1 / 1;
+				cursor: pointer;
+			}
+			
+			.game-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+			}
+			
+			.game-img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transition: filter 0.3s;
+			}
+			
+			.game-card:hover .game-img {
+				filter: brightness(0.7);
+			}
+			
+			.game-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				padding: 15px;
+				background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+				color: white;
+				opacity: 1;
+				transition: opacity 0.3s;
+			}
+			
+			.game-title {
+				margin: 0;
+				font-size: 1.2rem;
+				font-weight: 600;
+			}
+			
+			.game-size {
+				font-size: 0.9rem;
+				margin-top: 5px;
+				opacity: 0.8;
+			}
+			
+			.download-btn {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background-color: #de5c34;
+				color: white;
+				border: none;
+				border-radius: 25px;
+				padding: 10px 20px;
+				font-weight: 600;
+				cursor: pointer;
+				opacity: 0;
+				transition: opacity 0.3s;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+			}
+			
+			.game-card:hover .download-btn {
+				opacity: 1;
+			}
+			
+			.download-btn:hover {
+				background-color: #ea6e47;
+			}
+			
+			.page-title {
+				text-align: center;
+				margin-top: 120px;
+				color: white;
+				font-size: 2.5rem;
+				font-weight: 600;
+			}
+			
+			.page-subtitle {
+				text-align: center;
+				color: rgba(255, 255, 255, 0.7);
+				margin-bottom: 30px;
+			}
+			
+            .category-title {
+                color: white;
+                margin-left: 80px; /* Increased from 30px to 80px to avoid sidebar overlap */
+                margin-top: 40px;
+                margin-bottom: 10px;
+                font-size: 1.5rem;
+                font-weight: 600;
+                position: relative;
+            }
+
+            .category-title::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                bottom: -5px;
+                width: 40px;
+                height: 3px;
+                background-color: #de5c34;
+            }
+			
+			@media (max-width: 768px) {
+				.game-grid {
+					grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		
+
+		<ul class="navbar">
+			<li style="margin-left: -1px; margin-top: 2px">
+				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+			</li>
+			<hr style="margin-top: 5px" />
+			<li>
+				<a href="/" title="Home">
+					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+				</a>
+			</li>
+			<li>
+				<a href="/g.html" title="Games">
+					<span class="material-symbols-outlined">joystick</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ai.html" title="AI Chat">
+					<span class="material-symbols-outlined">smart_toy</span>
+				</a>
+			</li>
+			<li>
+				<a href="/cheats.html" title="School Cheats">
+					<span class="material-symbols-outlined">book</span>
+				</a>
+			</li>
+			<li>
+				<a href="/guides.html" title="Guides and Methods">
+					<span class="material-symbols-outlined">help_outline</span>
+				</a>
+			</li>
+			<li>
+				<a href="/links.html" title="Link Generator">
+					<span class="material-symbols-outlined">link</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ultimate-links.html" title="Ultimate Link List">
+					<span class="material-symbols-outlined">list</span>
+				</a>
+			</li>
+			<li>
+				<a href="/downloadable-games.html" title="Downloadable Games">
+					<span id="navactive" class="material-symbols-outlined">download</span>
+				</a>
+			</li>
+			<li>
+				<a href="/exploits.html" title="Newest Exploit Methods">
+					<span class="material-symbols-outlined">security</span>
+				</a>
+			</li>
+			<li>
+				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+					<span class="material-symbols-outlined">play_circle</span>
+				</a>
+			</li>
+			<li>
+				<a href="/a.html" title="Apps">
+					<span class="material-symbols-outlined">apps</span>
+				</a>
+			</li>
+			<li>
+				<a href="/&.html" title="Global">
+					<span class="material-symbols-outlined">public</span>
+				</a>
+			</li>
+		
+			<hr />
+			<li>
+				<a href="/~.html" title="Settings">
+					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+				</a>
+			</li>
+			<li>
+				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+					</div>
+				</a>
+			</li>
+		</ul>
+
+		<div class="scrolltop">
+			<span class="material-symbols-outlined">arrow_upward</span>
+		</div>
+
+		<h1 class="page-title">Downloadable Games</h1>
+		<p class="page-subtitle">Download and play these games offline on your school device</p>
+
+		<div class="category-title">Popular Games</div>
+		<div class="game-grid" id="popular-games">
+			<!-- Games will be inserted here by JavaScript -->
+		</div>
+
+		<div class="category-title">Indie Games</div>
+		<div class="game-grid" id="indie-games">
+			<!-- Games will be inserted here by JavaScript -->
+		</div>
+
+		<div class="category-title">Classic Games</div>
+		<div class="game-grid" id="classic-games">
+			<!-- Games will be inserted here by JavaScript -->
+		</div>
+
+		<div style="z-index: -998">
+			<div style="z-index: -998; position: fixed" class="blob"></div>
+			<div style="z-index: -998; position: fixed" class="blobbig"></div>
+			<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+			<div style="z-index: -998; position: fixed" class="blobtop"></div>
+			<div style="z-index: -999; position: fixed" id="particles-js"></div>
+		</div>
+
+		<script>
+			// Game data
+			const popularGames = [
+				{
+					title: "Five Nights at Freddy's",
+					image: "https://play-lh.googleusercontent.com/YxC8nC7p3AYL_XYbqb6cEIzaBfXAj5LDSvoJPE4a_iouI1MsQ_6f6ZjFZXP_68mSHQ=w526-h296-rw",
+					size: "102 MB",
+					url: "https://drive.google.com/file/d/1dQxd1VVihBFfYxzK-5GGW-s24jKKjfFH/view?usp=sharing"
+				},
+				{
+					title: "SUPERHOT",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/322500/ss_79314104e240819e290a57b6126c18b12d4b66be.1920x1080.jpg",
+					size: "714 MB",
+					url: "https://drive.google.com/file/d/1IKtqbYpz5uKvMoMdg4bEUJfPYVfm_6RY/view?usp=sharing"
+				},
+				{
+					title: "Undertale",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/391540/ss_35e98c1ce6108eeb7421c6e10e932e2aa34f1a75.1920x1080.jpg",
+					size: "189 MB",
+					url: "https://drive.google.com/file/d/15xfw_JCPkMZnqh1v5SuXlOHh5ODfGjtj/view?usp=sharing"
+				},
+				{
+					title: "Celeste",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/504230/ss_615455299355eaf552c638c7ea5b24a8b46e02dd.1920x1080.jpg",
+					size: "1.2 GB",
+					url: "https://drive.google.com/file/d/18WYW1wEAbvdNQLWHgd2NRd6qNdRfKA1H/view?usp=sharing"
+				},
+				{
+					title: "Geometry Dash",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/322170/ss_7ef657caa7408aeb4c23ba80c31d43399394a151.1920x1080.jpg",
+					size: "65 MB",
+					url: "https://drive.google.com/file/d/1mhLHN0MIjlHbRqbGn9F9mhYz-vrnx6CN/view?usp=sharing"
+				},
+				{
+					title: "Among Us",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/945360/ss_44cc5d731f13a48a802ac9e28b4fe4c9a8fa9801.1920x1080.jpg",
+					size: "167 MB",
+					url: "https://drive.google.com/file/d/1p_7GbV6-GkjA01VHBBqvscYgITdsTcxq/view?usp=sharing"
+				}
+			];
+
+			const indieGames = [
+				{
+					title: "Hollow Knight",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/367520/ss_f76334e45d315d9de7cfbb2cbaf04bc9cd02c419.1920x1080.jpg",
+					size: "3.8 GB",
+					url: "https://drive.google.com/file/d/1pDmAD4lHT0aJsCh9S9LYJR-nHXG2L1N3/view?usp=sharing"
+				},
+				{
+					title: "Stardew Valley",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/413150/ss_b887651a93b0525739049eb4194f633de2de83e7.1920x1080.jpg",
+					size: "550 MB",
+					url: "https://drive.google.com/file/d/1yH7i9b6zFwxHYYFGfJWr9JCH5c0D8Hk7/view?usp=sharing"
+				},
+				{
+					title: "Cuphead",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/268910/ss_81f807654e0d7a182d6f557812bb6d7bd5fad74a.1920x1080.jpg",
+					size: "4.2 GB",
+					url: "https://drive.google.com/file/d/1RLQfGbVB3xhkKf8BoZD9JDCCmX6qLtgI/view?usp=sharing"
+				},
+				{
+					title: "Terraria",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/105600/ss_6d08c0aab6ba56895c1b89fc1b184d13c4bad14d.1920x1080.jpg",
+					size: "425 MB",
+					url: "https://drive.google.com/file/d/1Qj3Zm7CiCGe2kXQpP_WTFYZeV9BxoPRw/view?usp=sharing"
+				},
+				{
+					title: "FTL: Faster Than Light",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/ss_c5b19aad75b48b7b0c7e6ef6b14175e83574c3c9.1920x1080.jpg",
+					size: "210 MB",
+					url: "https://drive.google.com/file/d/1vYn3CgKGZ8TYVRZkF9DgXyZH8hf-sIuN/view?usp=sharing"
+				},
+				{
+					title: "Baba Is You",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/736260/ss_35a6052bfe705bd8c12f9525ac8c90452f24ffd7.1920x1080.jpg",
+					size: "137 MB",
+					url: "https://drive.google.com/file/d/1GkFQkb8bY3yF9qzKQvnzfYEuUkQJ2-O-/view?usp=sharing"
+				}
+			];
+
+			const classicGames = [
+				{
+					title: "Portal",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/400/ss_6a4f5afdaa98402de917471dbf7507e35b87c1d6.1920x1080.jpg",
+					size: "2.4 GB",
+					url: "https://drive.google.com/file/d/1JFzGY-xBP-3-gVkfyQwbM-2CkRIk6ycR/view?usp=sharing"
+				},
+				{
+					title: "Half-Life",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/70/ss_b79f41852e7bd7f84f75c9681e07b8ac987c5dce.1920x1080.jpg",
+					size: "655 MB",
+					url: "https://drive.google.com/file/d/1sQJZuX9T7Mj5hFj2RDX9vfwx-3JBHEgA/view?usp=sharing"
+				},
+				{
+					title: "Doom (1993)",
+					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/2280/ss_270f3d28a806b42abddb47e0a9d2bf97c5a5f858.1920x1080.jpg",
+					size: "63 MB",
+					url: "https://drive.google.com/file/d/1KZKnT-4_G4qhGRlOB0IMmXQX36YxLCrm/view?usp=sharing"
+				},
+				{
+					title: "Minesweeper Pro",
+					image: "https://play-lh.googleusercontent.com/HgphoSq08Z8K7ASKMpn5UD5ppFEbijR5mhwlFOjJcDK3p0fBBqR3mJQzRXrIMJ0PuQ=w526-h296-rw",
+					size: "24 MB",
+					url: "https://drive.google.com/file/d/1YEvDSYUFzA2dCrKgDybWGKRN8ThDX7Tb/view?usp=sharing"
+				},
+				{
+					title: "The Oregon Trail",
+					image: "https://images.gog-statics.com/158ea624b688cad570aded1a12a2c15e5fa7e609c511ed9b5a54e633e073ecf3.jpg",
+					size: "48 MB",
+					url: "https://drive.google.com/file/d/1zmZgz_Z8mH1Y8JeytZq6K4M8R5_qP4nq/view?usp=sharing"
+				}
+			];
+
+			// Function to create game cards
+			function createGameCards(games, containerId) {
+				const container = document.getElementById(containerId);
+				container.innerHTML = ''; // Clear container
+				
+				games.forEach(game => {
+					const gameCard = document.createElement('div');
+					gameCard.className = 'game-card';
+					
+					gameCard.innerHTML = `
+						<img src="${game.image}" alt="${game.title}" class="game-img">
+						<div class="game-overlay">
+							<h3 class="game-title">${game.title}</h3>
+							<p class="game-size">${game.size}</p>
+						</div>
+						<button class="download-btn">Download</button>
+					`;
+					
+					// Add click event
+					gameCard.querySelector('.download-btn').addEventListener('click', (e) => {
+						e.stopPropagation();
+						showSuccessToast(`Starting download for ${game.title}...`);
+						window.open(game.url, '_blank');
+					});
+					
+					container.appendChild(gameCard);
+				});
+			}
+
+			// Function to show success toast
+			function showSuccessToast(message) {
+				const toast = document.querySelector('.failtoast');
+				const text1 = document.getElementById('text-1');
+				const text2 = document.getElementById('text-2');
+				const icon = document.querySelector('.fail');
+				
+				// Change to success style
+				toast.style.backgroundColor = '#4CAF50';
+				icon.classList.remove('fa-circle-exclamation');
+				icon.classList.add('fa-circle-check');
+				text1.textContent = 'Success';
+				text2.textContent = message;
+				
+				// Show toast
+				toast.style.display = 'flex';
+				
+				// Hide after 3 seconds
+				setTimeout(() => {
+					toast.style.display = 'none';
+					// Reset to default styles
+					toast.style.backgroundColor = '';
+					icon.classList.add('fa-circle-exclamation');
+					icon.classList.remove('fa-circle-check');
+					text1.textContent = 'Failed';
+					text2.textContent = 'Something went wrong. Please try again.';
+				}, 3000);
+			}
+
+			// Initialize particles.js
+			particlesJS('particles-js', {
+				particles: {
+					number: {
+						value: 86,
+						density: {
+							enable: true,
+							value_area: 800
+						}
+					},
+					color: {
+						value: '#ffffff'
+					},
+					shape: {
+						type: 'circle',
+						stroke: {
+							width: 0,
+							color: '#000000'
+						},
+						polygon: {
+							nb_sides: 5
+						},
+						image: {
+							src: 'img/github.svg',
+							width: 100,
+							height: 100
+						}
+					},
+					opacity: {
+						value: 1,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 1,
+							opacity_min: 0.1,
+							sync: false
+						}
+					},
+					size: {
+						value: 2,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 40,
+							size_min: 0.1,
+							sync: false
+						}
+					},
+					line_linked: {
+						enable: false,
+						distance: 150,
+						color: '#ffffff',
+						opacity: 0.4,
+						width: 1
+					},
+					move: {
+						enable: true,
+						speed: 0.5,
+						direction: 'top',
+						random: false,
+						straight: false,
+						out_mode: 'out',
+						bounce: false,
+						attract: {
+							enable: false,
+							rotateX: 318.0130544358847,
+							rotateY: 556.5228452627983
+						}
+					}
+				},
+				interactivity: {
+					detect_on: 'window',
+					events: {
+						onhover: {
+							enable: false,
+							mode: 'repulse'
+						},
+						onclick: {
+							enable: true,
+							mode: 'push'
+						},
+						resize: true
+					},
+					modes: {
+						grab: {
+							distance: 400,
+							line_linked: {
+								opacity: 1
+							}
+						},
+						bubble: {
+							distance: 400,
+							size: 40,
+							duration: 2,
+							opacity: 8,
+							speed: 3
+						},
+						repulse: {
+							distance: 200,
+							duration: 0.4
+						},
+						push: {
+							particles_nb: 10
+						},
+						remove: {
+							particles_nb: 10
+						}
+					}
+				},
+				retina_detect: true
+			});
+
+			// Initialize game cards
+			document.addEventListener('DOMContentLoaded', () => {
+				createGameCards(popularGames, 'popular-games');
+				createGameCards(indieGames, 'indie-games');
+				createGameCards(classicGames, 'classic-games');
+				
+				// Handle scroll to top button
+				const scrollTop = document.querySelector('.scrolltop');
+				scrollTop.addEventListener('click', () => {
+					window.scrollTo({
+						top: 0,
+						behavior: 'smooth'
+					});
+				});
+				
+				// Show/hide scroll to top button
+				window.addEventListener('scroll', () => {
+					if (window.scrollY > 300) {
+						scrollTop.style.display = 'flex';
+					} else {
+						scrollTop.style.display = 'none';
+					}
+				});
+				
+				// Close toast button
+				const closeToast = document.querySelector('.failclose');
+				closeToast.addEventListener('click', () => {
+					document.querySelector('.failtoast').style.display = 'none';
+				});
+			});
+		</script>
+		<script src="/js/localforage.min.js"></script>
+		<script src="/js/json-loader.js"></script>
+		<script src="/js/c.js"></script>
+		<script src="/js/themes.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				let hideAds = localStorage.getItem('hideAds');
+
+				if (hideAds === null || hideAds === 'false') {
+					let script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src =
+						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+					document.body.appendChild(script);
+				}
+			});
+		</script>
+	</body>
+</html>

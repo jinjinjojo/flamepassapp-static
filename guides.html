@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" href="/css/index.css" />
+		<link rel="stylesheet" href="/css/themes.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+		<title>Flamepass</title>
+		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Launch into Flamepass, the next gen proxy."
+		/>
+		<meta
+			name="keywords"
+			content="Proxy, Unblocker, Flamepass Unblocker, Flamepass"
+		/>
+		<meta property="og:image" content="/assets/logo.webp" />
+		<!-- Google Analytics DO NOT REMOVE -->
+		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+		<script
+			async
+			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
+		></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag('js', new Date());
+
+			gtag('config', 'G-SPVQHBL4J1');
+		</script>
+
+		<link
+			rel="preload"
+			as="style"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+		/>
+		<link
+			rel="preload"
+			as="style"
+			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+		/>
+		<link rel="stylesheet" href="/css/index.css" />
+		<link rel="stylesheet" href="/css/ag.css" />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+		/>
+		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+		<style>
+			.guides-container {
+				width: 85%;
+				max-width: 1000px;
+				margin: 0 auto;
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+				gap: 25px;
+				padding: 20px;
+			}
+			
+			.guide-card {
+				background-color: rgba(37, 37, 37, 0.7);
+				border-radius: 10px;
+				overflow: hidden;
+				transition: transform 0.3s, box-shadow 0.3s;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+				cursor: pointer;
+				position: relative;
+				height: 160px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				padding: 20px;
+				border: 1px solid rgb(255 85 85 / 30%);
+			}
+			
+			.guide-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+				border-color: rgba(85, 85, 255, 0.7);
+			}
+			
+			.guide-icon {
+				font-size: 40px!important;
+				color: #de5c34;
+				margin-bottom: 15px;
+			}
+			
+			.guide-title {
+				font-size: 1.2rem;
+				color: white;
+				font-weight: 500;
+			}
+			
+			/* Modal styles */
+			.modal {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.7);
+				z-index: 1000;
+				overflow-y: auto;
+			}
+			
+			.modal-content {
+				background-color: rgba(30, 30, 30, 0.95);
+				margin: 50px auto;
+				width: 85%;
+				max-width: 800px;
+				border-radius: 10px;
+				box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+				position: relative;
+				color: white;
+				border: 1px solid rgba(85, 85, 255, 0.5);
+				max-height: 80vh;
+				overflow-y: auto;
+			}
+			
+			.modal-header {
+				background-color: rgba(50, 50, 50, 0.95);
+				padding: 15px 20px;
+				border-bottom: 1px solid rgba(85, 85, 255, 0.5);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				position: sticky;
+				top: 0;
+				z-index: 10;
+			}
+			
+			.modal-title {
+				color: #de5c34;
+				font-size: 1.5rem;
+				margin: 0;
+			}
+			
+			.close-btn {
+				font-size: 28px;
+				color: #aaa;
+				background: none;
+				border: none;
+				cursor: pointer;
+				padding: 0;
+				line-height: 1;
+			}
+			
+			.close-btn:hover {
+				color: white;
+			}
+			
+			.modal-body {
+				padding: 20px;
+			}
+			
+			/* Guide content styling */
+			.guide-content h2 {
+				color: #de5c34;
+				margin-top: 30px;
+				margin-bottom: 15px;
+				border-bottom: 1px solid rgb(255 85 85 / 30%);
+				padding-bottom: 5px;
+			}
+			
+			.guide-content h3 {
+				color: #de5c34;
+				margin-top: 20px;
+				margin-bottom: 10px;
+			}
+			
+			.guide-content p {
+				margin-bottom: 15px;
+				line-height: 1.6;
+			}
+			
+			.guide-content ul, .guide-content ol {
+				margin-bottom: 15px;
+				padding-left: 25px;
+			}
+			
+			.guide-content li {
+				margin-bottom: 10px;
+			}
+			
+			.guide-content a {
+				color: #de5c34;
+				text-decoration: none;
+			}
+			
+			.guide-content a:hover {
+				text-decoration: underline;
+			}
+			
+			.guide-content code {
+				background-color: rgba(50, 50, 50, 0.7);
+				padding: 2px 6px;
+				border-radius: 4px;
+				font-family: monospace;
+			}
+			
+			.guide-content pre {
+				background-color: rgba(50, 50, 50, 0.7);
+				padding: 15px;
+				border-radius: 5px;
+				overflow-x: auto;
+				font-family: monospace;
+				margin-bottom: 15px;
+			}
+			
+			/* Table styling */
+			.guide-content table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-bottom: 20px;
+			}
+			
+			.guide-content th, .guide-content td {
+				padding: 10px;
+				border: 1px solid rgb(255 85 85 / 30%);
+			}
+			
+			.guide-content th {
+				background-color: rgba(50, 50, 50, 0.7);
+				color: #de5c34;
+			}
+			
+			.guide-content tr:nth-child(odd) {
+				background-color: rgba(40, 40, 40, 0.7);
+			}
+			
+			/* Custom scrollbar */
+			.modal-content::-webkit-scrollbar {
+				width: 8px;
+			}
+			
+			.modal-content::-webkit-scrollbar-track {
+				background: rgba(30, 30, 30, 0.5);
+			}
+			
+			.modal-content::-webkit-scrollbar-thumb {
+				background: #de5c34;
+				border-radius: 10px;
+			}
+			
+			.modal-content::-webkit-scrollbar-thumb:hover {
+				background: #4444cc;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		
+
+		<ul class="navbar">
+			<li style="margin-left: -1px; margin-top: 2px">
+				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+			</li>
+			<hr style="margin-top: 5px" />
+			<li>
+				<a href="/" title="Home">
+					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+				</a>
+			</li>
+			<li>
+				<a href="/g.html" title="Games">
+					<span class="material-symbols-outlined">joystick</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ai.html" title="AI Chat">
+					<span class="material-symbols-outlined">smart_toy</span>
+				</a>
+			</li>
+			<li>
+				<a href="/cheats.html" title="School Cheats">
+					<span class="material-symbols-outlined">book</span>
+				</a>
+			</li>
+			<li>
+				<a href="/guides.html" title="Guides and Methods">
+					<span id="navactive" class="material-symbols-outlined">help_outline</span>
+				</a>
+			</li>
+			<li>
+				<a href="/links.html" title="Link Generator">
+					<span class="material-symbols-outlined">link</span>
+				</a>
+			</li>
+			<li>
+				<a href="/ultimate-links.html" title="Ultimate Link List">
+					<span class="material-symbols-outlined">list</span>
+				</a>
+			</li>
+			<li>
+				<a href="/downloadable-games.html" title="Downloadable Games">
+					<span class="material-symbols-outlined">download</span>
+				</a>
+			</li>
+			<li>
+				<a href="/exploits.html" title="Newest Exploit Methods">
+					<span class="material-symbols-outlined">security</span>
+				</a>
+			</li>
+			<li>
+				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+					<span class="material-symbols-outlined">play_circle</span>
+				</a>
+			</li>
+			<li>
+				<a href="/a.html" title="Apps">
+					<span class="material-symbols-outlined">apps</span>
+				</a>
+			</li>
+			<li>
+				<a href="/&.html" title="Global">
+					<span class="material-symbols-outlined">public</span>
+				</a>
+			</li>
+		
+			<hr />
+			<li>
+				<a href="/~.html" title="Settings">
+					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+				</a>
+			</li>
+			<li>
+				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+					</div>
+				</a>
+			</li>
+		</ul>
+
+
+		<div class="scrolltop">
+			<span class="material-symbols-outlined">arrow_upward</span>
+		</div>
+
+		<div style="z-index: 100; position: relative; padding-top: 50px; padding-bottom: 50px;">
+			<h1 style="color: white; margin-bottom: 30px; text-align: center;">Guides and Methods</h1>
+			
+			<div class="guides-container">
+                <!-- How to Use Flamepass -->
+				<div class="guide-card" onclick="openModal('flamepass-modal')">
+					<span class="material-symbols-outlined guide-icon">directions</span>
+					<div class="guide-title">How to Use Flamepass</div>
+				</div>
+
+				<!-- AI & Homework Guide -->
+				<div class="guide-card" onclick="openModal('ai-homework-modal')">
+					<span class="material-symbols-outlined guide-icon">psychology</span>
+					<div class="guide-title">Ultimate AI & Homework Guide</div>
+				</div>
+
+				<!-- Proxies & Unblockers 101 -->
+				<div class="guide-card" onclick="openModal('proxies-modal')">
+					<span class="material-symbols-outlined guide-icon">public</span>
+					<div class="guide-title">Proxies & Unblockers 101</div>
+				</div>
+
+				<!-- AAA Games at School -->
+				<div class="guide-card" onclick="openModal('aaa-games-modal')">
+					<span class="material-symbols-outlined guide-icon">sports_esports</span>
+					<div class="guide-title">How to Play AAA Games at School</div>
+				</div>
+
+				<!-- Sh1mmer Unenroll -->
+				<div class="guide-card" onclick="openModal('shimmer-modal')">
+					<span class="material-symbols-outlined guide-icon">logout</span>
+					<div class="guide-title">Unenroll Enterprise-Managed Chromebooks</div>
+				</div>
+
+				<!-- Ultimate Proxy Link List -->
+				<div class="guide-card" onclick="openModal('proxy-list-modal')">
+					<span class="material-symbols-outlined guide-icon">list</span>
+					<div class="guide-title">Ultimate Proxy Link & Discord List</div>
+				</div>
+
+				<!-- Other Ways to Get Proxies -->
+				<div class="guide-card" onclick="openModal('other-proxies-modal')">
+					<span class="material-symbols-outlined guide-icon">hub</span>
+					<div class="guide-title">Other Ways to Get Proxies</div>
+				</div>
+
+				<!-- Movies & Anime -->
+				<div class="guide-card" onclick="openModal('movies-anime-modal')">
+					<span class="material-symbols-outlined guide-icon">local_movies</span>
+					<div class="guide-title">Movies & Anime</div>
+				</div>
+
+				<!-- Make Your Own Link -->
+				<div class="guide-card" onclick="openModal('make-link-modal')">
+					<span class="material-symbols-outlined guide-icon">add_link</span>
+					<div class="guide-title">Make Your Own Link</div>
+				</div>
+
+				<!-- Unblocked Search Engines -->
+				<div class="guide-card" onclick="openModal('search-engines-modal')">
+					<span class="material-symbols-outlined guide-icon">search</span>
+					<div class="guide-title">Unblocked Search Engines</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modals for each guide -->
+		<!-- AI & Homework Guide Modal -->
+		<div id="ai-homework-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Ultimate AI & Homework Guide</h2>
+					<button class="close-btn" onclick="closeModal('ai-homework-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Free AI Tools For Homework Help</h2>
+						<p>These AI tools can help you with homework, essays, research, and more - all completely free and without requiring sign-ups in most cases.</p>
+						
+						<h3>General Purpose AI Assistants</h3>
+						<ul>
+							<li><a href="https://deepai.org/chat" target="_blank">DeepAI</a> - Powerful AI chat without login requirements</li>
+							<li><a href="https://you.com" target="_blank">You.com</a> - AI with internet search capabilities</li>
+							<li><a href="https://chat-gpt.org" target="_blank">Chat-GPT.org</a> - Alternative to official ChatGPT without login</li>
+							<li><a href="https://www.perplexity.ai/" target="_blank">Perplexity</a> - Research-focused AI with citations</li>
+							<li><a href="https://chatgpt1s.com/" target="_blank">ChatGPT1s</a> - Quick access to GPT-like capabilities</li>
+							<li><a href="https://qanda.ai/en/search/" target="_blank">QandA.ai</a> - Specialized for academic questions</li>
+							<li><a href="https://writer.com/#ask-writer" target="_blank">Writer.com</a> - Writing assistant for essays and papers</li>
+							<li><a href="https://claude.ai/" target="_blank">Claude</a> - Advanced AI assistant (requires sign-up)</li>
+							<li><a href="https://computer.com/" target="_blank">Computer.com</a> - Another no-login AI option</li>
+							<li><a href="https://sdk.vercel.ai/" target="_blank">Vercel AI</a> - Simple AI interface</li>
+							<li><a href="https://copilot.microsoft.com/?showconv=1" target="_blank">Microsoft Copilot</a> - Microsoft's AI with search integration</li>
+							<li><a href="https://tutorly.ai/" target="_blank">Tutorly.ai</a> - Educational AI tutor</li>
+						</ul>
+						
+						<h3>Math Problem Solvers</h3>
+						<ul>
+							<li><a href="https://www.symbolab.com/solver" target="_blank">Symbolab</a> - Step-by-step math solver for algebra, calculus, and more</li>
+							<li><a href="https://www.mathway.com/Algebra" target="_blank">Mathway</a> - Comprehensive math problem solver</li>
+							<li><a href="https://www.geogebra.org/solver" target="_blank">GeoGebra Solver</a> - Visual math tool with graphing capabilities</li>
+							<li><a href="https://cameramath.com/mathsolver" target="_blank">CameraMath</a> - Take pictures of math problems for solutions</li>
+							<li><a href="https://mathforyou.net/en/online/" target="_blank">MathForYou</a> - Free math solver</li>
+							<li><a href="https://www.tiger-algebra.com/" target="_blank">Tiger Algebra</a> - Advanced algebraic problem solver</li>
+							<li><a href="https://quickmath.com/solve/" target="_blank">QuickMath</a> - Fast computation for common math problems</li>
+							<li><a href="https://www.wolframalpha.com/" target="_blank">Wolfram Alpha</a> - Computational intelligence across subjects</li>
+							<li><a href="https://mathsolver.microsoft.com/" target="_blank">Microsoft Math Solver</a> - Microsoft's math solution tool</li>
+						</ul>
+						
+						<h3>Tips for Using AI for Homework</h3>
+						<ol>
+							<li><strong>Be specific with your prompts</strong> - The more details you provide, the better the AI can help you</li>
+							<li><strong>Ask for explanations</strong> - Instead of just asking for answers, ask for step-by-step solutions</li>
+							<li><strong>Verify information</strong> - AI can make mistakes, always double-check critical information</li>
+							<li><strong>Use AI for learning</strong> - Have the AI explain concepts you don't understand in different ways</li>
+							<li><strong>Break down complex assignments</strong> - Ask the AI to help you plan essays or projects</li>
+						</ol>
+
+						<h3>Avoiding Plagiarism Detection</h3>
+						<p>If you're using AI to help with writing assignments, be aware that many schools use plagiarism detection. Here are some tools to check and modify AI-generated content:</p>
+						<ul>
+							<li><a href="https://www.zerogpt.com/" target="_blank">ZeroGPT</a> - Check if text appears AI-generated</li>
+							<li><a href="https://writer.com/ai-content-detector/" target="_blank">Writer AI Detector</a> - Professional AI content detection</li>
+							<li><a href="https://quillbot.com/" target="_blank">Quillbot</a> - Paraphrasing tool to rewrite AI text in your own style</li>
+						</ul>
+						
+						<p>Remember that using AI for learning is great, but submitting AI-generated work as your own can violate academic integrity policies. Use these tools responsibly!</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- How to Use Flamepass Modal -->
+		<div id="flamepass-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">How to Use Flamepass</h2>
+					<button class="close-btn" onclick="closeModal('flamepass-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Getting Started with Flamepass</h2>
+						<p>Flamepass is an all-in-one platform for accessing games, apps, AI tools, and web proxies - even on restricted networks. Here's a complete guide to using all its features.</p>
+						
+						<h3>1. Navigating the Interface</h3>
+						<p>The sidebar on the left contains all the main sections of Flamepass:</p>
+						<ul>
+							<li><strong>Home</strong> - The main dashboard</li>
+							<li><strong>Games</strong> - Access to hundreds of browser games</li>
+							<li><strong>AI Chat</strong> - Free AI assistant</li>
+							<li><strong>School Cheats</strong> - Tools for various learning platforms</li>
+							<li><strong>Guides</strong> - Tutorials and methods (you're here now)</li>
+							<li><strong>Link Generator</strong> - Get fresh unblocker links</li>
+							<li><strong>Ultimate Links</strong> - Comprehensive link collection</li>
+							<li><strong>Downloadable Games</strong> - Games you can save</li>
+							<li><strong>Exploits</strong> - Methods to bypass restrictions</li>
+							<li><strong>YT Channels</strong> - Unblocker-related YouTube content</li>
+							<li><strong>Apps</strong> - Web applications and tools</li>
+							<li><strong>Global</strong> - Web proxy for browsing any site</li>
+						</ul>
+						
+						<h3>2. Using the Web Proxy</h3>
+						<p>The Global section allows you to browse any website unrestricted:</p>
+						<ol>
+							<li>Click the <strong>Public</strong> icon in the sidebar</li>
+							<li>Enter any website URL in the search box</li>
+							<li>Browse normally - cookies and logins will work</li>
+						</ol>
+						<p>Tips for using the proxy:</p>
+						<ul>
+							<li>Some sites may not function perfectly due to content filtering</li>
+							<li>Videos and streaming might be slower than normal browsing</li>
+							<li>Clear the proxy's data regularly for privacy</li>
+						</ul>
+						
+						<h3>3. Accessing Games</h3>
+						<p>Flamepass offers multiple gaming options:</p>
+						<ul>
+							<li><strong>Browser Games</strong> - Click the "Joystick" icon for instant-play games</li>
+							<li><strong>Downloadable Games</strong> - Click the "Download" icon for games you can save</li>
+							<li><strong>Emulators</strong> - Many game sections include emulators for retro consoles</li>
+						</ul>
+						
+						<h3>4. Using the AI Chat</h3>
+						<p>The AI assistant can help with homework, research, and more:</p>
+						<ol>
+							<li>Click the "Smart Toy" icon in the sidebar</li>
+							<li>Type your question or request</li>
+							<li>Choose from different AI models using the dropdown</li>
+						</ol>
+						
+						<h3>5. Finding Working Links</h3>
+						<p>If Flamepass gets blocked, you can find new links:</p>
+						<ol>
+							<li>Use the Link Generator for daily fresh links</li>
+							<li>Check the Ultimate Links page for alternatives</li>
+							<li>Follow the YouTube channels for the latest links</li>
+						</ol>
+						
+						<h3>6. Staying Undetected</h3>
+						<p>To avoid having Flamepass blocked:</p>
+						<ul>
+							<li>Don't share links openly with everyone</li>
+							<li>Use the "About:Blank" feature when available</li>
+							<li>Clear your browsing history regularly</li>
+							<li>Consider using the Exploits section for persistent access</li>
+						</ul>
+						
+						<h3>7. Need More Help?</h3>
+						<p>If you need additional assistance:</p>
+						<ul>
+							<li>Check the other guides in this section</li>
+							<li>Join the Discord server (icon at bottom of sidebar)</li>
+							<li>Use the AI Chat to ask specific questions</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Proxies & Unblockers 101 Modal -->
+		<div id="proxies-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Proxies & Unblockers 101</h2>
+					<button class="close-btn" onclick="closeModal('proxies-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Understanding Proxies and Unblockers</h2>
+						<p>This guide explains how web proxies work, the different types, and how to use them effectively to bypass network restrictions.</p>
+						
+						<h3>What Are Web Proxies?</h3>
+						<p>A web proxy acts as an intermediary between your device and the websites you visit:</p>
+						<ul>
+							<li>Your requests go to the proxy server first</li>
+							<li>The proxy server forwards your request to the target website</li>
+							<li>The website sends data back to the proxy</li>
+							<li>The proxy sends the website data back to you</li>
+						</ul>
+						<p>This process bypasses network filters by preventing direct connections to blocked websites.</p>
+						
+						<h3>Types of Proxies</h3>
+						<p>Different proxy services offer various features:</p>
+						
+						<h4>1. Web Browsers</h4>
+						<p>Examples: Rammerhead, Shadow, Hypertabs, DayDreamX</p>
+						<ul>
+							<li>Full-featured web browsers within a proxy</li>
+							<li>Support cookies, logins, and most web functions</li>
+							<li>Usually the most reliable for complex websites</li>
+						</ul>
+						
+						<h4>2. Multi-purpose Proxies</h4>
+						<p>Examples: Interstellar, Doge Unblocker, Astroid, Space</p>
+						<ul>
+							<li>Combine proxies with games and applications</li>
+							<li>Offer multiple proxy engines to choose from</li>
+							<li>Good balance of features and performance</li>
+						</ul>
+						
+						<h4>3. Specialized Proxies</h4>
+						<p>Examples: Incognito, Lucid, Buypass</p>
+						<ul>
+							<li>Designed for specific use cases</li>
+							<li>May be more effective against certain filters</li>
+							<li>Often simpler but more limited in functionality</li>
+						</ul>
+						
+						<h3>How to Choose the Right Proxy</h3>
+						<p>Consider these factors when selecting a proxy:</p>
+						<ul>
+							<li><strong>Network filter type</strong> - Different proxies work better against different filters</li>
+							<li><strong>Website complexity</strong> - More complex sites need more sophisticated proxies</li>
+							<li><strong>Speed requirements</strong> - Some proxies are faster than others</li>
+							<li><strong>Additional features</strong> - Consider if you need games or other tools</li>
+						</ul>
+						
+						<h3>Tips for Using Proxies Effectively</h3>
+						<ol>
+							<li><strong>Try multiple proxies</strong> - If one doesn't work, another might</li>
+							<li><strong>Use About:Blank cloaking</strong> - Hides the proxy URL from history</li>
+							<li><strong>Clear cookies regularly</strong> - Improves performance and security</li>
+							<li><strong>Keep links private</strong> - Sharing widely leads to faster blocking</li>
+							<li><strong>Bookmark working links</strong> - Save ones that work for you</li>
+							<li><strong>Create your own links</strong> - For maximum privacy (see our Make Your Own Link guide)</li>
+						</ol>
+						
+						<h3>When Proxies Don't Work</h3>
+						<p>If standard proxies are being blocked, consider:</p>
+						<ul>
+							<li>Using the Exploits section for more advanced techniques</li>
+							<li>Creating your own proxy with a custom domain</li>
+							<li>Using Sh1mmer to unenroll managed Chromebooks</li>
+							<li>Trying the Link Generator for fresh links daily</li>
+						</ul>
+						
+						<h3>Finding Fresh Proxy Links</h3>
+						<p>Proxy links get blocked over time. Find new ones through:</p>
+						<ul>
+							<li>The Ultimate Links page on Flamepass</li>
+							<li>Discord servers dedicated to proxies</li>
+							<li>The Link Generator tool</li>
+							<li>YouTube channels focused on unblockers</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- AAA Games at School Modal -->
+		<div id="aaa-games-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">How to Play AAA Games at School</h2>
+					<button class="close-btn" onclick="closeModal('aaa-games-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Playing High-End Games on School Networks</h2>
+						<p>This guide shows different methods to access and play high-quality games on restricted school computers and networks.</p>
+						
+						<h3>Method 1: Cloud Gaming Services</h3>
+						<p>Cloud gaming runs games on remote servers and streams them to your device:</p>
+						<h4>GeForce NOW</h4>
+						<ul>
+							<li>Access through proxies like Rammerhead or Shadow</li>
+							<li>Go to play.geforcenow.com</li>
+							<li>Create a free account or use a premium one</li>
+							<li>Connect your Steam, Epic Games, or other accounts</li>
+							<li>Play games you own or free-to-play titles</li>
+						</ul>
+						<h4>Xbox Cloud Gaming (Beta)</h4>
+						<ul>
+							<li>Accessible via www.xbox.com/play</li>
+							<li>Requires a Game Pass Ultimate subscription</li>
+							<li>Works on most browsers through a good proxy</li>
+						</ul>
+						
+						<h3>Method 2: Browser-Based Emulators</h3>
+						<p>For retro and classic games, several proxies offer built-in emulators:</p>
+						<ul>
+							<li><strong>Astroid</strong> - Has Nintendo and classic console emulators</li>
+							<li><strong>Selenite</strong> - Features GameBoy, NES, SNES emulators</li>
+							<li><strong>Snorlax's Cave</strong> - Multiple console emulators</li>
+						</ul>
+						<p>You can find these by visiting the specific proxy sites in the Ultimate Links section.</p>
+						
+						<h3>Method 3: Roblox Unblocked</h3>
+						<p>Access Roblox even when blocked:</p>
+						<ul>
+							<li>Visit the Roblox section in our Games page</li>
+							<li>Use links like nowgg.usercontent.motorcycles</li>
+							<li>Try now.gg for Android emulation of Roblox</li>
+						</ul>
+						
+						<h3>Method 4: WebGL Games</h3>
+						<p>High-quality 3D games that run directly in the browser:</p>
+						<ul>
+							<li>1v1.LOL - Fortnite-like building and shooting</li>
+							<li>Shell Shockers - 3D first-person shooter</li>
+							<li>Krunker.io - Fast-paced FPS game</li>
+							<li>Venge.io - Team-based shooter</li>
+						</ul>
+						<p>Access these in the Games section of Flamepass.</p>
+						
+						<h3>Method 5: Minecraft Eaglercraft</h3>
+						<p>Play a JavaScript version of Minecraft in your browser:</p>
+						<ol>
+							<li>Find Eaglercraft links in our Games section</li>
+							<li>Different versions available (1.5.2, 1.8.8, etc.)</li>
+							<li>Can connect to specific servers</li>
+							<li>Supports multiplayer</li>
+						</ol>
+						
+						<h3>Method 6: Game Streaming from Home</h3>
+						<p>Stream from your home computer to school:</p>
+						<ol>
+							<li>Set up Parsec, Moonlight, or Steam Link at home</li>
+							<li>Configure port forwarding on your home router</li>
+							<li>Access through a proxy at school</li>
+							<li>Connect to your home PC and stream games</li>
+						</ol>
+						<p><strong>Note:</strong> This method requires technical setup and a good home internet connection with upload speed.</p>
+						
+						<h3>Tips for Gaming on School Networks</h3>
+						<ul>
+							<li>Use wired connections when possible for better stability</li>
+							<li>Lower graphics settings to improve performance</li>
+							<li>Connect headphones to avoid disturbing others</li>
+							<li>Save your progress regularly as connections may be unstable</li>
+							<li>Be aware of data usage - cloud gaming uses substantial bandwidth</li>
+						</ul>
+						
+						<h3>Important Warning</h3>
+						<p>Be responsible with gaming at school:</p>
+						<ul>
+							<li>Don't let it interfere with your academics</li>
+							<li>Be aware of your school's policies</li>
+							<li>Keep gaming sessions private to avoid drawing attention</li>
+							<li>Use during free periods or lunch, not during class time</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Sh1mmer Unenroll Modal -->
+		<div id="shimmer-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Unenroll Enterprise-Managed Chromebooks (Sh1mmer)</h2>
+					<button class="close-btn" onclick="closeModal('shimmer-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Understanding Chromebook Management</h2>
+						<p>School-issued Chromebooks are typically enrolled in an enterprise management system that restricts what you can do. This guide explains methods to unenroll these devices.</p>
+						
+						<div style="background-color: rgba(255, 100, 100, 0.2); padding: 15px; border-radius: 5px; margin: 20px 0;">
+							<h3 style="color: #ff5555; margin-top: 0;">⚠️ Important Warning</h3>
+							<p>Before proceeding with any of these methods:</p>
+							<ul>
+								<li>These actions may violate your school's acceptable use policy</li>
+								<li>Unenrolling a managed Chromebook could result in disciplinary action</li>
+								<li>Your school may be able to detect unenrolled devices</li>
+								<li>You might lose access to school resources</li>
+								<li>These methods can potentially brick your device if done incorrectly</li>
+							</ul>
+							<p>This guide is provided for educational purposes only. Use at your own risk.</p>
+						</div>
+						
+						<h3>Method 1: Sh1mmer</h3>
+						<p>Sh1mmer is a special exploit that leverages Chrome OS's recovery mode to unenroll devices.</p>
+						
+						<h4>What You'll Need</h4>
+						<ul>
+							<li>A USB drive (4GB or larger)</li>
+							<li>Access to a computer where you can download and write images</li>
+							<li>Your exact Chromebook board name</li>
+						</ul>
+						
+						<h4>Steps to Use Sh1mmer</h4>
+						<ol>
+							<li>Find your Chromebook's board name:
+								<ul>
+									<li>Press Ctrl+Alt+T to open Crosh (Chrome Shell)</li>
+									<li>Type "shell" and press Enter</li>
+									<li>Type "cat /etc/lsb-release | grep BOARD" and press Enter</li>
+									<li>Note the board name (e.g., "volteer", "hatch", "octopus")</li>
+								</ul>
+							</li>
+							<li>Visit a Sh1mmer download site:
+								<ul>
+									<li>Check the <a href="https://sh1mmer.me/" target="_blank">official Sh1mmer website</a></li>
+									<li>Or find alternative sources through search</li>
+								</ul>
+							</li>
+							<li>Download the correct Sh1mmer image for your board</li>
+							<li>Use a tool like the <a href="https://chromeenterprise.google/os/chromeosupdater/" target="_blank">Chromebook Recovery Utility</a> to write the image to your USB drive</li>
+							<li>On your Chromebook:
+								<ul>
+									<li>Turn it off completely</li>
+									<li>Hold Esc + Refresh (↻) keys, then press Power button</li>
+									<li>At recovery screen, insert your USB drive</li>
+									<li>Follow on-screen prompts from Sh1mmer</li>
+									<li>Select "Remove Enterprise Enrollment" from the menu</li>
+								</ul>
+							</li>
+						</ol>
+						
+						<h3>Method 2: E-Halcyon</h3>
+						<p>An alternative to Sh1mmer for some specific board types.</p>
+						<p>Similar to Sh1mmer but works on different firmware versions. Follow the same general steps but with E-Halcyon images instead.</p>
+						
+						<h3>Method 3: ChromeReset</h3>
+						<p>A simpler but less reliable method:</p>
+						<ol>
+							<li>Power off your Chromebook</li>
+							<li>Press and hold Refresh + Power for 10 seconds</li>
+							<li>When the device reboots, immediately press Ctrl+Alt+Shift+R</li>
+							<li>Select "Powerwash" and follow the prompts</li>
+							<li>Attempt to set up as a personal device</li>
+						</ol>
+						<p><strong>Note:</strong> This method usually doesn't work on properly managed devices but occasionally works on misconfigured ones.</p>
+						
+						<h3>Alternative: Running Linux from USB</h3>
+						<p>Instead of unenrolling, run a different OS temporarily:</p>
+						<ol>
+							<li>Enable Developer Mode (if possible)</li>
+							<li>Create a Linux bootable USB (Ubuntu, GalliumOS, etc.)</li>
+							<li>Boot from USB by pressing Ctrl+U in developer mode</li>
+							<li>Use Linux temporarily without affecting Chrome OS</li>
+						</ol>
+						
+						<h3>Resources and Additional Help</h3>
+						<ul>
+							<li>Visit r/ChromebookUnenroll on Reddit for community support</li>
+							<li>Join Discord servers like Mercury Workshop for specialized help</li>
+							<li>Check YouTube guides for visual walkthroughs of these processes</li>
+						</ul>
+						
+						<h3>What to Do After Unenrolling</h3>
+						<p>If you successfully unenroll your Chromebook:</p>
+						<ul>
+							<li>Set up the device as a personal Chromebook</li>
+							<li>Install Android apps from the Play Store</li>
+							<li>Consider enabling Linux (Beta) for additional applications</li>
+							<li>Make regular backups of your important data</li>
+							<li>Be prepared to re-enroll if necessary for school resources</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Ultimate Proxy Link & Discord List Modal -->
+		<div id="proxy-list-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Ultimate Proxy Link & Discord List</h2>
+					<button class="close-btn" onclick="closeModal('proxy-list-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Comprehensive Collection of Proxy Resources</h2>
+						<p>This guide provides an organized list of the best proxy resources, including Discord servers where you can find fresh links.</p>
+						
+						<h3>Top Proxy Discord Servers</h3>
+						<p>Join these servers to get the latest links and support:</p>
+						<ul>
+							<li><a href="https://discord.gg/interstellar" target="_blank">Interstellar</a> - One of the largest proxy communities</li>
+							<li><a href="https://discord.gg/unblock" target="_blank">Mercury Workshop Public</a> - Advanced unblocker tech</li>
+							<li><a href="https://discord.gg/xi" target="_blank">Shuttle Network</a> - Fast, reliable proxy service</li>
+							<li><a href="https://discord.gg/VNT4E7gN5Y" target="_blank">Rammerhead</a> - Specialized browser-based proxy</li>
+							<li><a href="https://discord.gg/desmos" target="_blank">Art Class</a> - Disguised as educational tools</li>
+							<li><a href="https://discord.gg/kazwire" target="_blank">Kazwire</a> - Games and proxy combination</li>
+							<li><a href="https://discord.gg/hFZC5cgsmq" target="_blank">Utopia</a> - Clean interface with AI tools</li>
+							<li><a href="https://discord.gg/nowgg" target="_blank">Astroid</a> - Games, emulators, and proxies</li>
+							<li><a href="https://discord.gg/unblocking" target="_blank">Doge Unblocker</a> - User-friendly proxy</li>
+							<li><a href="https://discord.gg/aluminum" target="_blank">Tinf0il</a> - Gaming-focused proxy</li>
+							<li><a href="https://discord.gg/unblocker" target="_blank">Nebula Services</a> - Reliable proxy network</li>
+							<li><a href="https://discord.gg/goshadow" target="_blank">Shadow</a> - Advanced web browser proxy</li>
+							<li><a href="https://discord.gg/NGqUsuTd2M" target="_blank">Selenite</a> - Gaming-oriented proxy</li>
+							<li><a href="https://discord.gg/vgEbRmzsaF" target="_blank">Surfskip</a> - Simple, effective proxy</li>
+							<li><a href="https://discord.gg/7SCnPUM5S6" target="_blank">Night</a> - Sleek, minimalist design</li>
+							<li><a href="https://discord.gg/GPFwfVNEhn" target="_blank">Sunset Network</a> - New but promising proxy</li>
+						</ul>
+						
+						<h3>Most Reliable Proxy Types</h3>
+						<h4>Web Browsers (Best for General Use)</h4>
+						<ul>
+							<li><strong>Rammerhead</strong> - Session-based browser, very stable</li>
+							<li><strong>Shadow</strong> - Feature-rich browser with tab support</li>
+							<li><strong>Hypertabs</strong> - Multi-tab browser interface</li>
+							<li><strong>DayDreamX</strong> - Newer browser-based proxy</li>
+						</ul>
+						
+						<h4>All-in-One Proxies (Games + Web)</h4>
+						<ul>
+							<li><strong>Interstellar</strong> - Popular, well-maintained service</li>
+							<li><strong>Doge Unblocker</strong> - User-friendly with games</li>
+							<li><strong>Astroid</strong> - Emulator integration and games</li>
+							<li><strong>Space</strong> - Newer service with growing link base</li>
+							<li><strong>Emerald</strong> - Clean interface with many features</li>
+						</ul>
+						
+						<h4>Specialized Proxies</h4>
+						<ul>
+							<li><strong>Snorlax</strong> - Can be opened in about:blank</li>
+							<li><strong>Zatoga</strong> - Includes cheats for games</li>
+							<li><strong>Nebula</strong> - Focuses on proxy performance</li>
+							<li><strong>Tinf0il</strong> - Gaming-oriented proxy</li>
+						</ul>
+						
+						<h3>Finding Working Links</h3>
+						<p>Beyond the Discord servers, you can find links in these locations:</p>
+						<ul>
+							<li><strong>The Ultimate Links page</strong> - Updated regularly with working links</li>
+							<li><strong>Link Generator</strong> - Get fresh links daily</li>
+							<li><strong>Google Docs Networks</strong> - Community-maintained lists:
+								<ul>
+									<li>Untitled Document: <a href="https://docs.google.com/document/d/1BkBoYlJm47LXQ7fnZG3dtyU8I6RTYKgjO8Is6DBiBhI/edit" target="_blank">Link</a></li>
+									<li>Battle Dragon's Network: <a href="https://docs.google.com/document/d/1Kg6Uuspd1LBNAS_rLKCLVefSXvxjh3VwcUjB3zmSRog/edit" target="_blank">Link</a></li>
+									<li>JNT Networks: <a href="https://docs.google.com/document/d/1fybE49es_jt61A4SxWOmX1RQSJulSYjxwZNsHkl72W8/edit" target="_blank">Link</a></li>
+								</ul>
+							</li>
+							<li><strong>GitHub Repositories</strong>:
+								<ul>
+									<li><a href="https://github.com/wea-f/ByePassHub" target="_blank">ByePassHub</a> - Extensive collection</li>
+									<li><a href="https://github.com/Salty-Coder/Unblocked-Sites" target="_blank">Unblocked-Sites</a> - Frequently updated</li>
+								</ul>
+							</li>
+						</ul>
+						
+						<h3>Best Practice for Using Proxy Links</h3>
+						<ol>
+							<li><strong>Never share links publicly</strong> - They'll get blocked faster</li>
+							<li><strong>Rotate between different proxies</strong> - Don't rely on just one</li>
+							<li><strong>Test links before needed</strong> - Make sure they work for your network</li>
+							<li><strong>Join Discord servers</strong> - For the most up-to-date links</li>
+							<li><strong>Consider making your own links</strong> - See our Make Your Own Link guide</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Other Ways to Get Proxies Modal -->
+		<div id="other-proxies-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Other Ways to Get Proxies</h2>
+					<button class="close-btn" onclick="closeModal('other-proxies-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Beyond Standard Proxy Lists</h2>
+						<p>Public proxy lists often get blocked quickly. This guide explores alternative methods to find and create proxies that are more likely to remain unblocked.</p>
+						
+						<h3>Proxy Discord Servers</h3>
+						<p>After joining these servers, you can verify and access many fresh links:</p>
+						<ul>
+							<li>These servers typically have a channel called <code>community links</code> where people post new links</li>
+							<li>Many offer "link dispensers" - these links are NOT public, 100% working, and more secure</li>
+							<li>They also provide instructions for BYOD (creating your own proxy site)</li>
+						</ul>
+						<p>Some recommended servers include:</p>
+						<ul>
+							<li><a href="https://discord.gg/interstellar" target="_blank">Interstellar</a></li>
+							<li><a href="https://discord.gg/unblock" target="_blank">Mercury Workshop Public</a></li>
+							<li><a href="https://discord.gg/xi" target="_blank">Shuttle Network</a></li>
+							<li><a href="https://discord.gg/VNT4E7gN5Y" target="_blank">Rammerhead</a></li>
+							<li><a href="https://discord.gg/desmos" target="_blank">Art Class</a></li>
+							<li><a href="https://discord.gg/kazwire" target="_blank">Kazwire</a></li>
+							<li><a href="https://discord.gg/hFZC5cgsmq" target="_blank">Utopia</a></li>
+							<li><a href="https://discord.gg/nowgg" target="_blank">Astroid</a></li>
+							<li><a href="https://discord.gg/unblocking" target="_blank">Doge Unblocker</a></li>
+							<li><a href="https://discord.gg/aluminum" target="_blank">Tinf0il</a></li>
+						</ul>
+						
+						<h3>Creating Your Own Proxy (BYOD)</h3>
+						<p>You can make your own links with specific domains that work in your environment:</p>
+						<h4>Method 1: Using FreeDNS</h4>
+						<ol>
+							<li>Go to <a href="https://freedns.afraid.org/" target="_blank">freedns.afraid.org</a> (use an unblocked device)</li>
+							<li>Create an account (can use temporary email)</li>
+							<li>Click "Subdomains" → "Add subdomain" → "Domain" dropdown → "many, many more"</li>
+							<li>Select a domain that's unblocked for you (low popularity ones work best)</li>
+							<li>Enter a subdomain name (can be anything)</li>
+							<li>For the destination, use the IP of the proxy service you want to use</li>
+						</ol>
+						<p>See our detailed "Make Your Own Link" guide for complete instructions.</p>
+						
+						<h4>Method 2: Using Vercel</h4>
+						<p>Deploy your own proxy on Vercel:</p>
+						<ol>
+							<li>Go to: <code>vercel.com/new/clone?repositoryurl=REPO_URL</code></li>
+							<li>Replace REPO_URL with a proxy repository URL (e.g., <code>https://github.com/InterstellarNetwork/Interstellar</code>)</li>
+							<li>Log in with GitHub (create account if needed)</li>
+							<li>Enter a repository name and click "Create"</li>
+							<li>Your proxy will be deployed at <code>repositoryName.vercel.app</code></li>
+						</ol>
+						
+						<h4>Method 3: Using Render or Cyclic</h4>
+						<p>Similar to Vercel but with different platforms:</p>
+						<ul>
+							<li>Cyclic: <code>app.cyclic.sh/api/app/deploy/REPO_NAME</code></li>
+							<li>Render: <code>render.com/deploy?repo=REPO_URL</code></li>
+						</ul>
+						
+						<h3>Online Proxy Collections</h3>
+						<p>Other collections similar to Flamepass:</p>
+						<ul>
+							<li><a href="https://bio.link/theblackhand" target="_blank">TheBlackHand</a></li>
+							<li><a href="https://bio.link/fuhnny" target="_blank">Fuhnny</a></li>
+							<li><a href="https://twigs-utilities.github.io/Pr0x1es.html" target="_blank">Twigs Utilities</a></li>
+							<li><a href="https://haleyschool.com/new-links" target="_blank">Haley School</a></li>
+						</ul>
+						
+						<h3>Google Doc Networks</h3>
+						<p>Community-maintained Google Docs with fresh links:</p>
+						<ul>
+							<li><a href="https://docs.google.com/document/d/1BkBoYlJm47LXQ7fnZG3dtyU8I6RTYKgjO8Is6DBiBhI/edit" target="_blank">Untitled Document</a></li>
+							<li><a href="https://docs.google.com/document/d/1Kg6Uuspd1LBNAS_rLKCLVefSXvxjh3VwcUjB3zmSRog/edit" target="_blank">Battle Dragon's Network</a></li>
+							<li><a href="https://docs.google.com/document/d/1fybE49es_jt61A4SxWOmX1RQSJulSYjxwZNsHkl72W8/edit" target="_blank">JNT Networks</a></li>
+							<li><a href="https://docs.google.com/document/d/1NLl3X_RuvMlCDHfzKcB2LLIL2fD2vZ0M6Yzfg2V-D0o/preview" target="_blank">Dark Networks</a></li>
+							<li><a href="https://docs.google.com/document/d/1R_Rifi41XLgtTFCve8g5-2ugAEnOcDT5XB1_G5ykVag/edit" target="_blank">Primal Networks</a></li>
+						</ul>
+						
+						<h3>Important Notes</h3>
+						<ul>
+							<li>Don't publicly share link dispenser links - servers have rules against this</li>
+							<li>Rotate your proxies regularly to avoid detection</li>
+							<li>Consider creating multiple personal proxies as backups</li>
+							<li>Join Discord servers for the most up-to-date information</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Movies & Anime Modal -->
+		<div id="movies-anime-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Movies & Anime</h2>
+					<button class="close-btn" onclick="closeModal('movies-anime-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Free Movie & Anime Streaming Resources</h2>
+						<p>This guide provides a collection of free streaming sites for movies and anime. Use a proxy if these sites are blocked in your location.</p>
+						
+						<h3>Movie-Web Sites</h3>
+						<p>Modern, clean interfaces with extensive libraries:</p>
+						<ul>
+							<li><a href="https://watchflix.app/" target="_blank">watchflix.app</a></li>
+							<li><a href="https://teamberga.xyz/" target="_blank">teamberga.xyz</a></li>
+							<li><a href="https://scootydooter.vercel.app/" target="_blank">scootydooter.vercel.app</a></li>
+							<li><a href="https://movie-web-lac-six.vercel.app/" target="_blank">movie-web-lac-six.vercel.app</a></li>
+							<li><a href="https://movie-web-xlta.vercel.app/" target="_blank">movie-web-xlta.vercel.app</a></li>
+							<li><a href="https://ephemeral-cheesecake-17073d.netlify.app/" target="_blank">ephemeral-cheesecake-17073d.netlify.app</a></li>
+							<li><a href="https://dashing-starship-280785.netlify.app/" target="_blank">dashing-starship-280785.netlify.app</a></li>
+							<li><a href="https://admirable-kitten-4405b5.netlify.app/" target="_blank">admirable-kitten-4405b5.netlify.app</a></li>
+							<li><a href="https://majinitx12.github.io/#/search/movie" target="_blank">majinitx12.github.io</a></li>
+							<li><a href="https://movie-web.us/#/search/movie" target="_blank">movie-web.us</a></li>
+						</ul>
+						
+						<h3>Movie Services Using Google Slides</h3>
+						<p>Streaming services disguised as Google Slides presentations:</p>
+						<ul>
+							<li><a href="https://docs.google.com/presentation/d/149GpUX0v2xNpwbUTv0Ra1bXSBJ8VImN3yQXMYA9ZhKA/edit" target="_blank">Netflix</a></li>
+							<li><a href="https://docs.google.com/presentation/d/1cqMoS7rNvOX77938GusdWNi6mYVPOfETCVsAVW9I9ps/edit" target="_blank">Disney+</a></li>
+							<li><a href="https://docs.google.com/presentation/d/1lc9cs9TYLcS3fZNz599myliKaH3_0OjvS5guw3MFZl4/edit" target="_blank">Paramount+</a></li>
+							<li><a href="https://docs.google.com/presentation/d/1YDZCGRJMcIXA6CDnnxEUcNuZuEx-NdUETeeVFulhYDg/edit" target="_blank">Hulu</a></li>
+						</ul>
+						
+						<h3>Other Movie Sites</h3>
+						<p>Alternative streaming platforms:</p>
+						<ul>
+							<li><a href="https://onionplay.se/" target="_blank">onionplay.se</a></li>
+							<li><a href="https://serieshd.watch/" target="_blank">serieshd.watch</a></li>
+							<li><a href="https://movie4kto.net/" target="_blank">movie4kto.net</a></li>
+							<li><a href="https://sites.google.com/view/sealflix" target="_blank">Sealflix</a> (likely unblocked)</li>
+							<li><a href="https://flixwave.to/" target="_blank">flixwave.to</a></li>
+							<li><a href="https://shuttletv.net/" target="_blank">shuttletv.net</a></li>
+							<li><a href="https://movieshd.watch/" target="_blank">movieshd.watch</a></li>
+							<li><a href="https://soap2dayhd.com/" target="_blank">soap2dayhd.com</a></li>
+							<li><a href="https://freemoviesfull.cc/" target="_blank">freemoviesfull.cc</a></li>
+							<li><a href="https://freemovieswatch.tv/" target="_blank">freemovieswatch.tv</a></li>
+                        </ul>
+						
+						<h3>Movie Recordings on Google Drive</h3>
+						<p>Direct links to movie files:</p>
+						<ul>
+							<li><a href="https://drive.google.com/file/d/1-bYIrWe0duy7IT8p2z0JKIA9sYrSRO8L/view" target="_blank">SpongeBob SquarePants Movie</a></li>
+							<li><a href="https://drive.google.com/file/d/1-J7v3NOfQxngx50U66dELoa5P17m2xDP/view" target="_blank">Sing 1</a></li>
+							<li><a href="https://drive.google.com/file/d/1uqHaBulJOC3wjc1gnotbY__QrMcDr7Tz/view" target="_blank">Sing 2</a></li>
+							<li><a href="https://drive.google.com/file/d/1DRTfnpCiVdPzwsWMKqQndMnTgxlyACXW/view" target="_blank">Inside Out</a></li>
+							<li><a href="https://docs.google.com/document/d/1Ed0x9WpogjRGzER_5lUqI807QS0MEuDM31OFnRs8a-A/edit#heading=h.ypawngwfb7l9" target="_blank">Many more in this document</a></li>
+						</ul>
+						
+						<h3>TV Shows</h3>
+						<p>Complete series available on Google Drive:</p>
+						<ul>
+							<li><a href="https://drive.google.com/drive/folders/1cOFMumtLFERJqS6Y5oTyBb6ZRXNHCgZF" target="_blank">SpongeBob Seasons 1-14</a></li>
+							<li><a href="https://drive.google.com/drive/folders/11W6C-Jqv9iQVasqjfiaYz77puax1UTjH" target="_blank">Family Guy Seasons 1-22</a></li>
+							<li><a href="https://drive.google.com/drive/folders/1PzKaoaK4blzlaoxnwC20gZoeYE5mDxWL" target="_blank">South Park Full Series</a></li>
+							<li><a href="https://drive.google.com/drive/folders/17ODzdQoYZZxX6ANHFLo0tD1UIkllvCui" target="_blank">Rick and Morty</a></li>
+							<li><a href="https://drive.google.com/drive/folders/1I7-ZUInlg9jb4R6LGq0qX3n7bjGKPFFO" target="_blank">Pokemon</a></li>
+							<li><a href="https://drive.google.com/drive/folders/1ZtFBjPAE-qVzdHJ3EKnvlBFNhux5m3Hi" target="_blank">The Simpsons</a></li>
+						</ul>
+						
+						<h3>Anime</h3>
+						<p>Dedicated anime streaming sites:</p>
+						<ul>
+							<li><a href="https://anix.to/" target="_blank">anix.to</a></li>
+							<li><a href="https://kaido.to/" target="_blank">kaido.to</a></li>
+							<li><a href="https://animeflix.live/" target="_blank">animeflix.live</a></li>
+							<li><a href="https://moopa.live/" target="_blank">moopa.live</a></li>
+						</ul>
+						
+						<h3>Demon Slayer Season 1 (Episodes 1-6)</h3>
+						<p>Direct Google Drive links:</p>
+						<ul>
+							<li><a href="https://drive.google.com/file/d/16ApJR3QbXonfkNXPNmt2gWj6n24-0PaO/view" target="_blank">Episode 1</a></li>
+							<li><a href="https://drive.google.com/file/d/1fK6TzSyBqeQH0YiHOj2dubiv-lc0FRfS/view" target="_blank">Episode 2</a></li>
+							<li><a href="https://drive.google.com/file/d/1N8wIzuscxJWkLG9UQbFPldazlqHv96Tm/view" target="_blank">Episode 3</a></li>
+							<li><a href="https://drive.google.com/file/d/18RaZN2O_HxnLVcAsHAF7vUuOV3EKaClJ/view" target="_blank">Episode 4</a></li>
+							<li><a href="https://drive.google.com/file/d/1WSSewkcYjggHl_cPo2gV-vxnX9MK0bZL/view" target="_blank">Episode 5</a></li>
+						</ul>
+						
+						<h3>Tips for Safe Streaming</h3>
+						<ul>
+							<li>Use a reliable ad-blocker when visiting these sites</li>
+							<li>Access through a proxy if sites are blocked</li>
+							<li>Consider using private/incognito mode</li>
+							<li>Don't provide personal information or credit card details</li>
+							<li>If a site asks for payment, leave immediately - all these should be free</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Make Your Own Link Modal -->
+		<div id="make-link-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Make Your Own Link</h2>
+					<button class="close-btn" onclick="closeModal('make-link-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Creating Your Own Proxy Links</h2>
+						<p>This guide explains how to make your own proxy links that are less likely to be blocked. There are several methods with varying levels of difficulty.</p>
+						
+						<h3>Method 1: Using FreeDNS</h3>
+						<p>Create a custom subdomain pointing to a proxy's IP address:</p>
+						<ol>
+							<li>Go to <a href="https://freedns.afraid.org/" target="_blank">freedns.afraid.org</a> (use an unblocked device)</li>
+							<li>Click "Sign Up for Free" if you don't have an account
+								<ul>
+									<li>You don't need to use your real name</li>
+									<li>Create a unique user ID</li>
+									<li>You can use a temporary email provider like <a href="https://temp-mail.org/" target="_blank">TempMail</a></li>
+								</ul>
+							</li>
+							<li>After creating an account, go to: <a href="https://freedns.afraid.org/domain/registry" target="_blank">freedns.afraid.org/domain/registry</a></li>
+							<li>Click a domain you'd like to use (e.g., chickenkiller.com)
+								<ul>
+									<li>Choose one that's unblocked in your environment</li>
+									<li>Low popularity domains work best</li>
+									<li>Make sure it's a public domain</li>
+								</ul>
+							</li>
+							<li>On the configuration page, ensure "A" record type is selected</li>
+							<li>Enter a name for your subdomain (can be anything)</li>
+							<li>For the destination, use the IP address of the proxy service you want</li>
+						</ol>
+						
+						<h3>Proxy Service IP Addresses</h3>
+						<table>
+							<tr>
+								<th>Unblocker</th>
+								<th>Type</th>
+								<th>IP Destination</th>
+							</tr>
+							<tr>
+								<td>Phantom Games</td>
+								<td>tons of games</td>
+								<td><code>109.122.46.55</code></td>
+							</tr>
+							<tr>
+								<td>arsenic</td>
+								<td>Proxy, Games</td>
+								<td><code>66.179.254.164</code></td>
+							</tr>
+							<tr>
+								<td>DayDreamX</td>
+								<td>Web Browser</td>
+								<td><code>104.243.45.193</code></td>
+							</tr>
+							<tr>
+								<td>Selenite</td>
+								<td>tons of games</td>
+								<td><code>65.109.112.222</code></td>
+							</tr>
+							<tr>
+								<td>Tinf0il</td>
+								<td>Proxy, games, apps</td>
+								<td><code>129.213.65.72</code></td>
+							</tr>
+							<tr>
+								<td>Abyss</td>
+								<td>Web browser</td>
+								<td><code>5.161.43.35</code></td>
+							</tr>
+							<tr>
+								<td>Astroid</td>
+								<td>Games, Unblocker, Emulators, Apps</td>
+								<td><code>5.161.68.227</code></td>
+							</tr>
+							<tr>
+								<td>Artclass</td>
+								<td>Unblocker, Games, Apps</td>
+								<td><code>198.251.90.4</code></td>
+							</tr>
+							<tr>
+								<td>Shadow</td>
+								<td>Web Browser</td>
+								<td><code>104.243.38.18</code></td>
+							</tr>
+							<tr>
+								<td>Kitty Cat</td>
+								<td>Proxy, games, apps</td>
+								<td><code>66.94.122.218</code></td>
+							</tr>
+							<tr>
+								<td>Kazwire</td>
+								<td>Proxy, games, apps</td>
+								<td><code>209.222.97.244</code></td>
+							</tr>
+							<tr>
+								<td>Plexile Arcade</td>
+								<td>Proxy, games, apps</td>
+								<td><code>216.24.57.1</code></td>
+							</tr>
+							<tr>
+								<td>Doge Unblocker</td>
+								<td>Proxy, games, apps</td>
+								<td><code>38.175.196.242</code></td>
+							</tr>
+							<tr>
+								<td>Interstellar</td>
+								<td>Proxy, games, apps</td>
+								<td><code>5.161.66.1</code></td>
+							</tr>
+							<tr>
+								<td>Rammerhead</td>
+								<td>Web Browser</td>
+								<td><code>108.181.32.77</code></td>
+							</tr>
+						</table>
+						<p>After setting up your custom domain:</p>
+						<ol start="7">
+							<li>Click "Save" and complete the captcha</li>
+							<li>Wait a few minutes for DNS to propagate</li>
+							<li>Visit your new link (e.g., yoursubdomain.chickenkiller.com)</li>
+						</ol>
+						
+						<h3>Method 2: Using Vercel</h3>
+						<p>Deploy your own proxy on Vercel's hosting platform:</p>
+						<ol>
+							<li>Go to: <code>vercel.com/new/clone?repositoryurl=REPO_URL</code></li>
+							<li>Replace REPO_URL with one of these repositories:
+								<ul>
+									<li>Interstellar: <code>https://github.com/InterstellarNetwork/Interstellar</code></li>
+									<li>Snorlax's Cave: <code>https://github.com/Snorlaxs-Cave/Snorlaxs-Cave-v2</code></li>
+									<li>Artclass: <code>https://github.com/art-class/v4</code></li>
+									<li>Utopia: <code>https://github.com/UtopiaUnblocker/Utopia</code></li>
+									<li>Abyss Web: <code>https://github.com/AbyssServices/Abyss-Web</code></li>
+									<li>Astroid: <code>https://github.com/VyperGroup/astroidv3</code></li>
+									<li>Shuttle: <code>https://github.com/shuttlenetwork/shuttle</code></li>
+									<li>Tinf0il: <code>https://github.com/Aluminum-Depot/Tinf0il-new</code></li>
+									<li>Doge Unblocker: <code>https://github.com/dogenetwork/v4</code></li>
+									<li>Shadow Tabbed: <code>https://github.com/xnightless/Shadownetwork</code></li>
+								</ul>
+							</li>
+							<li>Log in with GitHub (create an account if needed)</li>
+							<li>Enter a repository name (can be anything)</li>
+							<li>Click "Create"</li>
+							<li>After deployment, your proxy will be available at <code>repositoryName.vercel.app</code></li>
+						</ol>
+						
+						<h3>Method 3: Using Cyclic</h3>
+						<p>Deploy on Cyclic's platform:</p>
+						<ol>
+							<li>Go to <code>app.cyclic.sh/</code></li>
+							<li>Log in with GitHub (create account if needed)</li>
+							<li>Go to: <code>app.cyclic.sh/api/app/deploy/REPO_NAME</code></li>
+							<li>Replace REPO_NAME with a repository like:
+								<ul>
+									<li>Interstellar: <code>InterstellarNetwork/Interstellar</code></li>
+									<li>Snorlax's Cave: <code>Snorlaxs-Cave/Snorlaxs-Cave-v2</code></li>
+									<li>Artclass: <code>art-class/v4</code></li>
+									<li>Utopia: <code>UtopiaUnblocker/Utopia</code></li>
+									<li>Abyss Web: <code>AbyssServices/Abyss-Web</code></li>
+									<li>Astroid: <code>VyperGroup/astroidv3</code></li>
+									<li>Shuttle: <code>shuttlenetwork/shuttle</code></li>
+									<li>Tinf0il: <code>Aluminum-Depot/Tinf0il-new</code></li>
+									<li>Doge Unblocker: <code>dogenetwork/v4</code></li>
+									<li>Shadow Tabbed: <code>xnightless/Shadownetwork</code></li>
+								</ul>
+							</li>
+							<li>Example: <code>app.cyclic.sh/api/app/deploy/shuttlenetwork/shuttle</code></li>
+							<li>Follow the instructions to complete deployment</li>
+						</ol>
+						
+						<h3>Tips for Your Custom Proxies</h3>
+						<ul>
+							<li>Keep your links private - sharing publicly will get them blocked faster</li>
+							<li>Create multiple links as backups</li>
+							<li>Test your links on the network where you'll need them</li>
+							<li>Note which domain extensions work in your environment</li>
+							<li>Join Discord servers for additional deployment help</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Unblocked Search Engines Modal -->
+		<div id="search-engines-modal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2 class="modal-title">Unblocked Search Engines</h2>
+					<button class="close-btn" onclick="closeModal('search-engines-modal')">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="guide-content">
+						<h2>Private Search Engines for Unrestricted Access</h2>
+						<p>These search engines allow you to search the web untracked, unrestricted, and free. Unlike proxies, they don't allow you to visit websites directly, but they provide a way to find information without restrictions.</p>
+						
+						<h3>Privacy-Focused Search Engines</h3>
+						<ul>
+							<li><a href="https://search.brave.com/" target="_blank">Brave Search</a> - No tracking, no profiling</li>
+							<li><a href="https://ghosterysearch.com/" target="_blank">Ghostly</a> - Private search with minimal tracking</li>
+							<li><a href="https://ecosia.org/" target="_blank">Ecosia</a> - Plants trees with search revenue</li>
+							<li><a href="https://searx.thegpm.org/" target="_blank">Searx</a> - Metasearch engine that aggregates results</li>
+							<li><a href="https://metager.org/" target="_blank">MetaGer</a> - Privacy-focused metasearch engine</li>
+							<li><a href="https://www.mojeek.com/" target="_blank">Mojeek</a> - Independent search index</li>
+							<li><a href="https://search.disconnect.me/" target="_blank">Disconnect</a> - Private searches through major engines</li>
+							<li><a href="https://www.onesearch.com/" target="_blank">OneSearch</a> - Private searching by Verizon Media</li>
+						</ul>
+						
+						<h3>Specialized Search Engines</h3>
+						<ul>
+							<li><a href="https://www.dogpile.com/texis/search" target="_blank">Dogpile</a> - Combines results from different engines</li>
+							<li><a href="https://wiki.com/" target="_blank">Wiki</a> - Focus on informational content</li>
+							<li><a href="https://boardreader.com/" target="_blank">Boardreader</a> - Searches forums and message boards</li>
+							<li><a href="https://searchcode.com/" target="_blank">SearchCode</a> - For programming and code search</li>
+							<li><a href="https://www.locabrowser.com/" target="_blank">LocaBrowser</a> - Geo-specific search results</li>
+							<li><a href="https://search.carrot2.org/#/search/web" target="_blank">Carrot2</a> - Organizes results into categories</li>
+							<li><a href="https://www.infospace.com/" target="_blank">InfoSpace</a> - Multi-source search engine</li>
+						</ul>
+						
+						<h3>Aggregator Search Tools</h3>
+						<ul>
+							<li><a href="https://www.aiosearch.com/" target="_blank">AIO Search</a> - All-in-one search platform</li>
+							<li><a href="https://www.entireweb.com/" target="_blank">Entire Web</a> - Comprehensive search index</li>
+							<li><a href="https://www.activesearchresults.com/" target="_blank">ActiveSearchResults</a> - Independent search directory</li>
+							<li><a href="https://www.metacrawler.com/" target="_blank">MetaCrawler</a> - Multi-engine results</li>
+						</ul>
+						
+						<h3>Academic and Scientific Search</h3>
+						<ul>
+							<li><a href="https://www.wolframalpha.com/" target="_blank">Wolfram Alpha</a> - Computational knowledge engine</li>
+							<li><a href="https://kagi.com/" target="_blank">Kagi</a> - Premium search with customization (signup needed)</li>
+						</ul>
+						
+						<h3>Alternative Search Options</h3>
+						<ul>
+							<li><a href="https://www.ask.com/" target="_blank">Ask</a> - Question-based search engine</li>
+							<li><a href="https://yacy.searchlab.eu/index.html" target="_blank">YaCy</a> - Peer-to-peer decentralized search</li>
+							<li><a href="https://www.symbaloo.com/search?q" target="_blank">Symbaloo</a> - Visual search interface</li>
+						</ul>
+						
+						<h3>Tips for Using Alternative Search Engines</h3>
+						<ol>
+							<li><strong>Try multiple engines</strong> - Different search engines may yield different results</li>
+							<li><strong>Use specific queries</strong> - Be precise with your search terms</li>
+							<li><strong>Utilize advanced search options</strong> - Many of these offer filters and advanced search operators</li>
+							<li><strong>Clear cookies regularly</strong> - For maximum privacy</li>
+							<li><strong>Consider using with a proxy</strong> - For complete anonymity</li>
+						</ol>
+						
+						<h3>Limitations</h3>
+						<p>Keep in mind that these search engines only allow you to search - not visit sites. For full web browsing:</p>
+						<ul>
+							<li>Use the proxies in our Ultimate Links page</li>
+							<li>Try the Global proxy feature in Flamepass</li>
+							<li>Create your own proxy using our Make Your Own Link guide</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="z-index: -998">
+			<div style="z-index: -998; position: fixed" class="blob"></div>
+			<div style="z-index: -998; position: fixed" class="blobbig"></div>
+			<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+			<div style="z-index: -998; position: fixed" class="blobtop"></div>
+			<div style="z-index: -999; position: fixed" id="particles-js"></div>
+		</div>
+		<script>
+			particlesJS('particles-js', {
+				particles: {
+					number: {
+						value: 86,
+						density: {
+							enable: true,
+							value_area: 800
+						}
+					},
+					color: {
+						value: '#ffffff'
+					},
+					shape: {
+						type: 'circle',
+						stroke: {
+							width: 0,
+							color: '#000000'
+						},
+						polygon: {
+							nb_sides: 5
+						},
+						image: {
+							src: 'img/github.svg',
+							width: 100,
+							height: 100
+						}
+					},
+					opacity: {
+						value: 1,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 1,
+							opacity_min: 0.1,
+							sync: false
+						}
+					},
+					size: {
+						value: 2,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 40,
+							size_min: 0.1,
+							sync: false
+						}
+					},
+					line_linked: {
+						enable: false,
+						distance: 150,
+						color: '#ffffff',
+						opacity: 0.4,
+						width: 1
+					},
+					move: {
+						enable: true,
+						speed: 0.5,
+						direction: 'top',
+						random: false,
+						straight: false,
+						out_mode: 'out',
+						bounce: false,
+						attract: {
+							enable: false,
+							rotateX: 318.0130544358847,
+							rotateY: 556.5228452627983
+						}
+					}
+				},
+				interactivity: {
+					detect_on: 'window',
+					events: {
+						onhover: {
+							enable: false,
+							mode: 'repulse'
+						},
+						onclick: {
+							enable: true,
+							mode: 'push'
+						},
+						resize: true
+					},
+					modes: {
+						grab: {
+							distance: 400,
+							line_linked: {
+								opacity: 1
+							}
+						},
+						bubble: {
+							distance: 400,
+							size: 40,
+							duration: 2,
+							opacity: 8,
+							speed: 3
+						},
+						repulse: {
+							distance: 200,
+							duration: 0.4
+						},
+						push: {
+							particles_nb: 10
+						},
+						remove: {
+							particles_nb: 10
+						}
+					}
+				},
+				retina_detect: true
+			});
+		</script>
+		
+		<!-- Modal functionality -->
+		<script>
+			// Modal functionality
+			function openModal(modalId) {
+				document.getElementById(modalId).style.display = 'block';
+				document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
+			}
+			
+			function closeModal(modalId) {
+				document.getElementById(modalId).style.display = 'none';
+				document.body.style.overflow = 'auto'; // Restore scrolling
+			}
+			
+			// Close modal when clicking outside of content
+			window.onclick = function(event) {
+				const modals = document.getElementsByClassName('modal');
+				for (let i = 0; i < modals.length; i++) {
+					if (event.target === modals[i]) {
+						modals[i].style.display = 'none';
+						document.body.style.overflow = 'auto';
+					}
+				}
+			}
+			
+			// Close modal with escape key
+			document.addEventListener('keydown', function(event) {
+				if (event.key === 'Escape') {
+					const modals = document.getElementsByClassName('modal');
+					for (let i = 0; i < modals.length; i++) {
+						if (modals[i].style.display === 'block') {
+							modals[i].style.display = 'none';
+							document.body.style.overflow = 'auto';
+						}
+					}
+				}
+			});
+		</script>
+		<script src="/js/localforage.min.js"></script>
+		<script src="/js/json-loader.js"></script>
+		<script src="/js/c.js"></script>
+		<script src="/js/themes.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				let hideAds = localStorage.getItem('hideAds');
+
+				if (hideAds === null || hideAds === 'false') {
+					let script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src =
+						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+					document.body.appendChild(script);
+				}
+			});
+		</script>
+	</body>
+</html>
