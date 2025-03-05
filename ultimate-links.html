@@ -207,6 +207,7 @@
 			.copy-btn:hover {
 				background-color: rgba(222, 92, 52, 0.1);
 			}
+
 			
 			.filter-container {
 				display: flex;
@@ -261,19 +262,6 @@
 	</head>
 
 	<body>
-		<div class="failtoast">
-			<div class="failtoast-content">
-				<i class="fa fa-solid fa-circle-exclamation fail"></i>
-				<div class="failmessage">
-					<span class="failtext text-1" id="text-1">Success</span>
-					<span class="failtext text-2" id="text-2"
-						>Link copied to clipboard!</span
-					>
-				</div>
-			</div>
-			<i class="fa-solid fa-xmark failclose"></i>
-			<div class="failprogress"></div>
-		</div>
 
 		<ul class="navbar">
 			<li style="margin-left: -1px; margin-top: 2px">
@@ -771,8 +759,7 @@
 				const linksContent = document.getElementById('linksContent');
 				const searchInput = document.getElementById('searchInput');
 				const filterButtons = document.getElementById('filterButtons');
-				const toast = document.querySelector('.failtoast');
-				const closeToast = document.querySelector('.failclose');
+			
 				
 				// Add filter buttons
 				function addFilterButtons() {
@@ -889,7 +876,7 @@
 								const linkToCopy = copyBtn.dataset.link;
 								navigator.clipboard.writeText(linkToCopy)
 									.then(() => {
-										showToast('Link copied to clipboard!');
+										console.log('Link copied to clipboard!');
 									})
 									.catch(err => {
 										console.error('Failed to copy: ', err);
@@ -956,20 +943,6 @@
 					});
 				}
 				
-				// Show toast notification
-				function showToast(message) {
-					const text1 = document.getElementById('text-1');
-					const text2 = document.getElementById('text-2');
-					
-					text1.textContent = 'Success';
-					text2.textContent = message;
-					
-					toast.style.display = 'flex';
-					
-					setTimeout(() => {
-						toast.style.display = 'none';
-					}, 3000);
-				}
 				
 				// Initialize
 				addFilterButtons();
@@ -978,10 +951,6 @@
 				// Set up search functionality
 				searchInput.addEventListener('input', searchLinks);
 				
-				// Close toast button
-				closeToast.addEventListener('click', () => {
-					toast.style.display = 'none';
-				});
 				
 				// Handle scroll to top button
 				const scrollTop = document.querySelector('.scrolltop');

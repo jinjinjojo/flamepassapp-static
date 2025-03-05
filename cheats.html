@@ -517,33 +517,9 @@ javascript:(function(){let l=document.createElement("script");l.src="https://und
 				const text = codeBlock.textContent.trim();
 				
 				navigator.clipboard.writeText(text).then(() => {
-					// Show a success message
-					const toast = document.querySelector('.failtoast');
-					const failText1 = document.getElementById('text-1');
-					const failText2 = document.getElementById('text-2');
 					
-					failText1.textContent = 'Success';
-					failText2.textContent = 'Code copied to clipboard!';
-					toast.style.display = 'flex';
-					
-					// Hide the toast after 3 seconds
-					setTimeout(() => {
-						toast.style.display = 'none';
-					}, 3000);
 				}).catch(() => {
-					// Show an error message
-					const toast = document.querySelector('.failtoast');
-					const failText1 = document.getElementById('text-1');
-					const failText2 = document.getElementById('text-2');
 					
-					failText1.textContent = 'Failed';
-					failText2.textContent = 'Could not copy to clipboard.';
-					toast.style.display = 'flex';
-					
-					// Hide the toast after 3 seconds
-					setTimeout(() => {
-						toast.style.display = 'none';
-					}, 3000);
 				});
 			}
 			
