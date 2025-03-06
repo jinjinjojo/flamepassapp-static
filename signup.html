@@ -164,17 +164,12 @@
       height: 100vh;
       background-color: rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
-      padding: 20px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       margin: 0;
       z-index: 1000;
       list-style-type: none;
-    }
-
-    .navbar li {
-      margin: 5px 0;
     }
 
     .navbar a {
@@ -239,6 +234,265 @@
     
     .btn-secondary:hover {
       background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Benefits Section */
+    .benefits-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 24px 0;
+      justify-items: center;
+      text-align: center;
+    }
+    
+    @media (max-width: 600px) {
+      .benefits-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .benefit-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    
+    .benefit-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+    }
+    
+    .checkmark {
+      color: #2ecc71;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    .benefit-text {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    
+    .benefits-headline {
+      text-align: center;
+      margin-bottom: 26px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-color);
+      text-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
+    }
+
+    /* New Premium Benefits Section */
+    .premium-benefits-section {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .premium-headline {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-bottom: 24px;
+      text-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
+    }
+
+    .premium-details {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .premium-detail-item {
+      display: flex;
+      text-align: left;
+      gap: 15px;
+      padding: 16px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .premium-detail-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 107, 0, 0.05);
+    }
+
+    .detail-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+      color: #fff;
+    }
+
+    .detail-icon .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    .detail-content h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--text-color);
+    }
+
+    .detail-content p {
+      font-size: 14px;
+      color: #aaaaaa;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .testimonials {
+      margin: 35px 0;
+    }
+
+    .testimonial-headline {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--text-color);
+    }
+
+    .testimonial-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .testimonial {
+      flex: 1;
+      min-width: 220px;
+      max-width: 320px;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+    }
+
+    .rating {
+      color: var(--accent-color);
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .testimonial p {
+      font-style: italic;
+      color: #cccccc;
+      margin: 0 0 10px 0;
+      line-height: 1.5;
+    }
+
+    .user {
+      display: block;
+      text-align: right;
+      color: #999999;
+      font-size: 14px;
+    }
+
+    .guarantee-badge {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 30px auto;
+      padding: 16px;
+      max-width: 500px;
+      border-radius: 8px;
+      background-color: rgba(46, 204, 113, 0.05);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .guarantee-badge .material-symbols-outlined {
+      font-size: 36px;
+      color: #2ecc71;
+    }
+
+    .guarantee-text {
+      text-align: left;
+    }
+
+    .guarantee-text h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 5px 0;
+      color: #2ecc71;
+    }
+
+    .guarantee-text p {
+      font-size: 14px;
+      color: #aaaaaa;
+      margin: 0;
+    }
+
+    .cta-section {
+      margin: 40px 0 30px;
+      padding: 25px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0.2) 100%);
+      border: 1px solid rgba(255, 107, 0, 0.3);
+    }
+
+    .cta-headline {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      color: var(--accent-color);
+    }
+
+    .cta-text {
+      font-size: 16px;
+      color: #cccccc;
+      margin: 0 0 20px 0;
+    }
+
+    .cta-section .btn {
+      max-width: 300px;
+      margin: 0 auto;
+      padding: 14px;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .back-link-container {
+      margin-top: 30px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      color: #aaaaaa;
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover {
+      color: var(--accent-color);
+    }
+
+    @media (max-width: 600px) {
+      .testimonial-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .testimonial {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -335,16 +589,115 @@
         <h1 class="login-title">Sign Up for Flamepass</h1>
         <p class="login-subtitle">Choose a subscription plan to get full access</p>
       </div>
+      <div class="divider"></div>
+
+      <!-- Benefits Section -->
+      <div class="benefits-headline">🔥 UNLOCK PREMIUM FEATURES 🔥</div>
+      <div class="benefits-container">
+        <div class="benefit-item">
+          <i class="fas fa-check-circle checkmark"></i>
+          <span class="benefit-text">Unlimited Proxy Search Usage</span>
+        </div>
+        <div class="benefit-item">
+          <i class="fas fa-check-circle checkmark"></i>
+          <span class="benefit-text">Unlimited AI Chat Access</span>
+        </div>
+        <div class="benefit-item">
+          <i class="fas fa-check-circle checkmark"></i>
+          <span class="benefit-text">3,000+ Apps & Games Library</span>
+        </div>
+        <div class="benefit-item">
+          <i class="fas fa-check-circle checkmark"></i>
+          <span class="benefit-text">Full Ultimate Unblocker Links List</span>
+        </div>
+        <div class="benefit-item">
+          <i class="fas fa-check-circle checkmark"></i>
+          <span class="benefit-text">All Laptop Exploit Methods</span>
+        </div>
+        <div class="benefit-item">
+          <i class="fas fa-check-circle checkmark"></i>
+          <span class="benefit-text">All Guides & School Cheats</span>
+        </div>
+      </div>
       
       <div class="divider"></div>
       
       <stripe-pricing-table pricing-table-id="prctbl_1PcvCBGaTtLRmjO9WuVy9Wnm" publishable-key="pk_live_51JhmbwGaTtLRmjO9GVL5T10HQILEWDSCbUR2MKCMpjxJkZSFBErtWeMQTMWqNhKB0bH2O8jqskHDCkyVo1va0TyC00NWcseq2P">
       </stripe-pricing-table>
       
-      <div style="text-align: center;">
-        <a href="/" class="back-button">
-          Back to Home <span class="material-symbols-outlined" style="margin-left: 8px">arrow_forward</span>
-        </a>
+      <!-- New Premium Benefits Section -->
+      <div class="premium-benefits-section">
+        <h2 class="premium-headline">🚀 WHY FLAMEPASS IS WORTH IT 🚀</h2>
+        
+        <div class="premium-details">
+          <div class="premium-detail-item">
+            <div class="detail-icon">
+              <span class="material-symbols-outlined">verified</span>
+            </div>
+            <div class="detail-content">
+              <h3>Unrestricted Access Anywhere</h3>
+              <p>Browse freely at school, work, or any restricted network. Our advanced proxy technology bypasses even the strictest filters and blocks.</p>
+            </div>
+          </div>
+          
+          <div class="premium-detail-item">
+            <div class="detail-icon">
+              <span class="material-symbols-outlined">speed</span>
+            </div>
+            <div class="detail-content">
+              <h3>Lightning-Fast Performance</h3>
+              <p>Experience zero lag with our optimized servers. Watch videos, play games, and browse without buffering or slowdowns.</p>
+            </div>
+          </div>
+          
+          <div class="premium-detail-item">
+            <div class="detail-icon">
+              <span class="material-symbols-outlined">update</span>
+            </div>
+            <div class="detail-content">
+              <h3>Constantly Updated</h3>
+              <p>New games, apps, and unblocker methods added weekly. Our team works 24/7 to stay ahead of school and workplace restrictions.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonials">
+          <h3 class="testimonial-headline">What Our Users Say:</h3>
+          <div class="testimonial-container">
+            <div class="testimonial">
+              <div class="rating">★★★★★</div>
+              <p>"Flamepass literally saved my sanity during school hours. Worth every penny!"</p>
+              <span class="user">- Alex T.</span>
+            </div>
+            <div class="testimonial">
+              <div class="rating">★★★★★</div>
+              <p>"I've tried 5 different proxies and Flamepass is by far the most reliable. Never gets blocked!"</p>
+              <span class="user">- Jamie K.</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="guarantee-badge">
+          <span class="material-symbols-outlined">verified_user</span>
+          <div class="guarantee-text">
+            <h3>100% Satisfaction Guarantee</h3>
+            <p>If you're not completely satisfied within 7 days, we'll refund your payment. No questions asked.</p>
+          </div>
+        </div>
+        
+        <div class="cta-section">
+          <h2 class="cta-headline">🔥 UNLOCK UNLIMITED ACCESS TODAY 🔥</h2>
+          <p class="cta-text">Join thousands of satisfied users who browse without limits!</p>
+          <button class="btn" id="scroll-to-pricing">
+            GET STARTED NOW <span class="material-symbols-outlined">arrow_upward</span>
+          </button>
+        </div>
+        
+        <div class="back-link-container">
+          <a href="/" class="back-link">
+            Back to Home <span class="material-symbols-outlined" style="margin-left: 4px; font-size: 16px;">home</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -385,12 +738,21 @@
       },
       retina_detect: true
     });
+    
+    // Add event listener for the scroll-to-pricing button
+    document.getElementById('scroll-to-pricing').addEventListener('click', function() {
+      const pricingTable = document.querySelector('stripe-pricing-table');
+      if (pricingTable) {
+        pricingTable.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
   </script>
   
   <script src="/js/localforage.min.js"></script>
   <script src="/js/index.js"></script>
   <script src="/js/themes.js"></script>
   <script src="/js/c.js"></script>
+  <script src="/js/auth-controller.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
   <script>
     lucide.createIcons();

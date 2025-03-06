@@ -156,27 +156,6 @@
 			::-webkit-scrollbar-thumb:hover {
 				background: #4444cc;
 			}
-
-			.back-to-top {
-				position: fixed;
-				bottom: 20px;
-				right: 20px;
-				background-color: #de5c34;
-				color: white;
-				border-radius: 50%;
-				width: 40px;
-				height: 40px;
-				text-align: center;
-				line-height: 40px;
-				cursor: pointer;
-				display: none;
-				z-index: 1000;
-				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-			}
-			
-			.back-to-top:hover {
-				background-color: #4444cc;
-			}
 		</style>
 	</head>
 
@@ -268,10 +247,6 @@
 				</a>
 			</li>
 		</ul>
-
-		<div class="scrolltop">
-			<span class="material-symbols-outlined">arrow_upward</span>
-		</div>
 		
 		<div class="back-to-top">
 			<span class="material-symbols-outlined">arrow_upward</span>
@@ -526,27 +501,12 @@ javascript:(function(){let l=document.createElement("script");l.src="https://und
 				});
 			}
 			
-			// Back to top button functionality
-			window.onscroll = function() {
-				scrollFunction();
-			};
-			
-			function scrollFunction() {
-				if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-					document.querySelector('.back-to-top').style.display = 'block';
-				} else {
-					document.querySelector('.back-to-top').style.display = 'none';
-				}
-			}
-			
-			document.querySelector('.back-to-top').addEventListener('click', function() {
-				document.body.scrollTop = 0; // For Safari
-				document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-			});
 		</script>
 		<script src="/js/localforage.min.js"></script>
 		<script src="/js/json-loader.js"></script>
 		<script src="/js/c.js"></script>
+  		<script src="/js/auth-controller.min.js"></script>
+		<script src="/js/cheats-page-handler.min.js"></script>
 		<script src="/js/themes.js"></script>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {

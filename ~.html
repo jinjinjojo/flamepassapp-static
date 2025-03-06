@@ -690,7 +690,8 @@
 					Account Settings
 				</h1>
 				<div class="settingsection settingsection9">
-					<h1>My Account</h1>
+					<h1 class="myaccount">My Account</h1>
+					<p class="description"></p>
 					<div id="account-info">
 						<p>Email: <span id="account-email"></span></p>
 						<p>
@@ -716,74 +717,78 @@
 					</div>
 					<script>
 						document.addEventListener('DOMContentLoaded', function() {
-							const accountInfoSection = document.getElementById('account-info').parentElement;
-							const accountEmail = document.getElementById('account-email');
-							const accountKeyBlur = document.getElementById('account-key-blur');
-							const accountKey = document.getElementById('account-key');
-							const accountExpiration = document.getElementById('account-expiration');
-							const signOutBtn = document.querySelector('.signOutBtn');
-							const manageMembershipBtn = document.querySelector('.manageMembershipBtn');
-    
-							// Check if loginData exists in localStorage
-							const loginDataString = localStorage.getItem('loginData');
-							
-							if (loginDataString) {
-								try {
-									const loginData = JSON.parse(loginDataString);
-									
-									// Populate account info
-									accountEmail.textContent = loginData.email || 'N/A';
-									accountKey.textContent = loginData.token || 'N/A';
-									
-									// Format expiration date
-									if (loginData.expiration) {
-										const expirationDate = new Date(loginData.expiration);
-										const options = { month: 'long', day: 'numeric', year: 'numeric' };
-										accountExpiration.textContent = expirationDate.toLocaleDateString('en-US', options);
-									} else {
-										accountExpiration.textContent = 'N/A';
-									}
-									
-									// Toggle key visibility on click
-									accountKeyBlur.addEventListener('click', function() {
-										if (accountKey.style.display === 'none') {
-											accountKey.style.display = 'inline';
-											accountKeyBlur.style.display = 'none';
-										}
-									});
-									
-									accountKey.addEventListener('click', function() {
-										accountKey.style.display = 'none';
-										accountKeyBlur.style.display = 'inline';
-									});
+						const accountInfoSection = document.getElementById('account-info').parentElement;
+						const accountEmail = document.getElementById('account-email');
+						const accountKeyBlur = document.getElementById('account-key-blur');
+						const accountKey = document.getElementById('account-key');
+						const accountExpiration = document.getElementById('account-expiration');
+						const signOutBtn = document.querySelector('.signOutBtn');
+						const manageMembershipBtn = document.querySelector('.manageMembershipBtn');
+						const titleElement = document.querySelector('.myaccount');
+						const descriptionElement = document.querySelector('.description');
+						const loginDataString = localStorage.getItem('loginData');
+						const loginData = JSON.parse(loginDataString);
 
-									// Add event listener to handle sign out
-									if (signOutBtn) {
-										signOutBtn.addEventListener('click', function() {
-											// Remove the loginData from localStorage
-											localStorage.removeItem('loginData');
-											
-											// Redirect to the homepage
-											window.location.href = '/';
-										});
-									}
-
-									if (manageMembershipBtn) {
-										manageMembershipBtn.addEventListener('click', function() { 
-											window.open("https://billing.stripe.com/p/login/dR69CV76bgiH0wMeUU")
-										})
-
-									}
-									
-								} catch (error) {
-									// If there's an error parsing JSON, hide the section
-									accountInfoSection.style.display = 'none';
+						if (loginData) {
+							try {
+								
+								accountEmail.textContent = loginData.email || 'N/A';
+								accountKey.textContent = loginData.token || 'N/A';
+								
+								if (loginData.expiration) {
+									const expirationDate = new Date(loginData.expiration);
+									const options = { month: 'long', day: 'numeric', year: 'numeric' };
+									accountExpiration.textContent = expirationDate.toLocaleDateString('en-US', options);
+								} else {
+									accountExpiration.textContent = 'N/A';
 								}
-							} else {
-								// If loginData doesn't exist, hide the section
+								
+								accountKeyBlur.addEventListener('click', function() {
+									if (accountKey.style.display === 'none') {
+										accountKey.style.display = 'inline';
+										accountKeyBlur.style.display = 'none';
+									}
+								});
+								
+								accountKey.addEventListener('click', function() {
+									accountKey.style.display = 'none';
+									accountKeyBlur.style.display = 'inline';
+								});
+								
+								if (signOutBtn) {
+									signOutBtn.addEventListener('click', function() {
+										localStorage.removeItem('loginData');
+										window.location.href = '/';
+									});
+								}
+
+								if (manageMembershipBtn) {
+									manageMembershipBtn.addEventListener('click', function() { 
+										window.open("https://billing.stripe.com/p/login/dR69CV76bgiH0wMeUU");
+									});
+								}
+								
+							} catch (error) {
 								accountInfoSection.style.display = 'none';
 							}
-						});
+						} else {
+							if (titleElement) titleElement.textContent = "Create a Flamepass Account";
+							if (descriptionElement) descriptionElement.textContent = "Sign up now to get access to premium features and more.";
+							if (accountKey) accountKey.parentElement.remove();
+							if (accountEmail) accountEmail.parentElement.remove();
+							if (accountExpiration) accountExpiration.parentElement.remove();
+							if (manageMembershipBtn) manageMembershipBtn.remove();
+
+							if (signOutBtn) {
+								signOutBtn.textContent = "Get Started";
+								signOutBtn.onclick = function() {
+									window.location.href = "/login.html";
+								};
+
+							}
+						}
+					});
+
 					</script>
 				</div>
 				<div class="settingsection settingsection9">
@@ -1403,6 +1408,7 @@
 		</script>
 		<script src="/js/localforage.min.js"></script>
 		<script src="/js/c.js"></script>
+  <script src="/js/auth-controller.min.js"></script>
 		<script src="/js/~.js"></script>
 		<script src="/js/themes.js"></script>
 		<script type="text/javascript">

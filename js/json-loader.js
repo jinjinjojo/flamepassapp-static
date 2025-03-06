@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					if (shortcut.name.toLowerCase() === 'settings') {
 						shortcutLink.href = '/~/#/proxy';
 					} else {
-						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.name)}`;
+						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.url)}`;
 					}
 
 					const shortcutImage = document.createElement('img');
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					if (shortcut.name.toLowerCase() === 'settings') {
 						shortcutLink.href = '/~/#/proxy';
 					} else {
-						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.name)}`;
+						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.url)}`;
 					}
 
 					const shortcutImage = document.createElement('img');
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 				data.forEach(app => {
 					const appLink = document.createElement('a');
-					appLink.href = `/&.html?q=${encodeURIComponent(app.name)}`;
+					appLink.href = `/&.html?q=${encodeURIComponent(app.url)}`;
 
 					if (app.categories && app.name) {
 						app.categories.forEach(category => {
