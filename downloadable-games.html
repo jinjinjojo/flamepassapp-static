@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>Flamepass</title>
+		<title>Downloadable Games - Flamepass</title>
 		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta charset="UTF-8" />
@@ -49,14 +49,33 @@
 		/>
 		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 		<style>
+			/* Container styling to match YouTube channels page */
+			.content-container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 100px 20px 50px 80px;
+			}
+			
+			.page-title {
+				text-align: center;
+				color: white;
+				font-size: 2.5rem;
+				font-weight: 600;
+				margin-bottom: 15px;
+			}
+			
+			.page-description {
+				text-align: center;
+				color: rgba(255, 255, 255, 0.7);
+				max-width: 800px;
+				margin: 0 auto 50px;
+				font-size: 1.1rem;
+			}
+			
 			.game-grid {
 				display: grid;
 				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 				gap: 20px;
-				padding: 20px;
-				max-width: 1200px;
-				margin: 0 auto;
-				margin-top: 100px;
 			}
 			
 			.game-card {
@@ -67,11 +86,13 @@
 				transition: transform 0.3s, box-shadow 0.3s;
 				aspect-ratio: 1 / 1;
 				cursor: pointer;
+				border: 1px solid #3a3a3a;
 			}
 			
 			.game-card:hover {
 				transform: translateY(-5px);
 				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+				border-color: #de5c34;
 			}
 			
 			.game-img {
@@ -134,51 +155,49 @@
 				background-color: #ea6e47;
 			}
 			
-			.page-title {
-				text-align: center;
-				margin-top: 120px;
+			.category-title {
 				color: white;
-				font-size: 2.5rem;
+				margin-bottom: 25px;
+				font-size: 1.5rem;
 				font-weight: 600;
+				position: relative;
+				display: flex;
+				align-items: center;
+				margin-top: 50px;
 			}
 			
-			.page-subtitle {
-				text-align: center;
-				color: rgba(255, 255, 255, 0.7);
-				margin-bottom: 30px;
+			.category-title::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				bottom: -5px;
+				width: 40px;
+				height: 3px;
+				background-color: #de5c34;
 			}
 			
-            .category-title {
-                color: white;
-                margin-left: 80px; /* Increased from 30px to 80px to avoid sidebar overlap */
-                margin-top: 40px;
-                margin-bottom: 10px;
-                font-size: 1.5rem;
-                font-weight: 600;
-                position: relative;
-            }
-
-            .category-title::after {
-                content: '';
-                position: absolute;
-                left: 0;
-                bottom: -5px;
-                width: 40px;
-                height: 3px;
-                background-color: #de5c34;
-            }
+			.category-icon {
+				margin-right: 10px;
+				color: #de5c34;
+			}
 			
 			@media (max-width: 768px) {
 				.game-grid {
 					grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+				}
+				
+				.content-container {
+					padding: 100px 15px 50px 60px;
+				}
+				
+				.category-title {
+					margin-left: 20px;
 				}
 			}
 		</style>
 	</head>
 
 	<body>
-		
-
 		<ul class="navbar">
 			<li style="margin-left: -1px; margin-top: 2px">
 				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
@@ -267,22 +286,33 @@
 			<span class="material-symbols-outlined">arrow_upward</span>
 		</div>
 
-		<h1 class="page-title">Downloadable Games</h1>
-		<p class="page-subtitle">Download and play these games offline on your school device</p>
+		<div class="content-container">
+			<h1 class="page-title">Downloadable Games</h1>
+			<p class="page-description">Download and play these games offline on your school device</p>
 
-		<div class="category-title">Popular Games</div>
-		<div class="game-grid" id="popular-games">
-			<!-- Games will be inserted here by JavaScript -->
-		</div>
+			<div class="category-title">
+				<i class="fa-solid fa-star category-icon"></i>
+				Popular Games
+			</div>
+			<div class="game-grid" id="popular-games">
+				<!-- Games will be inserted here by JavaScript -->
+			</div>
 
-		<div class="category-title">Indie Games</div>
-		<div class="game-grid" id="indie-games">
-			<!-- Games will be inserted here by JavaScript -->
-		</div>
+			<div class="category-title">
+				<i class="fa-solid fa-gamepad category-icon"></i>
+				Indie Games
+			</div>
+			<div class="game-grid" id="indie-games">
+				<!-- Games will be inserted here by JavaScript -->
+			</div>
 
-		<div class="category-title">Classic Games</div>
-		<div class="game-grid" id="classic-games">
-			<!-- Games will be inserted here by JavaScript -->
+			<div class="category-title">
+				<i class="fa-solid fa-trophy category-icon"></i>
+				Classic Games
+			</div>
+			<div class="game-grid" id="classic-games">
+				<!-- Games will be inserted here by JavaScript -->
+			</div>
 		</div>
 
 		<div style="z-index: -998">
@@ -435,6 +465,64 @@
 				});
 			}
 
+			// Function to show toast notification for downloads
+			function showSuccessToast(message) {
+				// Create toast container if it doesn't exist
+				let toastContainer = document.querySelector('.toast-container');
+				if (!toastContainer) {
+					toastContainer = document.createElement('div');
+					toastContainer.className = 'toast-container';
+					toastContainer.style.cssText = `
+						position: fixed;
+						bottom: 20px;
+						right: 20px;
+						z-index: 1000;
+					`;
+					document.body.appendChild(toastContainer);
+				}
+				
+				// Create toast element
+				const toast = document.createElement('div');
+				toast.className = 'toast';
+				toast.style.cssText = `
+					background-color: rgba(46, 46, 46, 0.9);
+					color: white;
+					padding: 12px 20px;
+					border-radius: 8px;
+					margin-top: 10px;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+					display: flex;
+					align-items: center;
+					transform: translateY(100px);
+					opacity: 0;
+					transition: transform 0.3s, opacity 0.3s;
+					border-left: 4px solid #de5c34;
+				`;
+				
+				// Add success icon
+				toast.innerHTML = `
+					<i class="fa-solid fa-check" style="color: #de5c34; margin-right: 10px;"></i>
+					${message}
+				`;
+				
+				// Add to container
+				toastContainer.appendChild(toast);
+				
+				// Show toast with animation
+				setTimeout(() => {
+					toast.style.transform = 'translateY(0)';
+					toast.style.opacity = '1';
+				}, 10);
+				
+				// Remove after 3 seconds
+				setTimeout(() => {
+					toast.style.transform = 'translateY(100px)';
+					toast.style.opacity = '0';
+					setTimeout(() => {
+						toast.remove();
+					}, 300);
+				}, 3000);
+			}
 
 			// Initialize particles.js
 			particlesJS('particles-js', {
@@ -571,14 +659,12 @@
 						scrollTop.style.display = 'none';
 					}
 				});
-				
-				
 			});
 		</script>
 		<script src="/js/localforage.min.js"></script>
 		<script src="/js/json-loader.js"></script>
 		<script src="/js/c.js"></script>
-  <script src="/js/auth-controller.min.js"></script>
+		<script src="/js/auth-controller.min.js"></script>
 		<script src="/js/themes.js"></script>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
