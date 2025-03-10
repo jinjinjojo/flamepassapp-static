@@ -48,7 +48,7 @@
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
 		/>
 		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <link rel="stylesheet" href="/css/common.css" />
+		<link rel="stylesheet" href="/css/common.css" />
 		<style>
 			/* Container styling to match YouTube channels page */
 			.content-container {
@@ -69,13 +69,53 @@
 				text-align: center;
 				color: rgba(255, 255, 255, 0.7);
 				max-width: 800px;
-				margin: 0 auto 50px;
+				margin: 0 auto 20px;
 				font-size: 1.1rem;
+			}
+			
+			.search-container {
+				max-width: 600px;
+				margin: 0 auto 40px;
+				position: relative;
+			}
+			
+			.search-input {
+				width: 100%;
+				padding: 12px 20px;
+				padding-right: 40px;
+				background: rgba(46, 46, 46, 0.7);
+				border: 1px solid #3a3a3a;
+				border-radius: 30px;
+				color: white;
+				font-size: 1rem;
+				transition: all 0.3s;
+			}
+			
+			.search-input:focus {
+				outline: none;
+				border-color: #de5c34;
+				box-shadow: 0 0 0 2px rgba(222, 92, 52, 0.3);
+			}
+			
+			.search-clear {
+				position: absolute;
+				right: 15px;
+				top: 50%;
+				transform: translateY(-50%);
+				color: rgba(255, 255, 255, 0.7);
+				background: none;
+				border: none;
+				cursor: pointer;
+				display: none;
+			}
+			
+			.search-clear.visible {
+				display: block;
 			}
 			
 			.game-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 				gap: 20px;
 			}
 			
@@ -85,7 +125,7 @@
 				overflow: hidden;
 				background-color: rgba(46, 46, 46, 0.7);
 				transition: transform 0.3s, box-shadow 0.3s;
-				aspect-ratio: 1 / 1;
+				aspect-ratio: 460 / 215;
 				cursor: pointer;
 				border: 1px solid #3a3a3a;
 			}
@@ -182,9 +222,148 @@
 				color: #de5c34;
 			}
 			
+			.no-results {
+				text-align: center;
+				color: white;
+				padding: 50px;
+				grid-column: 1 / -1;
+				font-size: 1.2rem;
+			}
+			
+			.hidden {
+				display: none;
+			}
+			
+			/* Modal Styles */
+			.modal-overlay {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, 0.75);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				z-index: 1000;
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.3s, visibility 0.3s;
+			}
+			
+			.modal-overlay.active {
+				opacity: 1;
+				visibility: visible;
+			}
+			
+			.modal {
+				background-color: #222;
+				border-radius: 12px;
+				width: 90%;
+				max-width: 500px;
+				max-height: 90vh;
+				overflow-y: auto;
+				box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+				position: relative;
+				transform: translateY(20px);
+				transition: transform 0.3s;
+			}
+			
+			.modal-overlay.active .modal {
+				transform: translateY(0);
+			}
+			
+			.modal-header {
+				padding: 20px;
+				border-bottom: 1px solid #333;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			
+			.modal-title {
+				color: white;
+				margin: 0;
+				font-size: 1.5rem;
+				font-weight: 600;
+			}
+			
+			.modal-close {
+				background: none;
+				border: none;
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 1.5rem;
+				cursor: pointer;
+				transition: color 0.3s;
+			}
+			
+			.modal-close:hover {
+				color: #de5c34;
+			}
+			
+			.modal-content {
+				padding: 20px;
+				color: rgba(255, 255, 255, 0.9);
+			}
+			
+			.modal-footer {
+				padding: 15px 20px;
+				border-top: 1px solid #333;
+				text-align: right;
+			}
+			
+			.modal-button {
+				background-color: #de5c34;
+				color: white;
+				border: none;
+				border-radius: 6px;
+				padding: 8px 16px;
+				font-weight: 500;
+				cursor: pointer;
+				transition: background-color 0.3s;
+			}
+			
+			.modal-button:hover {
+				background-color: #ea6e47;
+			}
+			
+			.modal-warning-icon {
+				color: #ffcc00;
+				font-size: 2rem;
+				margin-right: 15px;
+			}
+			
+			.modal-success-icon {
+				color: #4caf50;
+				font-size: 2rem;
+				margin-right: 15px;
+			}
+			
+			.modal-header-with-icon {
+				display: flex;
+				align-items: center;
+			}
+			
+			.step {
+				margin-bottom: 15px;
+			}
+			
+			.step-number {
+				display: inline-block;
+				background-color: #de5c34;
+				color: white;
+				width: 24px;
+				height: 24px;
+				border-radius: 50%;
+				text-align: center;
+				line-height: 24px;
+				margin-right: 10px;
+				font-weight: bold;
+			}
+			
 			@media (max-width: 768px) {
 				.game-grid {
-					grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+					grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 				}
 				
 				.content-container {
@@ -192,7 +371,15 @@
 				}
 				
 				.category-title {
-					margin-left: 20px;
+					margin-left: 10px;
+				}
+				
+				.search-container {
+					max-width: 90%;
+				}
+				
+				.modal {
+					width: 95%;
 				}
 			}
 		</style>
@@ -290,29 +477,100 @@
 		<div class="content-container">
 			<h1 class="page-title">Downloadable Games</h1>
 			<p class="page-description">Download and play these games offline on your school device</p>
-
-			<div class="category-title">
-				<i class="fa-solid fa-star category-icon"></i>
-				Popular Games
-			</div>
-			<div class="game-grid" id="popular-games">
-				<!-- Games will be inserted here by JavaScript -->
-			</div>
-
-			<div class="category-title">
-				<i class="fa-solid fa-gamepad category-icon"></i>
-				Indie Games
-			</div>
-			<div class="game-grid" id="indie-games">
-				<!-- Games will be inserted here by JavaScript -->
+			
+			<div class="search-container">
+				<input type="text" id="search-games" class="search-input" placeholder="Search games...">
+				<button id="clear-search" class="search-clear" aria-label="Clear search">
+					<span class="material-symbols-outlined">close</span>
+				</button>
 			</div>
 
-			<div class="category-title">
-				<i class="fa-solid fa-trophy category-icon"></i>
-				Classic Games
+			<!-- Game categories will be dynamically created based on game data -->
+			<div id="game-categories-container">
+				<!-- Template for category sections -->
+				<!-- <div class="category-title">
+					<i class="fa-solid fa-gamepad category-icon"></i>
+					Category Name
+				</div>
+				<div class="game-grid" id="category-id-games">
+					Game cards will be inserted here
+				</div> -->
 			</div>
-			<div class="game-grid" id="classic-games">
+
+			<div class="category-title">
+				<i class="fa-solid fa-list category-icon"></i>
+				All Games
+			</div>
+			<div class="game-grid" id="all-games">
 				<!-- Games will be inserted here by JavaScript -->
+				<div id="no-results" class="no-results hidden">No games match your search.</div>
+			</div>
+		</div>
+
+		<!-- Mobile Warning Modal -->
+		<div id="mobile-warning-modal" class="modal-overlay">
+			<div class="modal">
+				<div class="modal-header">
+					<div class="modal-header-with-icon">
+						<i class="fa-solid fa-triangle-exclamation modal-warning-icon"></i>
+						<h3 class="modal-title">Mobile Not Supported</h3>
+					</div>
+					<button class="modal-close" id="close-mobile-modal">&times;</button>
+				</div>
+				<div class="modal-content">
+					<p>These games can only be downloaded and played on computers.</p>
+					<p>Mobile devices don't support running most of these games directly.</p>
+					<p>Please use a Windows, Mac, or Linux computer to download and play these games.</p>
+				</div>
+				<div class="modal-footer">
+					<button class="modal-button" id="understand-mobile-button">I Understand</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Download Instructions Modal -->
+		<div id="instructions-modal" class="modal-overlay">
+			<div class="modal">
+				<div class="modal-header">
+					<div class="modal-header-with-icon">
+						<i class="fa-solid fa-circle-info modal-success-icon"></i>
+						<h3 class="modal-title">How to Play Offline</h3>
+					</div>
+					<button class="modal-close" id="close-instructions-modal">&times;</button>
+				</div>
+				<div class="modal-content">
+					<p>Follow these steps to play your downloaded game on a school computer:</p>
+					
+					<div class="step">
+						<span class="step-number">1</span>
+						<strong>Download the game</strong> to your personal computer
+					</div>
+					
+					<div class="step">
+						<span class="step-number">2</span>
+						<strong>Extract the ZIP file</strong> using a program like WinRAR or 7-Zip
+					</div>
+					
+					<div class="step">
+						<span class="step-number">3</span>
+						<strong>Copy all files</strong> to a USB drive (8GB+ recommended)
+					</div>
+					
+					<div class="step">
+						<span class="step-number">4</span>
+						<strong>Plug the USB drive</strong> into your school computer
+					</div>
+					
+					<div class="step">
+						<span class="step-number">5</span>
+						Find the game's <strong>main executable</strong> (usually a .exe file) and run it
+					</div>
+					
+					<p><strong>Note:</strong> Some school computers may block running executables. In those cases, you might need to try one of our browser-based games instead.</p>
+				</div>
+				<div class="modal-footer">
+					<button class="modal-button" id="got-it-button">Got It!</button>
+				</div>
 			</div>
 		</div>
 
@@ -325,145 +583,163 @@
 		</div>
 
 		<script>
-			// Game data
-			const popularGames = [
-				{
-					title: "Five Nights at Freddy's",
-					image: "https://play-lh.googleusercontent.com/YxC8nC7p3AYL_XYbqb6cEIzaBfXAj5LDSvoJPE4a_iouI1MsQ_6f6ZjFZXP_68mSHQ=w526-h296-rw",
-					size: "102 MB",
-					url: "https://drive.google.com/file/d/1dQxd1VVihBFfYxzK-5GGW-s24jKKjfFH/view?usp=sharing"
-				},
-				{
-					title: "SUPERHOT",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/322500/ss_79314104e240819e290a57b6126c18b12d4b66be.1920x1080.jpg",
-					size: "714 MB",
-					url: "https://drive.google.com/file/d/1IKtqbYpz5uKvMoMdg4bEUJfPYVfm_6RY/view?usp=sharing"
-				},
-				{
-					title: "Undertale",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/391540/ss_35e98c1ce6108eeb7421c6e10e932e2aa34f1a75.1920x1080.jpg",
-					size: "189 MB",
-					url: "https://drive.google.com/file/d/15xfw_JCPkMZnqh1v5SuXlOHh5ODfGjtj/view?usp=sharing"
-				},
-				{
-					title: "Celeste",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/504230/ss_615455299355eaf552c638c7ea5b24a8b46e02dd.1920x1080.jpg",
-					size: "1.2 GB",
-					url: "https://drive.google.com/file/d/18WYW1wEAbvdNQLWHgd2NRd6qNdRfKA1H/view?usp=sharing"
-				},
-				{
-					title: "Geometry Dash",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/322170/ss_7ef657caa7408aeb4c23ba80c31d43399394a151.1920x1080.jpg",
-					size: "65 MB",
-					url: "https://drive.google.com/file/d/1mhLHN0MIjlHbRqbGn9F9mhYz-vrnx6CN/view?usp=sharing"
-				},
-				{
-					title: "Among Us",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/945360/ss_44cc5d731f13a48a802ac9e28b4fe4c9a8fa9801.1920x1080.jpg",
-					size: "167 MB",
-					url: "https://drive.google.com/file/d/1p_7GbV6-GkjA01VHBBqvscYgITdsTcxq/view?usp=sharing"
-				}
-			];
-
-			const indieGames = [
-				{
-					title: "Hollow Knight",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/367520/ss_f76334e45d315d9de7cfbb2cbaf04bc9cd02c419.1920x1080.jpg",
-					size: "3.8 GB",
-					url: "https://drive.google.com/file/d/1pDmAD4lHT0aJsCh9S9LYJR-nHXG2L1N3/view?usp=sharing"
-				},
-				{
-					title: "Stardew Valley",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/413150/ss_b887651a93b0525739049eb4194f633de2de83e7.1920x1080.jpg",
-					size: "550 MB",
-					url: "https://drive.google.com/file/d/1yH7i9b6zFwxHYYFGfJWr9JCH5c0D8Hk7/view?usp=sharing"
-				},
-				{
-					title: "Cuphead",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/268910/ss_81f807654e0d7a182d6f557812bb6d7bd5fad74a.1920x1080.jpg",
-					size: "4.2 GB",
-					url: "https://drive.google.com/file/d/1RLQfGbVB3xhkKf8BoZD9JDCCmX6qLtgI/view?usp=sharing"
-				},
-				{
-					title: "Terraria",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/105600/ss_6d08c0aab6ba56895c1b89fc1b184d13c4bad14d.1920x1080.jpg",
-					size: "425 MB",
-					url: "https://drive.google.com/file/d/1Qj3Zm7CiCGe2kXQpP_WTFYZeV9BxoPRw/view?usp=sharing"
-				},
-				{
-					title: "FTL: Faster Than Light",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/212680/ss_c5b19aad75b48b7b0c7e6ef6b14175e83574c3c9.1920x1080.jpg",
-					size: "210 MB",
-					url: "https://drive.google.com/file/d/1vYn3CgKGZ8TYVRZkF9DgXyZH8hf-sIuN/view?usp=sharing"
-				},
-				{
-					title: "Baba Is You",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/736260/ss_35a6052bfe705bd8c12f9525ac8c90452f24ffd7.1920x1080.jpg",
-					size: "137 MB",
-					url: "https://drive.google.com/file/d/1GkFQkb8bY3yF9qzKQvnzfYEuUkQJ2-O-/view?usp=sharing"
-				}
-			];
-
-			const classicGames = [
-				{
-					title: "Portal",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/400/ss_6a4f5afdaa98402de917471dbf7507e35b87c1d6.1920x1080.jpg",
-					size: "2.4 GB",
-					url: "https://drive.google.com/file/d/1JFzGY-xBP-3-gVkfyQwbM-2CkRIk6ycR/view?usp=sharing"
-				},
-				{
-					title: "Half-Life",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/70/ss_b79f41852e7bd7f84f75c9681e07b8ac987c5dce.1920x1080.jpg",
-					size: "655 MB",
-					url: "https://drive.google.com/file/d/1sQJZuX9T7Mj5hFj2RDX9vfwx-3JBHEgA/view?usp=sharing"
-				},
-				{
-					title: "Doom (1993)",
-					image: "https://cdn.cloudflare.steamstatic.com/steam/apps/2280/ss_270f3d28a806b42abddb47e0a9d2bf97c5a5f858.1920x1080.jpg",
-					size: "63 MB",
-					url: "https://drive.google.com/file/d/1KZKnT-4_G4qhGRlOB0IMmXQX36YxLCrm/view?usp=sharing"
-				},
-				{
-					title: "Minesweeper Pro",
-					image: "https://play-lh.googleusercontent.com/HgphoSq08Z8K7ASKMpn5UD5ppFEbijR5mhwlFOjJcDK3p0fBBqR3mJQzRXrIMJ0PuQ=w526-h296-rw",
-					size: "24 MB",
-					url: "https://drive.google.com/file/d/1YEvDSYUFzA2dCrKgDybWGKRN8ThDX7Tb/view?usp=sharing"
-				},
-				{
-					title: "The Oregon Trail",
-					image: "https://images.gog-statics.com/158ea624b688cad570aded1a12a2c15e5fa7e609c511ed9b5a54e633e073ecf3.jpg",
-					size: "48 MB",
-					url: "https://drive.google.com/file/d/1zmZgz_Z8mH1Y8JeytZq6K4M8R5_qP4nq/view?usp=sharing"
-				}
-			];
-
+			// Game data will be added by you
+            const gamesData = [
+	{ title: "VVVVVV", image: "https://cdn.akamai.steamstatic.com/steam/apps/70300/header.jpg", size: "59.9 MB", url: "https://drive.google.com/open?id=1RaI7SFWbUw3XsVJtcKwgjATjxZ7sWZWf&usp=drive_copy", category: "Indie" },
+	{ title: "Universe Sandbox 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/230290/header.jpg", size: "79.9 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPel9LanZyYmtLSmM&resourcekey=0--DDAIXdP_KtBfQI6dhP2lA&usp=drive_copy", category: "Simulation" },
+	{ title: "Tabletop Simulator", image: "https://cdn.akamai.steamstatic.com/steam/apps/286160/header.jpg", size: "4.65 GB", url: "https://drive.google.com/open?id=1AyZFV2KMoUGq_nVPhQ0o0o4Wfe2xn9YR&usp=drive_copy", category: "Simulation" },
+	{ title: "Super Meat Boy", image: "https://cdn.akamai.steamstatic.com/steam/apps/40800/header.jpg", size: "86 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmaURiYmN0ZUhaNzg&resourcekey=0-PbniWDGmuoFVx94wnlnl2Q&usp=drive_copy", category: "Platformer" },
+	{ title: "Super Smash Flash 2 Beta", image: "https://archive.org/download/SSF2BetaSetupMac.v1.1.0.1/DOhCI27X0AAV1PJ.jpg", size: "10.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPaG5qMWZTMXZZeXM&resourcekey=0-mAYGs1VnTQUeK4XCX_JORg&usp=drive_copy", category: "Fighting" },
+	{ title: "Stranded Deep Alpha", image: "https://cdn.akamai.steamstatic.com/steam/apps/313120/header.jpg", size: "220.1 MB", url: "https://drive.google.com/open?id=0B-0FGUJOS7AdUmJQVW9HZFRCQk0&resourcekey=0-UMuVHc8st47oo1zYihX3JA&usp=drive_copy", category: "Survival" },
+	{ title: "Starship Valley", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1466860/header.jpg", size: "321.4 MB", url: "https://drive.google.com/open?id=1sgepZRLE7rSZ-ashmIN4fHErrsiXkC_6&usp=drive_copy", category: "Simulation" },
+	{ title: "Star Wars: Battlefront II", image: "https://cdn.akamai.steamstatic.com/steam/apps/1237950/header.jpg", size: "4.02 GB", url: "https://drive.google.com/open?id=1lBEuxB_QA4E7Gc1pfGsyNfV2bTy85J58&usp=drive_copy", category: "Action" },
+	{ title: "Sonic Adventure DX", image: "https://cdn.akamai.steamstatic.com/steam/apps/71250/header.jpg", size: "410.9 MB", url: "https://drive.google.com/open?id=1QHzH2T69zZLdTGfUrOA97q2qo1JAoTBv&usp=drive_copy", category: "Platformer" },
+	{ title: "Slender", image: "https://cdn.akamai.steamstatic.com/steam/apps/252330/header.jpg", size: "42.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPMFFJSlRpVEpuMzg&resourcekey=0-NGfDablUd88nRdyF2KQZzg&usp=drive_copy", category: "Horror" },
+	{ title: "The Elder Scrolls V: Skyrim", image: "https://cdn.akamai.steamstatic.com/steam/apps/72850/header.jpg", size: "11.15 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavMllPdlU2aW95Uzg&resourcekey=0-kStFdSiCsGMEjlgUVpgToQ&usp=drive_copy", category: "RPG" },
+	{ title: "StarCraft", image: "https://i.redd.it/tgxawg7wjm3d1.jpeg", size: "10.5 MB", url: "https://drive.google.com/open?id=10ia49Nf90xv4XXjVPno93F7kRlL2T07y&usp=drive_copy", category: "Strategy" },
+	{ title: "FNAF: Sister Location", image: "https://cdn.akamai.steamstatic.com/steam/apps/506610/header.jpg", size: "765.6 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPMlFZeTl3YzZpbjA&resourcekey=0-AI3yo8I4Tm4U48dZIF_cTQ&usp=drive_copy", category: "Horror" },
+	{ title: "Shovel Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/250760/header.jpg", size: "94.7 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmWTJfM2hwRUVNZDA&resourcekey=0-RrSPIUfJgZ8vRyQjzqjyIA&usp=drive_copy", category: "Platformer" },
+	{ title: "Shovel Knight: Treasure Trove", image: "https://cdn.akamai.steamstatic.com/steam/apps/589680/header.jpg", size: "209.9 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPN3puTklwSmdqajg&resourcekey=0-dKr1bDxU7dnABMM1AZxyOg&usp=drive_copy", category: "Platformer" },
+	{ title: "RPG Maker XP", image: "https://cdn.akamai.steamstatic.com/steam/apps/235900/header.jpg", size: "1.33 GB", url: "https://drive.google.com/open?id=0B-msgOvnlckUZFBuSGxwWjZLNDg&resourcekey=0-qvUuYSaWYcYlnjpqfWbf5Q&usp=drive_copy", category: "Game Development" },
+	{ title: "Rogue Legacy", image: "https://cdn.akamai.steamstatic.com/steam/apps/241600/header.jpg", size: "94.2 MB", url: "https://drive.google.com/open?id=1s18oc7Y5Lih37mfbggbczKvLOfE-MRzK&usp=drive_copy", category: "Roguelike" },
+	{ title: "Rocket League", image: "https://cdn.akamai.steamstatic.com/steam/apps/252950/header.jpg", size: "3.65 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavUG53cjBFSUlVX1U&resourcekey=0-BtXdTdhW_Fthn9UyvHJj8Q&usp=drive_copy", category: "Sports" },
+	{ title: "Realm of the Mad God", image: "https://cdn.akamai.steamstatic.com/steam/apps/200210/header.jpg", size: "129.2 MB", url: "https://drive.google.com/open?id=1AdTu2t4pvREXvjeEJRUK8-LSbFLBaWvZ&usp=drive_copy", category: "MMO" },
+	{ title: "Rayman Origins", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/207490/header.jpg", size: "2.27 GB", url: "https://drive.google.com/open?id=1iKzdfIWk7MLMIvwrd8qa5PglbX6XFY06&usp=drive_copy", category: "Platformer" },
+	{ title: "Banana 104 K2.52", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1181270/header.jpg", size: "160.1 MB", url: "https://drive.google.com/open?id=1SeRUVt381G6YkihvNR8d8vnOXuQ4XAz1&usp=drive_copy", category: "Indie" },
+	{ title: "Quake II", image: "https://cdn.akamai.steamstatic.com/steam/apps/2320/header.jpg", size: "234.4 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmRWhtX01UU3pyTXM&resourcekey=0-_L6BKAfWI6RR3HVEyEuxdg&usp=drive_copy", category: "FPS" },
+	{ title: "Project Wingman Demo", image: "https://cdn.akamai.steamstatic.com/steam/apps/895870/header.jpg", size: "5.86 GB", url: "https://drive.google.com/open?id=18dGqZG9X532QfhG1t6yiGAkMSnGHrG0t&usp=drive_copy", category: "Flight Sim" },
+	{ title: "Portal", image: "https://cdn.akamai.steamstatic.com/steam/apps/400/header.jpg", size: "2.25 GB", url: "https://drive.google.com/open?id=1xZTFpw--SAf2HaFZq59tQtQS8vZf90uD&usp=drive_copy", category: "Puzzle" },
+	{ title: "Portal 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg", size: "7.64 GB", url: "https://drive.google.com/open?id=13Oh288efXlWF6zAuSbeZ2p-rxn9VeVCF&usp=drive_copy", category: "Puzzle" },
+	{ title: "Pokemon Uranium", image: "https://static.wikia.nocookie.net/pokemon-uranium/images/7/73/Uranium_intro.png/revision/latest?cb=20240412053347", size: "216.5 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmTDFNNF9rbjVDMDA&resourcekey=0-VRRhVk2WHbKOzHyj6IQubQ&usp=drive_copy", category: "Fan Game" },
+	{ title: "Pokemon Insurgence", image: "https://mir-s3-cdn-cf.behance.net/projects/404/a700fb38527887.Y3JvcCwxMzE0LDEwMjgsMzAyLDI2.png", size: "251.2 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmZlBHMkpMRzlvTWs&resourcekey=0-qxhtUoQIIb-1jTqjaZ3rpw&usp=drive_copy", category: "Fan Game" },
+	{ title: "Plague Inc", image: "https://cdn.akamai.steamstatic.com/steam/apps/246620/header.jpg", size: "365.9 MB", url: "https://drive.google.com/open?id=0B2Dxw3In9Yh7ZllZSGxxVm1tQjQ&resourcekey=0-C3giD8ZCn0S7SDByN0c44A&usp=drive_copy", category: "Strategy" },
+	{ title: "FNAF: Pizzeria Simulator", image: "https://cdn.akamai.steamstatic.com/steam/apps/738060/header.jpg", size: "250.7 MB", url: "https://drive.google.com/open?id=13YU_XZu6mKUF2Kfv6C2eaQzOeNGN3czy&usp=drive_copy", category: "Horror" },
+	{ title: "Papers, Please", image: "https://cdn.akamai.steamstatic.com/steam/apps/239030/header.jpg", size: "33.9 MB", url: "https://drive.google.com/open?id=1XdnK0C9rxwTSW31Un3K2dA3DASlmEBPs&usp=drive_copy", category: "Indie" },
+	{ title: "Warcraft Online Plus", image: "https://www.farazjafari.com/wp-content/uploads/2019/09/WOW-Classic-Plus-Banner.png", size: "50.4 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUMlR6anN5bkEwNUE&resourcekey=0-ENYbTaeR6fHnfBRpqjrXNg&usp=drive_copy", category: "MMO" },
+	{ title: "Okhlos", image: "https://cdn.akamai.steamstatic.com/steam/apps/400180/header.jpg", size: "2.23 GB", url: "https://drive.google.com/open?id=1skdbmVnbnTpUrSQ3jjx5dOyKHUO_Hrmt&usp=drive_copy", category: "Action" },
+	{ title: "Nothing 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/1241700/header.jpg", size: "663.7 MB", url: "https://drive.google.com/open?id=1M4Bz1tMAMGCrChhEcfId5ZGazqgIbayX&usp=drive_copy", category: "Experimental" },
+	{ title: "My Lovely Daughter", image: "https://cdn.akamai.steamstatic.com/steam/apps/580170/header.jpg", size: "157.1 MB", url: "https://drive.google.com/open?id=1g5_KbXs4f1pA8SiCrj1xuGronir72PPz&usp=drive_copy", category: "Adventure" },
+	{ title: "Microvolts", image: "https://i.ytimg.com/vi/sDJ3X6bRTRE/maxresdefault.jpg", size: "1.38 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmbnlrWTFfZ196ODg&resourcekey=0-egIIeHejJ1TqlTLCO9-5aw&usp=drive_copy", category: "Shooter" },
+	{ title: "MAFA's The Lost Terminals", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1627850/header.jpg", size: "930.9 MB", url: "https://drive.google.com/open?id=1AhuF6KfABP4ysIv6F9ZnXK4iNcQsV9m1&usp=drive_copy", category: "Indie" },
+	{ title: "Left 4 Dead", image: "https://cdn.akamai.steamstatic.com/steam/apps/500/header.jpg", size: "3.57 GB", url: "https://drive.google.com/open?id=1_IXuw-tNjp1uAX_bZUZEJE1DV-tT-CNI&usp=drive_copy", category: "FPS" },
+	{ title: "Left 4 Dead 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/550/header.jpg", size: "14.36 GB", url: "https://drive.google.com/open?id=0BwqZMepc_pHyZVZkb1hNOTlsU0k&resourcekey=0-O_Atkq7rtLXOxtlsoFbidQ&usp=drive_copy", category: "FPS" },
+	{ title: "Insert Quarter", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1513890/header.jpg", size: "52.8 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUYnAwYWJLbzNwRGM&resourcekey=0-A0fAHjxZrfTSg7LwJxucqQ&usp=drive_copy", category: "Arcade" },
+	{ title: "Don't Starve Together", image: "https://cdn.akamai.steamstatic.com/steam/apps/322330/header.jpg", size: "229.2 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPVjkwVG8wSEZUdkE&resourcekey=0-ONa3I9S7yDk7Chs3aYyf7A&usp=drive_copy", category: "Survival" },
+	{ title: "Hyper Light Drifter", image: "https://cdn.akamai.steamstatic.com/steam/apps/257850/header.jpg", size: "747.4 MB", url: "https://drive.google.com/open?id=1iokSgV0z90pB353v0agqdy3ZXGVqGuYn&usp=drive_copy", category: "Action RPG" },
+	{ title: "Hotline Miami", image: "https://cdn.akamai.steamstatic.com/steam/apps/219150/header.jpg", size: "36.7 MB", url: "https://drive.google.com/open?id=1k6plyzyh8ABbLqbPvTFkGlh0nWfqIw1t&usp=drive_copy", category: "Action" },
+	{ title: "Hotline Miami 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/274170/header.jpg", size: "129.7 MB", url: "https://drive.google.com/open?id=111lVnhmUF3iWH1G82c70IloXEzBEQKpQ&usp=drive_copy", category: "Action" },
+	{ title: "Hollow Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=1gTxsJEnak1_HsRViLn1bvrEk21zXeUZK&usp=drive_copy", category: "Metroidvania" },
+	{ title: "Half-Life: Blue Shift", image: "https://cdn.akamai.steamstatic.com/steam/apps/130/header.jpg", size: "3.64 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmemtFX2g2TDVxS3c&resourcekey=0-nRdLPlr93XUMO5k889uvfQ&usp=drive_copy", category: "FPS" },
+	{ title: "Half-Life 2: Episode 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/420/header.jpg", size: "3.35 GB", url: "https://drive.google.com/open?id=0B-msgOvnlckUbkliRzBVMkZyTVk&resourcekey=0-Vka7tZyBwa9xUhbZ9vMp9A&usp=drive_copy", category: "FPS" },
+	{ title: "Hello Neighbor", image: "https://cdn.akamai.steamstatic.com/steam/apps/521890/header.jpg", size: "35.4 MB", url: "https://drive.google.com/open?id=1nocao8h-lYadRMqTGCvNO57u5iZZ5QMB&usp=drive_copy", category: "Stealth" },
+	{ title: "Harvest Moon: Light of Hope", image: "https://cdn.akamai.steamstatic.com/steam/apps/585900/header.jpg", size: "766 MB", url: "https://drive.google.com/open?id=1f1eE41XNOdqeokAEgY1c1kgCegIoDVcL&usp=drive_copy", category: "Farming Sim" },
+	{ title: "Hatoful Boyfriend", image: "https://cdn.akamai.steamstatic.com/steam/apps/310080/header.jpg", size: "887.4 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmREJsZjhRR0xIVWc&resourcekey=0-19C70wWOTfARr-cTVyhmDQ&usp=drive_copy", category: "Visual Novel" },
+	{ title: "Half-Life 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/220/header.jpg", size: "3.12 GB", url: "https://drive.google.com/open?id=190YVYln0FqF2jLDY0zxCUxdynCDDFQoM&usp=drive_copy", category: "FPS" },
+	{ title: "Grand Theft Auto: San Andreas", image: "https://cdn.akamai.steamstatic.com/steam/apps/12120/header.jpg", size: "437.9 MB", url: "https://drive.google.com/open?id=0B-zHnX0724mNTGI0V01zTVY3WFk&resourcekey=0-Yi_GQnr2T2LkKYdYSen9tQ&usp=drive_copy", category: "Open World" },
+	{ title: "Five Nights at Freddy's 3", image: "https://cdn.akamai.steamstatic.com/steam/apps/354140/header.jpg", size: "109.1 MB", url: "https://drive.google.com/open?id=0B31-NQeMvxfqSTFTcFNiY1J5VEE&resourcekey=0-GVa5NhnPISCrvvLnFi3fJw&usp=drive_copy", category: "Horror" },
+	{ title: "Five Nights at Freddy's", image: "https://cdn.akamai.steamstatic.com/steam/apps/319510/header.jpg", size: "220.7 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPUzFpOUoySklqY3c&resourcekey=0-RV2n_PYoBpfq-oso-ATq6A&usp=drive_copy", category: "Horror" },
+	{ title: "Five Nights at Freddy's 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/332800/header.jpg", size: "207.4 MB", url: "https://drive.google.com/open?id=0B-xENJ-pMOUGN0lSX2wzLUp4Z1U&resourcekey=0-BCwR17riGYRYg7OOVm3COQ&usp=drive_copy", category: "Horror" },
+	{ title: "Fate", image: "https://cdn.akamai.steamstatic.com/steam/apps/246840/header.jpg", size: "163.1 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUSmY4TTFqTzYtd2s&resourcekey=0-Etf7t5oC09F8lub2YJ1ZyQ&usp=drive_copy", category: "RPG" },
+	{ title: "Evoland", image: "https://cdn.akamai.steamstatic.com/steam/apps/233470/header.jpg", size: "76.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPQU1uSG15VjloZjA&resourcekey=0-aqFT84o6gLuec78m9R2TAQ&usp=drive_copy", category: "RPG" },
+	{ title: "Enter the Gungeon", image: "https://cdn.akamai.steamstatic.com/steam/apps/311690/header.jpg", size: "199 MB", url: "https://drive.google.com/open?id=0B1y3AScetqavdnFFalVsTlNkaW8&resourcekey=0-CfC4LgvzpUqvJqeBYNeSDA&usp=drive_copy", category: "Roguelike" },
+	{ title: "Doom 3", image: "https://cdn.akamai.steamstatic.com/steam/apps/208200/header.jpg", size: "41 MB", url: "https://drive.google.com/open?id=10BC4qo4vnYQtDbjXSPCEal-iROCE48Uy&usp=drive_copy", category: "FPS" },
+	{ title: "Doom 3 Portable", image: "https://cdn.akamai.steamstatic.com/steam/apps/208200/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmVnJwQUhJR1ctNlE&resourcekey=0-BDL6ZHFk0vHFqfSz8b-DyQ&usp=drive_copy", category: "FPS" },
+	{ title: "Dead Cells", image: "https://cdn.akamai.steamstatic.com/steam/apps/588650/header.jpg", size: "428 MB", url: "https://drive.google.com/open?id=1KMYgSalBfvp0jjm4mASmwa3X7vP2qcLl&usp=drive_copy", category: "Roguelike" },
+	{ title: "Darkest Dungeon", image: "https://cdn.akamai.steamstatic.com/steam/apps/262060/header.jpg", size: "2.86 GB", url: "https://drive.google.com/open?id=1qYN3ZFnvQwJ7lNrIYslntRoSxcfwoHfn&usp=drive_copy", category: "Turn-Based" },
+	{ title: "Danganronpa: Trigger Happy Havoc", image: "https://cdn.akamai.steamstatic.com/steam/apps/413410/header.jpg", size: "2.41 GB", url: "https://drive.google.com/open?id=1hku_jv-CC2z-mX2s1HaV3PUmI1mNQrgk&usp=drive_copy", category: "Visual Novel" },
+	{ title: "Danganronpa 2: Goodbye Despair", image: "https://cdn.akamai.steamstatic.com/steam/apps/413420/header.jpg", size: "3.07 GB", url: "https://drive.google.com/open?id=1bfBbMiyKA0fnG8uUPTbhp7uF7RxSVv-a&usp=drive_copy", category: "Visual Novel" },
+	{ title: "Five Nights at Freddy's World", image: "https://i.ytimg.com/vi/FJmWHOMsT7Q/maxresdefault.jpg", size: "229.1 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPR3hLV2JIX0JoWkk&resourcekey=0--zSt0A0l8OpMhSichxI7RA&usp=drive_copy", category: "RPG" },
+	{ title: "Evoland 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/359310/header.jpg", size: "319.5 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPWlFiR2xHMFp1WWs&resourcekey=0-kP1xvNbEFaKBukYSgpmB9w&usp=drive_copy", category: "RPG" },
+	{ title: "Counter-Strike: Source", image: "https://cdn.akamai.steamstatic.com/steam/apps/240/header.jpg", size: "1.03 GB", url: "https://drive.google.com/open?id=1kGXMJRN1do4WWsk3bjoE1hcpR_1VJqI9&usp=drive_copy", category: "FPS" },
+	{ title: "Counter-Strike", image: "https://cdn.akamai.steamstatic.com/steam/apps/10/header.jpg", size: "256.1 MB", url: "https://drive.google.com/open?id=0Bwa3UPwo0PalV3FraW5qLXBfLTQ&resourcekey=0-EI89kbpJ7uiECuIh-5pZIQ&usp=drive_copy", category: "FPS" },
+	{ title: "Prison Architect", image: "https://cdn.akamai.steamstatic.com/steam/apps/233450/header.jpg", size: "659.3 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPcnh2ZUZ5UHNsMnc&resourcekey=0-7ry1-ZQpB1AZ6zCdugWCEw&usp=drive_copy", category: "Simulation" },
+	{ title: "Crashday", image: "https://cdn.akamai.steamstatic.com/steam/apps/508980/header.jpg", size: "764.8 MB", url: "https://drive.google.com/open?id=13Kfv67706b8Oy6pcIcKWD8OtphgzQXAw&usp=drive_copy", category: "Racing" },
+	{ title: "Call of Duty 4: Modern Warfare", image: "https://cdn.akamai.steamstatic.com/steam/apps/7940/header.jpg", size: "4.43 GB", url: "https://drive.google.com/open?id=1pOaV240JSgowOFFj_1rO74N3DcOT0F--&usp=drive_copy", category: "FPS" },
+	{ title: "Brutal Doom 20b Hell on Earth", image: "https://i.ytimg.com/vi/iPyq0jFgVjI/maxresdefault.jpg", size: "177.6 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPVGxZVEprNjFrcTQ&resourcekey=0-GAGqBk018KMQTNdewfSCtg&usp=drive_copy", category: "FPS" },
+	{ title: "The Binding of Isaac", image: "https://cdn.akamai.steamstatic.com/steam/apps/113200/header.jpg", size: "85.9 MB", url: "https://drive.google.com/open?id=1u-jb8vFDsJhVxKZbvFi-WXTQqQX-tKrQ&usp=drive_copy", category: "Roguelike" },
+	{ title: "The Binding of Isaac: Rebirth", image: "https://cdn.akamai.steamstatic.com/steam/apps/250900/header.jpg", size: "451.4 MB", url: "https://drive.google.com/open?id=0B1y3AScetqavcmVCZjBOQ2ZDT0k&resourcekey=0-LPcl6__6inVo9VaThNTbOQ&usp=drive_copy", category: "Roguelike" },
+	{ title: "Bloons Tower Defense", image: "https://cdn.akamai.steamstatic.com/steam/apps/960090/header.jpg", size: "219.3 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPV0FsR2FwYngzbjg&resourcekey=0-Q4Zto3C0xBaEgsFGHdj5sA&usp=drive_copy", category: "Tower Defense" },
+	{ title: "Battlefield 1942", image: "https://i.ytimg.com/vi/xD8kTKLO_Bw/maxresdefault.jpg", size: "223.5 MB", url: "https://drive.google.com/open?id=1sE-sqdoXuw2Fe9rY6WS1WRJXGcQ8rKM2&usp=drive_copy", category: "FPS" },
+	{ title: "Battlefield 2", image: "https://i.ytimg.com/vi/2yrO8QG_7u8/maxresdefault.jpg", size: "3.27 GB", url: "https://drive.google.com/open?id=13HVX3yU5CXZcBpPDMQfNV2-xJvwsBfLI&usp=drive_copy", category: "FPS" }
+];
+			// Function to detect mobile devices
+			function isMobileDevice() {
+				return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			}
+			
 			// Function to create game cards
 			function createGameCards(games, containerId) {
 				const container = document.getElementById(containerId);
 				container.innerHTML = ''; // Clear container
 				
+				if (games.length === 0 && containerId === 'all-games') {
+					// No results will be handled by the no-results div
+					return;
+				}
+				
 				games.forEach(game => {
 					const gameCard = document.createElement('div');
 					gameCard.className = 'game-card';
 					
+					// Use CDN for images
+					let imageUrl = game.image;
+					if (imageUrl && !imageUrl.includes('w0.wp.com')) {
+						// Replace with actual CDN prefix
+						imageUrl = 'https://i0.wp.com/' + imageUrl.replace(/^https?:\/\//, '');
+					}
+					
 					gameCard.innerHTML = `
-						<img src="${game.image}" alt="${game.title}" class="game-img">
+						<img src="${imageUrl}" alt="${game.title}" class="game-img">
 						<div class="game-overlay">
 							<h3 class="game-title">${game.title}</h3>
 							<p class="game-size">${game.size}</p>
 						</div>
-						<button class="download-btn">Download</button>
+						<button class="download-btn" data-game-title="${game.title}" data-game-url="${game.url}">Download</button>
 					`;
-					
-					// Add click event
-					gameCard.querySelector('.download-btn').addEventListener('click', (e) => {
-						e.stopPropagation();
-						showSuccessToast(`Starting download for ${game.title}...`);
-						window.open(game.url, '_blank');
-					});
 					
 					container.appendChild(gameCard);
 				});
+				
+				// Add click events to all download buttons
+				const downloadButtons = container.querySelectorAll('.download-btn');
+				downloadButtons.forEach(button => {
+					button.addEventListener('click', handleDownloadClick);
+				});
+			}
+			
+			// Handle download button clicks
+			function handleDownloadClick(e) {
+				e.stopPropagation();
+				
+				const gameTitle = this.getAttribute('data-game-title');
+				const gameUrl = this.getAttribute('data-game-url');
+				
+				// Show mobile warning if on mobile
+				if (isMobileDevice()) {
+					showModal('mobile-warning-modal');
+					return;
+				}
+				
+				// Start download and show toast
+				showSuccessToast(`Starting download for ${gameTitle}...`);
+				
+				// Open download in new tab
+				window.open(gameUrl, '_blank');
+				
+				// Show instructions modal after a delay (so it appears when they come back to this tab)
+				setTimeout(() => {
+					showModal('instructions-modal');
+				}, 1000);
+			}
+			
+			// Function to show a modal
+			function showModal(modalId) {
+				document.getElementById(modalId).classList.add('active');
+			}
+			
+			// Function to hide a modal
+			function hideModal(modalId) {
+				document.getElementById(modalId).classList.remove('active');
 			}
 
 			// Function to show toast notification for downloads
@@ -524,7 +800,180 @@
 					}, 300);
 				}, 3000);
 			}
-
+			
+			// Function to collect unique categories from games data
+			function getUniqueCategories(games) {
+				const categories = new Set();
+				
+				// Add default categories
+				categories.add('popular');
+				categories.add('indie');
+				categories.add('action');
+				categories.add('rpg');
+				categories.add('horror');
+				categories.add('classic');
+				
+				// Add categories from game data
+				games.forEach(game => {
+					if (game.category) {
+						// Handle multiple categories separated by commas
+						const gameCategories = game.category.split(',');
+						gameCategories.forEach(cat => {
+							categories.add(cat.trim().toLowerCase());
+						});
+					}
+				});
+				
+				return Array.from(categories);
+			}
+			
+			// Function to create category sections
+			function createCategorySection(category, games) {
+				// Create container for category section
+				const categoryContainer = document.getElementById('game-categories-container');
+				
+				// Map categories to icons
+				const categoryIcons = {
+					'popular': 'fa-star',
+					'indie': 'fa-gamepad',
+					'action': 'fa-gun',
+					'rpg': 'fa-dragon',
+					'horror': 'fa-ghost',
+					'classic': 'fa-trophy',
+					'strategy': 'fa-chess',
+					'puzzle': 'fa-puzzle-piece',
+					'racing': 'fa-car-side',
+					'adventure': 'fa-mountain',
+					'simulation': 'fa-city',
+					'sports': 'fa-basketball',
+					'platformer': 'fa-flag-checkered'
+				};
+				
+				// Use default icon if category doesn't have a defined icon
+				const iconClass = categoryIcons[category] || 'fa-gamepad';
+				
+				// Format category name for display (capitalize first letter)
+				const displayCategory = category.charAt(0).toUpperCase() + category.slice(1);
+				
+				// Create category title
+				const categoryTitle = document.createElement('div');
+				categoryTitle.className = 'category-title';
+				categoryTitle.innerHTML = `
+					<i class="fa-solid ${iconClass} category-icon"></i>
+					${displayCategory} Games
+				`;
+				
+				// Create game grid for this category
+				const gameGrid = document.createElement('div');
+				gameGrid.className = 'game-grid';
+				gameGrid.id = `${category}-games`;
+				
+				// Add to DOM
+				categoryContainer.appendChild(categoryTitle);
+				categoryContainer.appendChild(gameGrid);
+				
+				// Fill with games
+				createGameCards(games, gameGrid.id);
+			}
+			
+			// Function to get games for a category
+			function getGamesForCategory(games, category) {
+				if (category === 'all') {
+					return games;
+				}
+				
+				return games.filter(game => {
+					// Check if game belongs to this category
+					if (category === 'popular' && game.popular) {
+						return true;
+					}
+					
+					if (game.category) {
+						const categories = game.category.split(',').map(cat => cat.trim().toLowerCase());
+						return categories.includes(category.toLowerCase());
+					}
+					
+					return false;
+				});
+			}
+			
+			// Get all unique games for the "All Games" section
+			function getAllUniqueGames(games) {
+				// Return all games sorted alphabetically
+				return [...games].sort((a, b) => a.title.localeCompare(b.title));
+			}
+			
+			// Filter games based on search input
+			function filterGames(allGames, searchText) {
+				const allSections = document.querySelectorAll('.category-title');
+				const searchLower = searchText.toLowerCase();
+				const noResultsElement = document.getElementById('no-results');
+				let anyResults = false;
+				
+				// Reset "No results" message
+				noResultsElement.classList.add('hidden');
+				
+				// Filter all games first
+				const filteredAllGames = allGames.filter(game => 
+					game.title.toLowerCase().includes(searchLower)
+				);
+				
+				// Show/hide all category sections based on whether they have visible games
+				Array.from(allSections).forEach(section => {
+					// Skip the "All Games" section, we'll handle it separately
+					if (section.textContent.trim().includes('All Games')) {
+						return;
+					}
+					
+					// Get category name from section title
+					const categoryText = section.textContent.trim().replace(' Games', '').toLowerCase();
+					
+					// Get games grid for this category
+					const gameGrid = section.nextElementSibling;
+					
+					// Get games for this category and filter them
+					const categoryGames = getGamesForCategory(allGames, categoryText);
+					const filteredCategoryGames = categoryGames.filter(game => 
+						game.title.toLowerCase().includes(searchLower)
+					);
+					
+					// Update game cards for this category
+					if (gameGrid && gameGrid.classList.contains('game-grid')) {
+						createGameCards(filteredCategoryGames, gameGrid.id);
+					}
+					
+					// Show/hide category section based on results
+					const hasResults = filteredCategoryGames.length > 0;
+					section.style.display = hasResults ? 'flex' : 'none';
+					if (gameGrid) {
+						gameGrid.style.display = hasResults ? 'grid' : 'none';
+					}
+					
+					if (hasResults) {
+						anyResults = true;
+					}
+				});
+				
+				// Handle the "All Games" section
+				createGameCards(filteredAllGames, 'all-games');
+				
+				// Show "No results" message if nothing found
+				if (filteredAllGames.length === 0) {
+					noResultsElement.classList.remove('hidden');
+				}
+				
+				// Show/hide the "All Games" section title depending on search results
+				const allGamesTitle = Array.from(allSections).find(section => 
+					section.textContent.trim().includes('All Games')
+				);
+				
+				if (allGamesTitle) {
+					allGamesTitle.style.display = 'flex'; // Always show "All Games" title
+				}
+				
+				return anyResults || filteredAllGames.length > 0;
+			}
+			
 			// Initialize particles.js
 			particlesJS('particles-js', {
 				particles: {
@@ -636,12 +1085,78 @@
 				},
 				retina_detect: true
 			});
-
-			// Initialize game cards
+			
+			// Initialize the page
 			document.addEventListener('DOMContentLoaded', () => {
-				createGameCards(popularGames, 'popular-games');
-				createGameCards(indieGames, 'indie-games');
-				createGameCards(classicGames, 'classic-games');
+				// Get games data
+				const allGames = Object.values(gamesData).flat();
+				
+				// Get unique categories
+				const categories = getUniqueCategories(allGames);
+				
+				// Create category sections (except "all" which already exists)
+				categories.forEach(category => {
+					if (category !== 'all') {
+						const categoryGames = getGamesForCategory(allGames, category);
+						if (categoryGames.length > 0) {
+							createCategorySection(category, categoryGames);
+						}
+					}
+				});
+				
+				// Initialize "All Games" section
+				createGameCards(getAllUniqueGames(allGames), 'all-games');
+				
+				// Set up search functionality
+				const searchInput = document.getElementById('search-games');
+				const clearButton = document.getElementById('clear-search');
+				
+				// Search input event
+				searchInput.addEventListener('input', () => {
+					const searchText = searchInput.value.trim();
+					
+					// Show/hide clear button
+					clearButton.classList.toggle('visible', searchText.length > 0);
+					
+					// Filter games
+					filterGames(allGames, searchText);
+				});
+				
+				// Clear search button
+				clearButton.addEventListener('click', () => {
+					searchInput.value = '';
+					clearButton.classList.remove('visible');
+					filterGames(allGames, '');
+				});
+				
+				// Set up modal functionality
+				const mobileModal = document.getElementById('mobile-warning-modal');
+				const instructionsModal = document.getElementById('instructions-modal');
+				
+				// Close buttons for modals
+				document.getElementById('close-mobile-modal').addEventListener('click', () => {
+					hideModal('mobile-warning-modal');
+				});
+				
+				document.getElementById('close-instructions-modal').addEventListener('click', () => {
+					hideModal('instructions-modal');
+				});
+				
+				// Buttons in modals
+				document.getElementById('understand-mobile-button').addEventListener('click', () => {
+					hideModal('mobile-warning-modal');
+				});
+				
+				document.getElementById('got-it-button').addEventListener('click', () => {
+					hideModal('instructions-modal');
+				});
+				
+				// Close modals when clicking outside
+				window.addEventListener('click', (e) => {
+					if (e.target.classList.contains('modal-overlay')) {
+						e.target.classList.remove('active');
+					}
+				});
 				
 				// Handle scroll to top button
 				const scrollTop = document.querySelector('.scrolltop');
@@ -660,24 +1175,6 @@
 						scrollTop.style.display = 'none';
 					}
 				});
-			});
-		</script>
-		<script src="/js/localforage.min.js"></script>
-		<script src="/js/json-loader.js"></script>
-		<script src="/js/c.js"></script>
-		<script src="/js/auth-controller.min.js"></script>
-		<script src="/js/themes.js"></script>
-		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function () {
-				let hideAds = localStorage.getItem('hideAds');
-
-				if (hideAds === null || hideAds === 'false') {
-					let script = document.createElement('script');
-					script.type = 'text/javascript';
-					script.src =
-						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
-					document.body.appendChild(script);
-				}
 			});
 		</script>
 	</body>
