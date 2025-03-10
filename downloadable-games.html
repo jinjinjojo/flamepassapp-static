@@ -25,6 +25,219 @@
 			function gtag() {
 				dataLayer.push(arguments);
 			}
+			
+			// Initialize particles.js
+			particlesJS('particles-js', {
+				particles: {
+					number: {
+						value: 86,
+						density: {
+							enable: true,
+							value_area: 800
+						}
+					},
+					color: {
+						value: '#ffffff'
+					},
+					shape: {
+						type: 'circle',
+						stroke: {
+							width: 0,
+							color: '#000000'
+						},
+						polygon: {
+							nb_sides: 5
+						},
+						image: {
+							src: 'img/github.svg',
+							width: 100,
+							height: 100
+						}
+					},
+					opacity: {
+						value: 1,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 1,
+							opacity_min: 0.1,
+							sync: false
+						}
+					},
+					size: {
+						value: 2,
+						random: true,
+						anim: {
+							enable: false,
+							speed: 40,
+							size_min: 0.1,
+							sync: false
+						}
+					},
+					line_linked: {
+						enable: false,
+						distance: 150,
+						color: '#ffffff',
+						opacity: 0.4,
+						width: 1
+					},
+					move: {
+						enable: true,
+						speed: 0.5,
+						direction: 'top',
+						random: false,
+						straight: false,
+						out_mode: 'out',
+						bounce: false,
+						attract: {
+							enable: false,
+							rotateX: 318.0130544358847,
+							rotateY: 556.5228452627983
+						}
+					}
+				},
+				interactivity: {
+					detect_on: 'window',
+					events: {
+						onhover: {
+							enable: false,
+							mode: 'repulse'
+						},
+						onclick: {
+							enable: true,
+							mode: 'push'
+						},
+						resize: true
+					},
+					modes: {
+						grab: {
+							distance: 400,
+							line_linked: {
+								opacity: 1
+							}
+						},
+						bubble: {
+							distance: 400,
+							size: 40,
+							duration: 2,
+							opacity: 8,
+							speed: 3
+						},
+						repulse: {
+							distance: 200,
+							duration: 0.4
+						},
+						push: {
+							particles_nb: 10
+						},
+						remove: {
+							particles_nb: 10
+						}
+					}
+				},
+				retina_detect: true
+			});
+			
+			// Initialize the page
+			document.addEventListener('DOMContentLoaded', () => {
+				// Get games data
+				const allGames = Object.values(gamesData).flat();
+				
+				// Get unique categories
+				const categories = getUniqueCategories(allGames);
+				
+				// Create category sections (except "all" which already exists)
+				categories.forEach(category => {
+					if (category !== 'all') {
+						const categoryGames = getGamesForCategory(allGames, category);
+						if (categoryGames.length > 0) {
+							createCategorySection(category, categoryGames);
+						}
+					}
+				});
+				
+				// Initialize "All Games" section
+				createGameCards(getAllUniqueGames(allGames), 'all-games');
+				
+				// Set up search functionality
+				const searchInput = document.getElementById('search-games');
+				const clearButton = document.getElementById('clear-search');
+				
+				// Search input event
+				searchInput.addEventListener('input', () => {
+					const searchText = searchInput.value.trim();
+					
+					// Show/hide clear button
+					clearButton.classList.toggle('visible', searchText.length > 0);
+					
+					// Filter games
+					filterGames(allGames, searchText);
+				});
+				
+				// Clear search button
+				clearButton.addEventListener('click', () => {
+					searchInput.value = '';
+					clearButton.classList.remove('visible');
+					filterGames(allGames, '');
+				});
+				
+				// Set up modal functionality
+				const mobileModal = document.getElementById('mobile-warning-modal');
+				const instructionsModal = document.getElementById('instructions-modal');
+				const loginModal = document.getElementById('login-required-modal');
+				
+				// Close buttons for modals
+				document.getElementById('close-mobile-modal').addEventListener('click', () => {
+					hideModal('mobile-warning-modal');
+				});
+				
+				document.getElementById('close-instructions-modal').addEventListener('click', () => {
+					hideModal('instructions-modal');
+				});
+				
+				document.getElementById('close-login-modal').addEventListener('click', () => {
+					hideModal('login-required-modal');
+				});
+				
+				// Buttons in modals
+				document.getElementById('understand-mobile-button').addEventListener('click', () => {
+					hideModal('mobile-warning-modal');
+				});
+				
+				document.getElementById('got-it-button').addEventListener('click', () => {
+					hideModal('instructions-modal');
+				});
+				
+				// Close modals when clicking outside
+				window.addEventListener('click', (e) => {
+					if (e.target.classList.contains('modal-overlay')) {
+						e.target.classList.remove('active');
+					}
+				});
+				
+				// Initialize Lucide icons
+				if (typeof lucide !== 'undefined') {
+					lucide.createIcons();
+				}
+				
+				// Handle scroll to top button
+				const scrollTop = document.querySelector('.scrolltop');
+				scrollTop.addEventListener('click', () => {
+					window.scrollTo({
+						top: 0,
+						behavior: 'smooth'
+					});
+				});
+				
+				// Show/hide scroll to top button
+				window.addEventListener('scroll', () => {
+					if (window.scrollY > 300) {
+						scrollTop.style.display = 'flex';
+					} else {
+						scrollTop.style.display = 'none';
+					}
+				});
+			});
 			gtag('js', new Date());
 
 			gtag('config', 'G-SPVQHBL4J1');
@@ -47,6 +260,7 @@
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
 		/>
+		<script src="https://unpkg.com/lucide@latest"></script>
 		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 		<link rel="stylesheet" href="/css/common.css" />
 		<style>
@@ -54,7 +268,7 @@
 			.content-container {
 				max-width: 1200px;
 				margin: 0 auto;
-				padding: 100px 20px 50px 80px;
+				padding: 100px 20px 50px 62px;
 			}
 			
 			.page-title {
@@ -241,14 +455,14 @@
 				left: 0;
 				right: 0;
 				bottom: 0;
-				background-color: rgba(0, 0, 0, 0.75);
+				background-color: rgba(0, 0, 0, 0.7);
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				z-index: 1000;
 				opacity: 0;
 				visibility: hidden;
-				transition: opacity 0.3s, visibility 0.3s;
+				transition: all 0.3s ease;
 			}
 			
 			.modal-overlay.active {
@@ -257,16 +471,16 @@
 			}
 			
 			.modal {
-				background-color: #222;
-				border-radius: 12px;
+				background-color: #1e1e1e;
+				border-radius: 10px;
+				box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+				padding: 30px;
 				width: 90%;
-				max-width: 500px;
-				max-height: 90vh;
-				overflow-y: auto;
-				box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+				max-width: 450px;
+				transform: translateY(-20px);
+				transition: all 0.3s ease;
 				position: relative;
-				transform: translateY(20px);
-				transition: transform 0.3s;
+				border: 1px solid rgba(255, 102, 0, 0.3);
 			}
 			
 			.modal-overlay.active .modal {
@@ -274,116 +488,111 @@
 			}
 			
 			.modal-header {
-				padding: 20px;
-				border-bottom: 1px solid #333;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
+				text-align: center;
+				margin-bottom: 25px;
 			}
 			
-			.modal-title {
-				color: white;
+			.modal-header .login-logo {
+				width: 80px;
+				margin-bottom: 16px;
+			}
+			
+			.modal-header h2 {
+				color: #ffffff;
+				margin-bottom: 10px;
+				font-size: 24px;
+				font-weight: 700;
 				margin: 0;
-				font-size: 1.5rem;
-				font-weight: 600;
 			}
 			
-			.modal-close {
-				background: none;
-				border: none;
-				color: rgba(255, 255, 255, 0.7);
-				font-size: 1.5rem;
-				cursor: pointer;
-				transition: color 0.3s;
+			.modal-header p {
+				color: #aaaaaa;
+				margin-top: 4px;
+				font-size: 16px;
 			}
 			
-			.modal-close:hover {
-				color: #de5c34;
-			}
-			
-			.modal-content {
-				padding: 20px;
-				color: rgba(255, 255, 255, 0.9);
-			}
-			
-			.modal-footer {
-				padding: 15px 20px;
-				border-top: 1px solid #333;
-				text-align: right;
+			.modal-buttons {
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
 			}
 			
 			.modal-button {
-				background-color: #de5c34;
+				padding: 12px 20px;
+				border-radius: 6px;
+				font-weight: 600;
+				font-size: 16px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-decoration: none;
+			}
+			
+			.login-button {
+				background-color: #ff6600;
 				color: white;
 				border: none;
-				border-radius: 6px;
-				padding: 8px 16px;
-				font-weight: 500;
+				gap: 7px;
+			}
+			
+			.login-button:hover {
+				background-color: #ff8033;
+			}
+			
+			.signup-button {
+				background-color: transparent;
+				color: #ff6600;
+				border: 1px solid #ff6600;
+				gap: 7px;
+			}
+			
+			.signup-button:hover {
+				background-color: rgba(255, 102, 0, 0.1);
+			}
+			
+			.modal-close {
+				position: absolute;
+				top: 15px;
+				right: 15px;
+				color: #aaaaaa;
+				font-size: 20px;
 				cursor: pointer;
-				transition: background-color 0.3s;
+				transition: color 0.3s ease;
 			}
 			
-			.modal-button:hover {
-				background-color: #ea6e47;
+			.modal-close:hover {
+				color: #ff6600;
 			}
 			
-			.modal-warning-icon {
-				color: #ffcc00;
-				font-size: 2rem;
-				margin-right: 15px;
-			}
-			
-			.modal-success-icon {
-				color: #4caf50;
-				font-size: 2rem;
-				margin-right: 15px;
-			}
-			
-			.modal-header-with-icon {
+			/* Lock icon for popular games */
+			.lock-icon {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background-color: rgba(0, 0, 0, 0.7);
+				color: white;
+				border: none;
+				border-radius: 25px;
+				padding: 10px 20px;
+				font-weight: 600;
+				cursor: pointer;
+				opacity: 0;
+				transition: opacity 0.3s;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 				display: flex;
 				align-items: center;
 			}
 			
-			.step {
-				margin-bottom: 15px;
+			.game-card:hover .lock-icon {
+				opacity: 1;
 			}
 			
-			.step-number {
-				display: inline-block;
-				background-color: #de5c34;
-				color: white;
-				width: 24px;
-				height: 24px;
-				border-radius: 50%;
-				text-align: center;
-				line-height: 24px;
-				margin-right: 10px;
-				font-weight: bold;
-			}
-			
-			@media (max-width: 768px) {
-				.game-grid {
-					grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-				}
-				
-				.content-container {
-					padding: 100px 15px 50px 60px;
-				}
-				
-				.category-title {
-					margin-left: 10px;
-				}
-				
-				.search-container {
-					max-width: 90%;
-				}
-				
-				.modal {
-					width: 95%;
-				}
-				#mobile-warning-modal {
-					padding: 100px 15px 50px 60px
-				}
+			.lock-icon i {
+				margin-right: 8px;
+				color: #ff6600;
 			}
 		</style>
 	</head>
@@ -513,20 +722,17 @@
 		<!-- Mobile Warning Modal -->
 		<div id="mobile-warning-modal" class="modal-overlay">
 			<div class="modal">
+				<div class="modal-close" id="close-mobile-modal">
+					<i class="fa-solid fa-xmark"></i>
+				</div>
 				<div class="modal-header">
-					<div class="modal-header-with-icon">
-						<i class="fa-solid fa-triangle-exclamation modal-warning-icon"></i>
-						<h3 class="modal-title">Mobile Not Supported</h3>
-					</div>
-					<button class="modal-close" id="close-mobile-modal">&times;</button>
+					<h2>Mobile Not Supported</h2>
+					<p>These games cannot be played on mobile devices</p>
 				</div>
-				<div class="modal-content">
-					<p>These games can only be downloaded and played on computers.</p>
-					<p>Mobile devices don't support running most of these games directly.</p>
-					<p>Please use a Windows, Mac, or Linux computer to download and play these games.</p>
-				</div>
-				<div class="modal-footer">
-					<button class="modal-button" id="understand-mobile-button">I Understand</button>
+				<div class="modal-buttons">
+					<button class="modal-button login-button" id="understand-mobile-button">
+						I Understand
+					</button>
 				</div>
 			</div>
 		</div>
@@ -534,16 +740,14 @@
 		<!-- Download Instructions Modal -->
 		<div id="instructions-modal" class="modal-overlay">
 			<div class="modal">
+				<div class="modal-close" id="close-instructions-modal">
+					<i class="fa-solid fa-xmark"></i>
+				</div>
 				<div class="modal-header">
-					<div class="modal-header-with-icon">
-						<i class="fa-solid fa-circle-info modal-success-icon"></i>
-						<h3 class="modal-title">How to Play Offline</h3>
-					</div>
-					<button class="modal-close" id="close-instructions-modal">&times;</button>
+					<h2>How to Play Offline</h2>
+					<p>Follow these steps to play your downloaded game</p>
 				</div>
 				<div class="modal-content">
-					<p>Follow these steps to play your downloaded game on a school computer:</p>
-					
 					<div class="step">
 						<span class="step-number">1</span>
 						<strong>Download the game</strong> to your personal computer
@@ -568,11 +772,33 @@
 						<span class="step-number">5</span>
 						Find the game's <strong>main executable</strong> (usually a .exe file) and run it
 					</div>
-					
-					<p><strong>Note:</strong> Some school computers may block running executables. In those cases, you might need to try one of our browser-based games instead.</p>
 				</div>
-				<div class="modal-footer">
-					<button class="modal-button" id="got-it-button">Got It!</button>
+				<div class="modal-buttons">
+					<button class="modal-button login-button" id="got-it-button">
+						Got It!
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Auth Modal -->
+		<div class="modal-overlay" id="login-required-modal">
+			<div class="modal">
+				<div class="modal-close" id="close-login-modal">
+					<i class="fa-solid fa-xmark"></i>
+				</div>
+				<div class="modal-header">
+					<img src="/assets/logo.png" alt="Flamepass Logo" class="login-logo">
+					<h2>Login Required</h2>
+					<p>Please login to download this game</p>
+				</div>
+				<div class="modal-buttons">
+					<a href="/login.html" class="modal-button login-button">
+						Login <i data-lucide="log-in"></i>
+					</a>
+					<a href="/signup.html" class="modal-button signup-button">
+						Sign Up <i data-lucide="user-plus"></i>
+					</a>
 				</div>
 			</div>
 		</div>
@@ -586,8 +812,8 @@
 		</div>
 		
 		<script>
-			// Game data will be added by you
-			const gamesData= [
+					// Game data will be added by you
+					const gamesData= [
 				// Popular games (top 15% by recognition/cultural impact)
 				{ title: "Rocket League", image: "https://cdn.akamai.steamstatic.com/steam/apps/252950/header.jpg", size: "3.65 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavUG53cjBFSUlVX1U&resourcekey=0-BtXdTdhW_Fthn9UyvHJj8Q&usp=drive_copy", category: "popular" },
 				{ title: "Hollow Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=1gTxsJEnak1_HsRViLn1bvrEk21zXeUZK&usp=drive_copy", category: "popular" },
@@ -674,6 +900,26 @@
 				return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 			}
 			
+			// Function to check if user is logged in (using the same auth logic)
+			function isUserLoggedIn() {
+				const loginData = getLoginFromLocalStorage();
+				return !!loginData; // Convert to boolean
+			}
+			
+			// Function to get login data from local storage
+			function getLoginFromLocalStorage() {
+				const loginData = JSON.parse(localStorage.getItem('loginData'));
+				if (!loginData) return null;
+				
+				const now = new Date();
+				const expirationDate = new Date(loginData.expiration);
+				if (now > expirationDate) {
+					localStorage.removeItem('loginData');
+					return null;
+				}
+				return loginData;
+			}
+			
 			// Function to create game cards
 			function createGameCards(games, containerId) {
 				const container = document.getElementById(containerId);
@@ -695,6 +941,8 @@
 						imageUrl = 'https://i0.wp.com/' + imageUrl.replace(/^https?:\/\//, '');
 					}
 					
+					let isPopularGame = game.popular || (game.category && game.category.toLowerCase().includes('popular'));
+					
 					gameCard.innerHTML = `
 						<img src="${imageUrl}" alt="${game.title}" class="game-img">
 						<div class="game-overlay">
@@ -703,6 +951,25 @@
 						</div>
 						<button class="download-btn" data-game-title="${game.title}" data-game-url="${game.url}">Download</button>
 					`;
+					
+					// Add lock icon for popular games if user is not logged in
+					if (isPopularGame && !isUserLoggedIn()) {
+						const lockButton = document.createElement('button');
+						lockButton.className = 'lock-icon';
+						lockButton.innerHTML = '<i class="fa-solid fa-lock"></i> Login Required';
+						lockButton.setAttribute('data-game-title', game.title);
+						
+						// Add click event to lock button
+						lockButton.addEventListener('click', handleLockedGameClick);
+						
+						gameCard.appendChild(lockButton);
+						
+						// Hide the download button
+						const downloadBtn = gameCard.querySelector('.download-btn');
+						if (downloadBtn) {
+							downloadBtn.style.display = 'none';
+						}
+					}
 					
 					container.appendChild(gameCard);
 				});
@@ -714,12 +981,30 @@
 				});
 			}
 			
+			// Handle locked game click
+			function handleLockedGameClick(e) {
+				e.stopPropagation();
+				
+				// Show login modal
+				showModal('login-required-modal');
+			}
+			
 			// Handle download button clicks
 			function handleDownloadClick(e) {
 				e.stopPropagation();
 				
 				const gameTitle = this.getAttribute('data-game-title');
 				const gameUrl = this.getAttribute('data-game-url');
+				
+				// Find the game in our data
+				const game = gamesData.flat().find(g => g.title === gameTitle);
+				
+				// Check if this is a popular game and user is not logged in
+				if (game && (game.popular || (game.category && game.category.toLowerCase().includes('popular'))) && !isUserLoggedIn()) {
+					// Show login modal
+					showModal('login-required-modal');
+					return;
+				}
 				
 				// Show mobile warning if on mobile
 				if (isMobileDevice()) {
@@ -884,6 +1169,7 @@
 			}
 			
 			// Function to get games for a category
+						// Function to get games for a category
 			function getGamesForCategory(games, category) {
 				if (category === 'all') {
 					return games;
