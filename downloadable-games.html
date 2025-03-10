@@ -80,7 +80,7 @@
 			}
 			
 			.search-input {
-				width: 100%;
+				width: -webkit-fill-available;
 				padding: 12px 20px;
 				padding-right: 40px;
 				background: rgba(46, 46, 46, 0.7);
@@ -153,7 +153,7 @@
 				left: 0;
 				width: 100%;
 				padding: 15px;
-				background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+				background: linear-gradient(transparent, rgb(0, 0, 0));
 				color: white;
 				opacity: 1;
 				transition: opacity 0.3s;
@@ -484,7 +484,7 @@
 					<span class="material-symbols-outlined">close</span>
 				</button>
 			</div>
-
+			<div id="no-results" class="no-results hidden">No games match your search.</div>
 			<!-- Game categories will be dynamically created based on game data -->
 			<div id="game-categories-container">
 				<!-- Template for category sections -->
@@ -581,88 +581,92 @@
 			<div style="z-index: -998; position: fixed" class="blobtop"></div>
 			<div style="z-index: -999; position: fixed" id="particles-js"></div>
 		</div>
-
+		
 		<script>
 			// Game data will be added by you
-            const gamesData = [
-	{ title: "VVVVVV", image: "https://cdn.akamai.steamstatic.com/steam/apps/70300/header.jpg", size: "59.9 MB", url: "https://drive.google.com/open?id=1RaI7SFWbUw3XsVJtcKwgjATjxZ7sWZWf&usp=drive_copy", category: "Indie" },
-	{ title: "Universe Sandbox 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/230290/header.jpg", size: "79.9 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPel9LanZyYmtLSmM&resourcekey=0--DDAIXdP_KtBfQI6dhP2lA&usp=drive_copy", category: "Simulation" },
-	{ title: "Tabletop Simulator", image: "https://cdn.akamai.steamstatic.com/steam/apps/286160/header.jpg", size: "4.65 GB", url: "https://drive.google.com/open?id=1AyZFV2KMoUGq_nVPhQ0o0o4Wfe2xn9YR&usp=drive_copy", category: "Simulation" },
-	{ title: "Super Meat Boy", image: "https://cdn.akamai.steamstatic.com/steam/apps/40800/header.jpg", size: "86 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmaURiYmN0ZUhaNzg&resourcekey=0-PbniWDGmuoFVx94wnlnl2Q&usp=drive_copy", category: "Platformer" },
-	{ title: "Super Smash Flash 2 Beta", image: "https://archive.org/download/SSF2BetaSetupMac.v1.1.0.1/DOhCI27X0AAV1PJ.jpg", size: "10.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPaG5qMWZTMXZZeXM&resourcekey=0-mAYGs1VnTQUeK4XCX_JORg&usp=drive_copy", category: "Fighting" },
-	{ title: "Stranded Deep Alpha", image: "https://cdn.akamai.steamstatic.com/steam/apps/313120/header.jpg", size: "220.1 MB", url: "https://drive.google.com/open?id=0B-0FGUJOS7AdUmJQVW9HZFRCQk0&resourcekey=0-UMuVHc8st47oo1zYihX3JA&usp=drive_copy", category: "Survival" },
-	{ title: "Starship Valley", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1466860/header.jpg", size: "321.4 MB", url: "https://drive.google.com/open?id=1sgepZRLE7rSZ-ashmIN4fHErrsiXkC_6&usp=drive_copy", category: "Simulation" },
-	{ title: "Star Wars: Battlefront II", image: "https://cdn.akamai.steamstatic.com/steam/apps/1237950/header.jpg", size: "4.02 GB", url: "https://drive.google.com/open?id=1lBEuxB_QA4E7Gc1pfGsyNfV2bTy85J58&usp=drive_copy", category: "Action" },
-	{ title: "Sonic Adventure DX", image: "https://cdn.akamai.steamstatic.com/steam/apps/71250/header.jpg", size: "410.9 MB", url: "https://drive.google.com/open?id=1QHzH2T69zZLdTGfUrOA97q2qo1JAoTBv&usp=drive_copy", category: "Platformer" },
-	{ title: "Slender", image: "https://cdn.akamai.steamstatic.com/steam/apps/252330/header.jpg", size: "42.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPMFFJSlRpVEpuMzg&resourcekey=0-NGfDablUd88nRdyF2KQZzg&usp=drive_copy", category: "Horror" },
-	{ title: "The Elder Scrolls V: Skyrim", image: "https://cdn.akamai.steamstatic.com/steam/apps/72850/header.jpg", size: "11.15 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavMllPdlU2aW95Uzg&resourcekey=0-kStFdSiCsGMEjlgUVpgToQ&usp=drive_copy", category: "RPG" },
-	{ title: "StarCraft", image: "https://i.redd.it/tgxawg7wjm3d1.jpeg", size: "10.5 MB", url: "https://drive.google.com/open?id=10ia49Nf90xv4XXjVPno93F7kRlL2T07y&usp=drive_copy", category: "Strategy" },
-	{ title: "FNAF: Sister Location", image: "https://cdn.akamai.steamstatic.com/steam/apps/506610/header.jpg", size: "765.6 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPMlFZeTl3YzZpbjA&resourcekey=0-AI3yo8I4Tm4U48dZIF_cTQ&usp=drive_copy", category: "Horror" },
-	{ title: "Shovel Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/250760/header.jpg", size: "94.7 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmWTJfM2hwRUVNZDA&resourcekey=0-RrSPIUfJgZ8vRyQjzqjyIA&usp=drive_copy", category: "Platformer" },
-	{ title: "Shovel Knight: Treasure Trove", image: "https://cdn.akamai.steamstatic.com/steam/apps/589680/header.jpg", size: "209.9 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPN3puTklwSmdqajg&resourcekey=0-dKr1bDxU7dnABMM1AZxyOg&usp=drive_copy", category: "Platformer" },
-	{ title: "RPG Maker XP", image: "https://cdn.akamai.steamstatic.com/steam/apps/235900/header.jpg", size: "1.33 GB", url: "https://drive.google.com/open?id=0B-msgOvnlckUZFBuSGxwWjZLNDg&resourcekey=0-qvUuYSaWYcYlnjpqfWbf5Q&usp=drive_copy", category: "Game Development" },
-	{ title: "Rogue Legacy", image: "https://cdn.akamai.steamstatic.com/steam/apps/241600/header.jpg", size: "94.2 MB", url: "https://drive.google.com/open?id=1s18oc7Y5Lih37mfbggbczKvLOfE-MRzK&usp=drive_copy", category: "Roguelike" },
-	{ title: "Rocket League", image: "https://cdn.akamai.steamstatic.com/steam/apps/252950/header.jpg", size: "3.65 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavUG53cjBFSUlVX1U&resourcekey=0-BtXdTdhW_Fthn9UyvHJj8Q&usp=drive_copy", category: "Sports" },
-	{ title: "Realm of the Mad God", image: "https://cdn.akamai.steamstatic.com/steam/apps/200210/header.jpg", size: "129.2 MB", url: "https://drive.google.com/open?id=1AdTu2t4pvREXvjeEJRUK8-LSbFLBaWvZ&usp=drive_copy", category: "MMO" },
-	{ title: "Rayman Origins", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/207490/header.jpg", size: "2.27 GB", url: "https://drive.google.com/open?id=1iKzdfIWk7MLMIvwrd8qa5PglbX6XFY06&usp=drive_copy", category: "Platformer" },
-	{ title: "Banana 104 K2.52", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1181270/header.jpg", size: "160.1 MB", url: "https://drive.google.com/open?id=1SeRUVt381G6YkihvNR8d8vnOXuQ4XAz1&usp=drive_copy", category: "Indie" },
-	{ title: "Quake II", image: "https://cdn.akamai.steamstatic.com/steam/apps/2320/header.jpg", size: "234.4 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmRWhtX01UU3pyTXM&resourcekey=0-_L6BKAfWI6RR3HVEyEuxdg&usp=drive_copy", category: "FPS" },
-	{ title: "Project Wingman Demo", image: "https://cdn.akamai.steamstatic.com/steam/apps/895870/header.jpg", size: "5.86 GB", url: "https://drive.google.com/open?id=18dGqZG9X532QfhG1t6yiGAkMSnGHrG0t&usp=drive_copy", category: "Flight Sim" },
-	{ title: "Portal", image: "https://cdn.akamai.steamstatic.com/steam/apps/400/header.jpg", size: "2.25 GB", url: "https://drive.google.com/open?id=1xZTFpw--SAf2HaFZq59tQtQS8vZf90uD&usp=drive_copy", category: "Puzzle" },
-	{ title: "Portal 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg", size: "7.64 GB", url: "https://drive.google.com/open?id=13Oh288efXlWF6zAuSbeZ2p-rxn9VeVCF&usp=drive_copy", category: "Puzzle" },
-	{ title: "Pokemon Uranium", image: "https://static.wikia.nocookie.net/pokemon-uranium/images/7/73/Uranium_intro.png/revision/latest?cb=20240412053347", size: "216.5 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmTDFNNF9rbjVDMDA&resourcekey=0-VRRhVk2WHbKOzHyj6IQubQ&usp=drive_copy", category: "Fan Game" },
-	{ title: "Pokemon Insurgence", image: "https://mir-s3-cdn-cf.behance.net/projects/404/a700fb38527887.Y3JvcCwxMzE0LDEwMjgsMzAyLDI2.png", size: "251.2 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmZlBHMkpMRzlvTWs&resourcekey=0-qxhtUoQIIb-1jTqjaZ3rpw&usp=drive_copy", category: "Fan Game" },
-	{ title: "Plague Inc", image: "https://cdn.akamai.steamstatic.com/steam/apps/246620/header.jpg", size: "365.9 MB", url: "https://drive.google.com/open?id=0B2Dxw3In9Yh7ZllZSGxxVm1tQjQ&resourcekey=0-C3giD8ZCn0S7SDByN0c44A&usp=drive_copy", category: "Strategy" },
-	{ title: "FNAF: Pizzeria Simulator", image: "https://cdn.akamai.steamstatic.com/steam/apps/738060/header.jpg", size: "250.7 MB", url: "https://drive.google.com/open?id=13YU_XZu6mKUF2Kfv6C2eaQzOeNGN3czy&usp=drive_copy", category: "Horror" },
-	{ title: "Papers, Please", image: "https://cdn.akamai.steamstatic.com/steam/apps/239030/header.jpg", size: "33.9 MB", url: "https://drive.google.com/open?id=1XdnK0C9rxwTSW31Un3K2dA3DASlmEBPs&usp=drive_copy", category: "Indie" },
-	{ title: "Warcraft Online Plus", image: "https://www.farazjafari.com/wp-content/uploads/2019/09/WOW-Classic-Plus-Banner.png", size: "50.4 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUMlR6anN5bkEwNUE&resourcekey=0-ENYbTaeR6fHnfBRpqjrXNg&usp=drive_copy", category: "MMO" },
-	{ title: "Okhlos", image: "https://cdn.akamai.steamstatic.com/steam/apps/400180/header.jpg", size: "2.23 GB", url: "https://drive.google.com/open?id=1skdbmVnbnTpUrSQ3jjx5dOyKHUO_Hrmt&usp=drive_copy", category: "Action" },
-	{ title: "Nothing 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/1241700/header.jpg", size: "663.7 MB", url: "https://drive.google.com/open?id=1M4Bz1tMAMGCrChhEcfId5ZGazqgIbayX&usp=drive_copy", category: "Experimental" },
-	{ title: "My Lovely Daughter", image: "https://cdn.akamai.steamstatic.com/steam/apps/580170/header.jpg", size: "157.1 MB", url: "https://drive.google.com/open?id=1g5_KbXs4f1pA8SiCrj1xuGronir72PPz&usp=drive_copy", category: "Adventure" },
-	{ title: "Microvolts", image: "https://i.ytimg.com/vi/sDJ3X6bRTRE/maxresdefault.jpg", size: "1.38 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmbnlrWTFfZ196ODg&resourcekey=0-egIIeHejJ1TqlTLCO9-5aw&usp=drive_copy", category: "Shooter" },
-	{ title: "MAFA's The Lost Terminals", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1627850/header.jpg", size: "930.9 MB", url: "https://drive.google.com/open?id=1AhuF6KfABP4ysIv6F9ZnXK4iNcQsV9m1&usp=drive_copy", category: "Indie" },
-	{ title: "Left 4 Dead", image: "https://cdn.akamai.steamstatic.com/steam/apps/500/header.jpg", size: "3.57 GB", url: "https://drive.google.com/open?id=1_IXuw-tNjp1uAX_bZUZEJE1DV-tT-CNI&usp=drive_copy", category: "FPS" },
-	{ title: "Left 4 Dead 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/550/header.jpg", size: "14.36 GB", url: "https://drive.google.com/open?id=0BwqZMepc_pHyZVZkb1hNOTlsU0k&resourcekey=0-O_Atkq7rtLXOxtlsoFbidQ&usp=drive_copy", category: "FPS" },
-	{ title: "Insert Quarter", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/1513890/header.jpg", size: "52.8 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUYnAwYWJLbzNwRGM&resourcekey=0-A0fAHjxZrfTSg7LwJxucqQ&usp=drive_copy", category: "Arcade" },
-	{ title: "Don't Starve Together", image: "https://cdn.akamai.steamstatic.com/steam/apps/322330/header.jpg", size: "229.2 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPVjkwVG8wSEZUdkE&resourcekey=0-ONa3I9S7yDk7Chs3aYyf7A&usp=drive_copy", category: "Survival" },
-	{ title: "Hyper Light Drifter", image: "https://cdn.akamai.steamstatic.com/steam/apps/257850/header.jpg", size: "747.4 MB", url: "https://drive.google.com/open?id=1iokSgV0z90pB353v0agqdy3ZXGVqGuYn&usp=drive_copy", category: "Action RPG" },
-	{ title: "Hotline Miami", image: "https://cdn.akamai.steamstatic.com/steam/apps/219150/header.jpg", size: "36.7 MB", url: "https://drive.google.com/open?id=1k6plyzyh8ABbLqbPvTFkGlh0nWfqIw1t&usp=drive_copy", category: "Action" },
-	{ title: "Hotline Miami 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/274170/header.jpg", size: "129.7 MB", url: "https://drive.google.com/open?id=111lVnhmUF3iWH1G82c70IloXEzBEQKpQ&usp=drive_copy", category: "Action" },
-	{ title: "Hollow Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=1gTxsJEnak1_HsRViLn1bvrEk21zXeUZK&usp=drive_copy", category: "Metroidvania" },
-	{ title: "Half-Life: Blue Shift", image: "https://cdn.akamai.steamstatic.com/steam/apps/130/header.jpg", size: "3.64 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmemtFX2g2TDVxS3c&resourcekey=0-nRdLPlr93XUMO5k889uvfQ&usp=drive_copy", category: "FPS" },
-	{ title: "Half-Life 2: Episode 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/420/header.jpg", size: "3.35 GB", url: "https://drive.google.com/open?id=0B-msgOvnlckUbkliRzBVMkZyTVk&resourcekey=0-Vka7tZyBwa9xUhbZ9vMp9A&usp=drive_copy", category: "FPS" },
-	{ title: "Hello Neighbor", image: "https://cdn.akamai.steamstatic.com/steam/apps/521890/header.jpg", size: "35.4 MB", url: "https://drive.google.com/open?id=1nocao8h-lYadRMqTGCvNO57u5iZZ5QMB&usp=drive_copy", category: "Stealth" },
-	{ title: "Harvest Moon: Light of Hope", image: "https://cdn.akamai.steamstatic.com/steam/apps/585900/header.jpg", size: "766 MB", url: "https://drive.google.com/open?id=1f1eE41XNOdqeokAEgY1c1kgCegIoDVcL&usp=drive_copy", category: "Farming Sim" },
-	{ title: "Hatoful Boyfriend", image: "https://cdn.akamai.steamstatic.com/steam/apps/310080/header.jpg", size: "887.4 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmREJsZjhRR0xIVWc&resourcekey=0-19C70wWOTfARr-cTVyhmDQ&usp=drive_copy", category: "Visual Novel" },
-	{ title: "Half-Life 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/220/header.jpg", size: "3.12 GB", url: "https://drive.google.com/open?id=190YVYln0FqF2jLDY0zxCUxdynCDDFQoM&usp=drive_copy", category: "FPS" },
-	{ title: "Grand Theft Auto: San Andreas", image: "https://cdn.akamai.steamstatic.com/steam/apps/12120/header.jpg", size: "437.9 MB", url: "https://drive.google.com/open?id=0B-zHnX0724mNTGI0V01zTVY3WFk&resourcekey=0-Yi_GQnr2T2LkKYdYSen9tQ&usp=drive_copy", category: "Open World" },
-	{ title: "Five Nights at Freddy's 3", image: "https://cdn.akamai.steamstatic.com/steam/apps/354140/header.jpg", size: "109.1 MB", url: "https://drive.google.com/open?id=0B31-NQeMvxfqSTFTcFNiY1J5VEE&resourcekey=0-GVa5NhnPISCrvvLnFi3fJw&usp=drive_copy", category: "Horror" },
-	{ title: "Five Nights at Freddy's", image: "https://cdn.akamai.steamstatic.com/steam/apps/319510/header.jpg", size: "220.7 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPUzFpOUoySklqY3c&resourcekey=0-RV2n_PYoBpfq-oso-ATq6A&usp=drive_copy", category: "Horror" },
-	{ title: "Five Nights at Freddy's 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/332800/header.jpg", size: "207.4 MB", url: "https://drive.google.com/open?id=0B-xENJ-pMOUGN0lSX2wzLUp4Z1U&resourcekey=0-BCwR17riGYRYg7OOVm3COQ&usp=drive_copy", category: "Horror" },
-	{ title: "Fate", image: "https://cdn.akamai.steamstatic.com/steam/apps/246840/header.jpg", size: "163.1 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUSmY4TTFqTzYtd2s&resourcekey=0-Etf7t5oC09F8lub2YJ1ZyQ&usp=drive_copy", category: "RPG" },
-	{ title: "Evoland", image: "https://cdn.akamai.steamstatic.com/steam/apps/233470/header.jpg", size: "76.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPQU1uSG15VjloZjA&resourcekey=0-aqFT84o6gLuec78m9R2TAQ&usp=drive_copy", category: "RPG" },
-	{ title: "Enter the Gungeon", image: "https://cdn.akamai.steamstatic.com/steam/apps/311690/header.jpg", size: "199 MB", url: "https://drive.google.com/open?id=0B1y3AScetqavdnFFalVsTlNkaW8&resourcekey=0-CfC4LgvzpUqvJqeBYNeSDA&usp=drive_copy", category: "Roguelike" },
-	{ title: "Doom 3", image: "https://cdn.akamai.steamstatic.com/steam/apps/208200/header.jpg", size: "41 MB", url: "https://drive.google.com/open?id=10BC4qo4vnYQtDbjXSPCEal-iROCE48Uy&usp=drive_copy", category: "FPS" },
-	{ title: "Doom 3 Portable", image: "https://cdn.akamai.steamstatic.com/steam/apps/208200/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmVnJwQUhJR1ctNlE&resourcekey=0-BDL6ZHFk0vHFqfSz8b-DyQ&usp=drive_copy", category: "FPS" },
-	{ title: "Dead Cells", image: "https://cdn.akamai.steamstatic.com/steam/apps/588650/header.jpg", size: "428 MB", url: "https://drive.google.com/open?id=1KMYgSalBfvp0jjm4mASmwa3X7vP2qcLl&usp=drive_copy", category: "Roguelike" },
-	{ title: "Darkest Dungeon", image: "https://cdn.akamai.steamstatic.com/steam/apps/262060/header.jpg", size: "2.86 GB", url: "https://drive.google.com/open?id=1qYN3ZFnvQwJ7lNrIYslntRoSxcfwoHfn&usp=drive_copy", category: "Turn-Based" },
-	{ title: "Danganronpa: Trigger Happy Havoc", image: "https://cdn.akamai.steamstatic.com/steam/apps/413410/header.jpg", size: "2.41 GB", url: "https://drive.google.com/open?id=1hku_jv-CC2z-mX2s1HaV3PUmI1mNQrgk&usp=drive_copy", category: "Visual Novel" },
-	{ title: "Danganronpa 2: Goodbye Despair", image: "https://cdn.akamai.steamstatic.com/steam/apps/413420/header.jpg", size: "3.07 GB", url: "https://drive.google.com/open?id=1bfBbMiyKA0fnG8uUPTbhp7uF7RxSVv-a&usp=drive_copy", category: "Visual Novel" },
-	{ title: "Five Nights at Freddy's World", image: "https://i.ytimg.com/vi/FJmWHOMsT7Q/maxresdefault.jpg", size: "229.1 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPR3hLV2JIX0JoWkk&resourcekey=0--zSt0A0l8OpMhSichxI7RA&usp=drive_copy", category: "RPG" },
-	{ title: "Evoland 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/359310/header.jpg", size: "319.5 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPWlFiR2xHMFp1WWs&resourcekey=0-kP1xvNbEFaKBukYSgpmB9w&usp=drive_copy", category: "RPG" },
-	{ title: "Counter-Strike: Source", image: "https://cdn.akamai.steamstatic.com/steam/apps/240/header.jpg", size: "1.03 GB", url: "https://drive.google.com/open?id=1kGXMJRN1do4WWsk3bjoE1hcpR_1VJqI9&usp=drive_copy", category: "FPS" },
-	{ title: "Counter-Strike", image: "https://cdn.akamai.steamstatic.com/steam/apps/10/header.jpg", size: "256.1 MB", url: "https://drive.google.com/open?id=0Bwa3UPwo0PalV3FraW5qLXBfLTQ&resourcekey=0-EI89kbpJ7uiECuIh-5pZIQ&usp=drive_copy", category: "FPS" },
-	{ title: "Prison Architect", image: "https://cdn.akamai.steamstatic.com/steam/apps/233450/header.jpg", size: "659.3 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPcnh2ZUZ5UHNsMnc&resourcekey=0-7ry1-ZQpB1AZ6zCdugWCEw&usp=drive_copy", category: "Simulation" },
-	{ title: "Crashday", image: "https://cdn.akamai.steamstatic.com/steam/apps/508980/header.jpg", size: "764.8 MB", url: "https://drive.google.com/open?id=13Kfv67706b8Oy6pcIcKWD8OtphgzQXAw&usp=drive_copy", category: "Racing" },
-	{ title: "Call of Duty 4: Modern Warfare", image: "https://cdn.akamai.steamstatic.com/steam/apps/7940/header.jpg", size: "4.43 GB", url: "https://drive.google.com/open?id=1pOaV240JSgowOFFj_1rO74N3DcOT0F--&usp=drive_copy", category: "FPS" },
-	{ title: "Brutal Doom 20b Hell on Earth", image: "https://i.ytimg.com/vi/iPyq0jFgVjI/maxresdefault.jpg", size: "177.6 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPVGxZVEprNjFrcTQ&resourcekey=0-GAGqBk018KMQTNdewfSCtg&usp=drive_copy", category: "FPS" },
-	{ title: "The Binding of Isaac", image: "https://cdn.akamai.steamstatic.com/steam/apps/113200/header.jpg", size: "85.9 MB", url: "https://drive.google.com/open?id=1u-jb8vFDsJhVxKZbvFi-WXTQqQX-tKrQ&usp=drive_copy", category: "Roguelike" },
-	{ title: "The Binding of Isaac: Rebirth", image: "https://cdn.akamai.steamstatic.com/steam/apps/250900/header.jpg", size: "451.4 MB", url: "https://drive.google.com/open?id=0B1y3AScetqavcmVCZjBOQ2ZDT0k&resourcekey=0-LPcl6__6inVo9VaThNTbOQ&usp=drive_copy", category: "Roguelike" },
-	{ title: "Bloons Tower Defense", image: "https://cdn.akamai.steamstatic.com/steam/apps/960090/header.jpg", size: "219.3 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPV0FsR2FwYngzbjg&resourcekey=0-Q4Zto3C0xBaEgsFGHdj5sA&usp=drive_copy", category: "Tower Defense" },
-	{ title: "Battlefield 1942", image: "https://i.ytimg.com/vi/xD8kTKLO_Bw/maxresdefault.jpg", size: "223.5 MB", url: "https://drive.google.com/open?id=1sE-sqdoXuw2Fe9rY6WS1WRJXGcQ8rKM2&usp=drive_copy", category: "FPS" },
-	{ title: "Battlefield 2", image: "https://i.ytimg.com/vi/2yrO8QG_7u8/maxresdefault.jpg", size: "3.27 GB", url: "https://drive.google.com/open?id=13HVX3yU5CXZcBpPDMQfNV2-xJvwsBfLI&usp=drive_copy", category: "FPS" }
+			const gamesData= [
+				// Popular games (top 15% by recognition/cultural impact)
+				{ title: "Rocket League", image: "https://cdn.akamai.steamstatic.com/steam/apps/252950/header.jpg", size: "3.65 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavUG53cjBFSUlVX1U&resourcekey=0-BtXdTdhW_Fthn9UyvHJj8Q&usp=drive_copy", category: "popular" },
+				{ title: "Hollow Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=1gTxsJEnak1_HsRViLn1bvrEk21zXeUZK&usp=drive_copy", category: "popular" },
+				{ title: "Five Nights at Freddy's", image: "https://cdn.akamai.steamstatic.com/steam/apps/319510/header.jpg", size: "220.7 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPUzFpOUoySklqY3c&resourcekey=0-RV2n_PYoBpfq-oso-ATq6A&usp=drive_copy", category: "popular" },
+				{ title: "FNAF: Sister Location", image: "https://cdn.akamai.steamstatic.com/steam/apps/506610/header.jpg", size: "765.6 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPMlFZeTl3YzZpbjA&resourcekey=0-AI3yo8I4Tm4U48dZIF_cTQ&usp=drive_copy", category: "popular" },
+				{ title: "Grand Theft Auto: San Andreas", image: "https://cdn.akamai.steamstatic.com/steam/apps/12120/header.jpg", size: "437.9 MB", url: "https://drive.google.com/open?id=0B-zHnX0724mNTGI0V01zTVY3WFk&resourcekey=0-Yi_GQnr2T2LkKYdYSen9tQ&usp=drive_copy", category: "popular" },
+				{ title: "Stardew Valley", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/413150/header.jpg", size: "321.4 MB", url: "https://drive.google.com/open?id=1sgepZRLE7rSZ-ashmIN4fHErrsiXkC_6&usp=drive_copy", category: "popular" },
+				{ title: "Star Wars: Battlefront II", image: "https://cdn.akamai.steamstatic.com/steam/apps/1237950/header.jpg", size: "4.02 GB", url: "https://drive.google.com/open?id=1lBEuxB_QA4E7Gc1pfGsyNfV2bTy85J58&usp=drive_copy", category: "popular" },
+				{ title: "StarCraft", image: "https://i.redd.it/tgxawg7wjm3d1.jpeg", size: "10.5 MB", url: "https://drive.google.com/open?id=10ia49Nf90xv4XXjVPno93F7kRlL2T07y&usp=drive_copy", category: "popular" },
+				{ title: "Portal 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg", size: "7.64 GB", url: "https://drive.google.com/open?id=13Oh288efXlWF6zAuSbeZ2p-rxn9VeVCF&usp=drive_copy", category: "popular" },
+				{ title: "The Elder Scrolls V: Skyrim", image: "https://cdn.akamai.steamstatic.com/steam/apps/72850/header.jpg", size: "11.15 GB", url: "https://drive.google.com/open?id=0B1y3AScetqavMllPdlU2aW95Uzg&resourcekey=0-kStFdSiCsGMEjlgUVpgToQ&usp=drive_copy", category: "popular" },
+				{ title: "Hello Neighbor", image: "https://cdn.akamai.steamstatic.com/steam/apps/521890/header.jpg", size: "35.4 MB", url: "https://drive.google.com/open?id=1nocao8h-lYadRMqTGCvNO57u5iZZ5QMB&usp=drive_copy", category: "popular" },
+				{ title: "Half-Life 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/220/header.jpg", size: "3.12 GB", url: "https://drive.google.com/open?id=190YVYln0FqF2jLDY0zxCUxdynCDDFQoM&usp=drive_copy", category: "popular" },
+				{ title: "Left 4 Dead 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/550/header.jpg", size: "14.36 GB", url: "https://drive.google.com/open?id=0BwqZMepc_pHyZVZkb1hNOTlsU0k&resourcekey=0-O_Atkq7rtLXOxtlsoFbidQ&usp=drive_copy", category: "popular" },
+				{ title: "Don't Starve Together", image: "https://cdn.akamai.steamstatic.com/steam/apps/322330/header.jpg", size: "229.2 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPVjkwVG8wSEZUdkE&resourcekey=0-ONa3I9S7yDk7Chs3aYyf7A&usp=drive_copy", category: "popular" },
+				{ title: "Portal", image: "https://cdn.akamai.steamstatic.com/steam/apps/400/header.jpg", size: "2.25 GB", url: "https://drive.google.com/open?id=1xZTFpw--SAf2HaFZq59tQtQS8vZf90uD&usp=drive_copy", category: "popular" },
+	
+	// Action games
+	{ title: "Sonic Adventure DX", image: "https://cdn.akamai.steamstatic.com/steam/apps/71250/header.jpg", size: "410.9 MB", url: "https://drive.google.com/open?id=1QHzH2T69zZLdTGfUrOA97q2qo1JAoTBv&usp=drive_copy", category: "action" },
+	{ title: "Rayman Origins", image: "https://cdn.cloudflare.steamstatic.com/steam/apps/207490/header.jpg", size: "2.27 GB", url: "https://drive.google.com/open?id=1iKzdfIWk7MLMIvwrd8qa5PglbX6XFY06&usp=drive_copy", category: "action" },
+	{ title: "Project Wingman Demo", image: "https://cdn.akamai.steamstatic.com/steam/apps/895870/header.jpg", size: "5.86 GB", url: "https://drive.google.com/open?id=18dGqZG9X532QfhG1t6yiGAkMSnGHrG0t&usp=drive_copy", category: "action" },
+	{ title: "Left 4 Dead", image: "https://cdn.akamai.steamstatic.com/steam/apps/500/header.jpg", size: "3.57 GB", url: "https://drive.google.com/open?id=1_IXuw-tNjp1uAX_bZUZEJE1DV-tT-CNI&usp=drive_copy", category: "action" },
+	{ title: "Brutal Doom 20b Hell on Earth", image: "https://i.ytimg.com/vi/iPyq0jFgVjI/maxresdefault.jpg", size: "177.6 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPVGxZVEprNjFrcTQ&resourcekey=0-GAGqBk018KMQTNdewfSCtg&usp=drive_copy", category: "action" },
+	{ title: "Crashday", image: "https://cdn.akamai.steamstatic.com/steam/apps/508980/header.jpg", size: "764.8 MB", url: "https://drive.google.com/open?id=13Kfv67706b8Oy6pcIcKWD8OtphgzQXAw&usp=drive_copy", category: "action" },
+	
+	// RPG games
+	{ title: "Pokemon Uranium", image: "https://static.wikia.nocookie.net/pokemon-uranium/images/7/73/Uranium_intro.png/revision/latest?cb=20240412053347", size: "216.5 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmTDFNNF9rbjVDMDA&resourcekey=0-VRRhVk2WHbKOzHyj6IQubQ&usp=drive_copy", category: "rpg" },
+	{ title: "Pokemon Insurgence", image: "https://mir-s3-cdn-cf.behance.net/projects/404/a700fb38527887.Y3JvcCwxMzE0LDEwMjgsMzAyLDI2.png", size: "251.2 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmZlBHMkpMRzlvTWs&resourcekey=0-qxhtUoQIIb-1jTqjaZ3rpw&usp=drive_copy", category: "rpg" },
+	{ title: "Warcraft Online Plus", image: "https://www.farazjafari.com/wp-content/uploads/2019/09/WOW-Classic-Plus-Banner.png", size: "50.4 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUMlR6anN5bkEwNUE&resourcekey=0-ENYbTaeR6fHnfBRpqjrXNg&usp=drive_copy", category: "rpg" },
+	{ title: "Fate", image: "https://cdn.akamai.steamstatic.com/steam/apps/246840/header.jpg", size: "163.1 MB", url: "https://drive.google.com/open?id=0B-msgOvnlckUSmY4TTFqTzYtd2s&resourcekey=0-Etf7t5oC09F8lub2YJ1ZyQ&usp=drive_copy", category: "rpg" },
+	{ title: "Evoland", image: "https://cdn.akamai.steamstatic.com/steam/apps/233470/header.jpg", size: "76.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPQU1uSG15VjloZjA&resourcekey=0-aqFT84o6gLuec78m9R2TAQ&usp=drive_copy", category: "rpg" },
+	{ title: "Evoland 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/359310/header.jpg", size: "319.5 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPWlFiR2xHMFp1WWs&resourcekey=0-kP1xvNbEFaKBukYSgpmB9w&usp=drive_copy", category: "rpg" },
+	
+	// Classic games
+	{ title: "Half-Life: Blue Shift", image: "https://cdn.akamai.steamstatic.com/steam/apps/130/header.jpg", size: "3.64 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmemtFX2g2TDVxS3c&resourcekey=0-nRdLPlr93XUMO5k889uvfQ&usp=drive_copy", category: "classic" },
+	{ title: "Half-Life 2: Episode 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/420/header.jpg", size: "3.35 GB", url: "https://drive.google.com/open?id=0B-msgOvnlckUbkliRzBVMkZyTVk&resourcekey=0-Vka7tZyBwa9xUhbZ9vMp9A&usp=drive_copy", category: "classic" },
+	{ title: "Quake II", image: "https://cdn.akamai.steamstatic.com/steam/apps/2320/header.jpg", size: "234.4 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmRWhtX01UU3pyTXM&resourcekey=0-_L6BKAfWI6RR3HVEyEuxdg&usp=drive_copy", category: "classic" },
+	{ title: "Doom 3", image: "https://cdn.akamai.steamstatic.com/steam/apps/208200/header.jpg", size: "41 MB", url: "https://drive.google.com/open?id=10BC4qo4vnYQtDbjXSPCEal-iROCE48Uy&usp=drive_copy", category: "classic" },
+	{ title: "Doom 3 Portable", image: "https://cdn.akamai.steamstatic.com/steam/apps/208200/header.jpg", size: "1.5 GB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmVnJwQUhJR1ctNlE&resourcekey=0-BDL6ZHFk0vHFqfSz8b-DyQ&usp=drive_copy", category: "classic" },
+	
+	// Strategy games
+	{ title: "Plague Inc", image: "https://cdn.akamai.steamstatic.com/steam/apps/246620/header.jpg", size: "365.9 MB", url: "https://drive.google.com/open?id=0B2Dxw3In9Yh7ZllZSGxxVm1tQjQ&resourcekey=0-C3giD8ZCn0S7SDByN0c44A&usp=drive_copy", category: "strategy" },
+	{ title: "Prison Architect", image: "https://cdn.akamai.steamstatic.com/steam/apps/233450/header.jpg", size: "659.3 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPcnh2ZUZ5UHNsMnc&resourcekey=0-7ry1-ZQpB1AZ6zCdugWCEw&usp=drive_copy", category: "strategy" },
+	{ title: "Bloons Tower Defense (OG)", image: "https://cdn.akamai.steamstatic.com/steam/apps/960090/header.jpg", size: "219.3 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPV0FsR2FwYngzbjg&resourcekey=0-Q4Zto3C0xBaEgsFGHdj5sA&usp=drive_copy", category: "strategy" },
+	
+	// Indie games
+	{ title: "Super Meat Boy", image: "https://cdn.akamai.steamstatic.com/steam/apps/40800/header.jpg", size: "86 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmaURiYmN0ZUhaNzg&resourcekey=0-PbniWDGmuoFVx94wnlnl2Q&usp=drive_copy", category: "indie" },
+	{ title: "Stranded Deep Alpha", image: "https://cdn.akamai.steamstatic.com/steam/apps/313120/header.jpg", size: "220.1 MB", url: "https://drive.google.com/open?id=0B-0FGUJOS7AdUmJQVW9HZFRCQk0&resourcekey=0-UMuVHc8st47oo1zYihX3JA&usp=drive_copy", category: "indie" },
+	{ title: "Slender", image: "https://cdn.akamai.steamstatic.com/steam/apps/252330/header.jpg", size: "42.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPMFFJSlRpVEpuMzg&resourcekey=0-NGfDablUd88nRdyF2KQZzg&usp=drive_copy", category: "indie" },
+	{ title: "Shovel Knight", image: "https://cdn.akamai.steamstatic.com/steam/apps/250760/header.jpg", size: "94.7 MB", url: "https://drive.google.com/open?id=0B8OJSszLgRGmWTJfM2hwRUVNZDA&resourcekey=0-RrSPIUfJgZ8vRyQjzqjyIA&usp=drive_copy", category: "indie" },
+	{ title: "Shovel Knight: Treasure Trove", image: "https://cdn.akamai.steamstatic.com/steam/apps/589680/header.jpg", size: "209.9 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPN3puTklwSmdqajg&resourcekey=0-dKr1bDxU7dnABMM1AZxyOg&usp=drive_copy", category: "indie" },
+	{ title: "Rogue Legacy", image: "https://cdn.akamai.steamstatic.com/steam/apps/241600/header.jpg", size: "94.2 MB", url: "https://drive.google.com/open?id=1s18oc7Y5Lih37mfbggbczKvLOfE-MRzK&usp=drive_copy", category: "indie" },
+	{ title: "Realm of the Mad God", image: "https://cdn.akamai.steamstatic.com/steam/apps/200210/header.jpg", size: "129.2 MB", url: "https://drive.google.com/open?id=1AdTu2t4pvREXvjeEJRUK8-LSbFLBaWvZ&usp=drive_copy", category: "indie" },
+	{ title: "Papers, Please", image: "https://cdn.akamai.steamstatic.com/steam/apps/239030/header.jpg", size: "33.9 MB", url: "https://drive.google.com/open?id=1XdnK0C9rxwTSW31Un3K2dA3DASlmEBPs&usp=drive_copy", category: "indie" },
+	{ title: "Okhlos", image: "https://cdn.akamai.steamstatic.com/steam/apps/400180/header.jpg", size: "2.23 GB", url: "https://drive.google.com/open?id=1skdbmVnbnTpUrSQ3jjx5dOyKHUO_Hrmt&usp=drive_copy", category: "indie" },
+	{ title: "Hyper Light Drifter", image: "https://cdn.akamai.steamstatic.com/steam/apps/257850/header.jpg", size: "747.4 MB", url: "https://drive.google.com/open?id=1iokSgV0z90pB353v0agqdy3ZXGVqGuYn&usp=drive_copy", category: "indie" },
+	{ title: "Hotline Miami", image: "https://cdn.akamai.steamstatic.com/steam/apps/219150/header.jpg", size: "36.7 MB", url: "https://drive.google.com/open?id=1k6plyzyh8ABbLqbPvTFkGlh0nWfqIw1t&usp=drive_copy", category: "indie" },
+	{ title: "Hotline Miami 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/274170/header.jpg", size: "129.7 MB", url: "https://drive.google.com/open?id=111lVnhmUF3iWH1G82c70IloXEzBEQKpQ&usp=drive_copy", category: "indie" },
+	{ title: "Five Nights at Freddy's 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/332800/header.jpg", size: "207.4 MB", url: "https://drive.google.com/open?id=0B-xENJ-pMOUGN0lSX2wzLUp4Z1U&resourcekey=0-BCwR17riGYRYg7OOVm3COQ&usp=drive_copy", category: "indie" },
+	{ title: "Five Nights at Freddy's 3", image: "https://cdn.akamai.steamstatic.com/steam/apps/354140/header.jpg", size: "109.1 MB", url: "https://drive.google.com/open?id=0B31-NQeMvxfqSTFTcFNiY1J5VEE&resourcekey=0-GVa5NhnPISCrvvLnFi3fJw&usp=drive_copy", category: "indie" },
+	{ title: "Five Nights at Freddy's World", image: "https://i.ytimg.com/vi/FJmWHOMsT7Q/maxresdefault.jpg", size: "229.1 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPR3hLV2JIX0JoWkk&resourcekey=0--zSt0A0l8OpMhSichxI7RA&usp=drive_copy", category: "indie" },
+	{ title: "FNAF: Pizzeria Simulator", image: "https://cdn.akamai.steamstatic.com/steam/apps/738060/header.jpg", size: "250.7 MB", url: "https://drive.google.com/open?id=13YU_XZu6mKUF2Kfv6C2eaQzOeNGN3czy&usp=drive_copy" },
+	{ title: "Enter the Gungeon", image: "https://cdn.akamai.steamstatic.com/steam/apps/311690/header.jpg", size: "199 MB", url: "https://drive.google.com/open?id=0B1y3AScetqavdnFFalVsTlNkaW8&resourcekey=0-CfC4LgvzpUqvJqeBYNeSDA&usp=drive_copy", category: "indie" },
+	{ title: "Dead Cells", image: "https://cdn.akamai.steamstatic.com/steam/apps/588650/header.jpg", size: "428 MB", url: "https://drive.google.com/open?id=1KMYgSalBfvp0jjm4mASmwa3X7vP2qcLl&usp=drive_copy", category: "indie" },
+	{ title: "Darkest Dungeon", image: "https://cdn.akamai.steamstatic.com/steam/apps/262060/header.jpg", size: "2.86 GB", url: "https://drive.google.com/open?id=1qYN3ZFnvQwJ7lNrIYslntRoSxcfwoHfn&usp=drive_copy", category: "indie" },
+	{ title: "The Binding of Isaac: Rebirth", image: "https://cdn.akamai.steamstatic.com/steam/apps/250900/header.jpg", size: "451.4 MB", url: "https://drive.google.com/open?id=0B1y3AScetqavcmVCZjBOQ2ZDT0k&resourcekey=0-LPcl6__6inVo9VaThNTbOQ&usp=drive_copy", category: "indie" },
+	{ title: "The Binding of Isaac", image: "https://cdn.akamai.steamstatic.com/steam/apps/113200/header.jpg", size: "85.9 MB", url: "https://drive.google.com/open?id=1u-jb8vFDsJhVxKZbvFi-WXTQqQX-tKrQ&usp=drive_copy", category: "indie" },
+
+	// Games without category
+	{ title: "Tabletop Simulator", image: "https://cdn.akamai.steamstatic.com/steam/apps/286160/header.jpg", size: "4.65 GB", url: "https://drive.google.com/open?id=1AyZFV2KMoUGq_nVPhQ0o0o4Wfe2xn9YR&usp=drive_copy" },
+	{ title: "Super Smash Flash 2 Beta", image: "https://archive.org/download/SSF2BetaSetupMac.v1.1.0.1/DOhCI27X0AAV1PJ.jpg", size: "10.8 MB", url: "https://drive.google.com/open?id=0B-QJJrpqaROPaG5qMWZTMXZZeXM&resourcekey=0-mAYGs1VnTQUeK4XCX_JORg&usp=drive_copy" },
+	{ title: "RPG Maker XP", image: "https://cdn.akamai.steamstatic.com/steam/apps/235900/header.jpg", size: "1.33 GB", url: "https://drive.google.com/open?id=0B-msgOvnlckUZFBuSGxwWjZLNDg&resourcekey=0-qvUuYSaWYcYlnjpqfWbf5Q&usp=drive_copy" },
+	{ title: "Nothing 2", image: "https://cdn.akamai.steamstatic.com/steam/apps/1241700/header.jpg", size: "663.7 MB", url: "https://drive.google.com/open?id=1M4Bz1tMAMGCrChhEcfId5ZGazqgIbayX&usp=drive_copy" },
+	{ title: "Harvest Moon: Light of Hope", image: "https://cdn.akamai.steamstatic.com/steam/apps/585900/header.jpg", size: "766 MB", url: "https://drive.google.com/open?id=1f1eE41XNOdqeokAEgY1c1kgCegIoDVcL&usp=drive_copy" },
+	{ title: "Danganronpa: Trigger Happy Havoc", image: "https://cdn.akamai.steamstatic.com/steam/apps/413410/header.jpg", size: "2.41 GB", url: "https://drive.google.com/open?id=1hku_jv-CC2z-mX2s1HaV3PUmI1mNQrgk&usp=drive_copy" },
+	{ title: "Danganronpa 2: Goodbye Despair", image: "https://cdn.akamai.steamstatic.com/steam/apps/413420/header.jpg", size: "3.07 GB", url: "https://drive.google.com/open?id=1bfBbMiyKA0fnG8uUPTbhp7uF7RxSVv-a&usp=drive_copy" },
+	{ title: "Call of Duty 4: Modern Warfare", image: "https://cdn.akamai.steamstatic.com/steam/apps/7940/header.jpg", size: "4.43 GB", url: "https://drive.google.com/open?id=1pOaV240JSgowOFFj_1rO74N3DcOT0F--&usp=drive_copy" },
+	{ title: "Counter-Strike: Source", image: "https://cdn.akamai.steamstatic.com/steam/apps/240/header.jpg", size: "1.03 GB", url: "https://drive.google.com/open?id=1kGXMJRN1do4WWsk3bjoE1hcpR_1VJqI9&usp=drive_copy"},
+	{ title: "Counter-Strike", image: "https://cdn.akamai.steamstatic.com/steam/apps/10/header.jpg", size: "256.1 MB", url: "https://drive.google.com/open?id=0Bwa3UPwo0PalV3FraW5qLXBfLTQ&resourcekey=0-EI89kbpJ7uiECuIh-5pZIQ&usp=drive_copy"}
+
 ];
-			// Function to detect mobile devices
+// Function to detect mobile devices
 			function isMobileDevice() {
 				return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 			}
