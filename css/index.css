@@ -523,9 +523,16 @@ body img {
 }
 
 h1 {
-	font-size: 50px;
-	color: var(--text-color);
+    font-size: 50px;
+    color: var(--text-color);
 }
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 37px;
+    }
+}
+
 
 p {
 	font-size: 20px;

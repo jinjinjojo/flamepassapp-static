@@ -7,7 +7,6 @@
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
 		/>
-		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 		<title>Guides - Flamepass</title>
 		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,17 +52,9 @@
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
 		/>
 		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+		<link rel="stylesheet" href="/css/common.css" />
 		<style>
-			.guides-container {
-				width: 85%;
-				max-width: 1000px;
-				margin: 0 auto;
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-				gap: 25px;
-				padding: 20px;
-			}
-			
+			/* Guide-specific styles */
 			.guide-card {
 				background-color: rgba(37, 37, 37, 0.7);
 				border-radius: 10px;
@@ -255,13 +246,18 @@
 			.modal-content::-webkit-scrollbar-thumb:hover {
 				background: #4444cc;
 			}
+
+			/* Cards grid layout */
+			.guides-container {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+				gap: 25px;
+				padding: 20px;
+			}
 		</style>
 	</head>
 
 	<body>
-		
-		
-
 		<ul class="navbar">
 			<li style="margin-left: -1px; margin-top: 2px">
 				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
@@ -351,8 +347,9 @@
 			<span class="material-symbols-outlined">arrow_upward</span>
 		</div>
 
-		<div style="z-index: 100; position: relative; padding-top: 50px; padding-bottom: 50px;">
-			<h1 style="color: white; margin-bottom: 30px; text-align: center;">Guides and Methods</h1>
+		<div class="main-container">
+			<h1 class="page-title">Guides and Methods</h1>
+			<p class="page-description">Helpful tutorials and resources to make the most of Flamepass</p>
 			
 			<div class="guides-container">
                 <!-- How to Use Flamepass -->

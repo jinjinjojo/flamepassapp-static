@@ -48,20 +48,15 @@
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1"
 		/>
 		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+        <link rel="stylesheet" href="/css/common.css" />
 		<style>
-			.generator-container {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
+			/* Page-specific styles that extend common.css */
+			.generator-wrapper {
 				display: flex;
-				flex-direction: column;
-				align-items: center;
 				justify-content: center;
-				text-align: center;
+				align-items: center;
+				min-height: 100vh;
 				width: 100%;
-				max-width: 500px;
-				z-index: 10;
 			}
 			
 			.generate-btn {
@@ -192,8 +187,6 @@
 	</head>
 
 	<body>
-		
-
 		<ul class="navbar">
 			<li style="margin-left: -1px; margin-top: 2px">
 				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
@@ -278,14 +271,19 @@
 				</a>
 			</li>
 		</ul>
-		<div class="generator-container">
-            <img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8;">
-			<h1 class="generator-title">
-                Link Dispenser++
-            </h1>
-			<p class="generator-description">Get new high-quality unblocked links daily. Limited to 3 links per day.</p>
-			<button class="generate-btn">Generate Link</button>
-		</div>
+
+		<div class="main-container">
+            <div class="generator-wrapper">
+                <div class="content-section" style="text-align: center;">
+                    <img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8;">
+                    <h1 class="page-title">
+                        Link Dispenser++
+                    </h1>
+                    <p class="page-description">Get new high-quality unblocked links daily. Limited to 3 links per day.</p>
+                    <button class="generate-btn">Generate Link</button>
+                </div>
+            </div>
+        </div>
 		
 		<!-- Modal for showing links -->
 		<div class="modal" id="linkModal">
@@ -621,7 +619,7 @@
 		<script src="/js/localforage.min.js"></script>
 		<script src="/js/json-loader.js"></script>
 		<script src="/js/c.js"></script>
-  <script src="/js/auth-controller.min.js"></script>
+        <script src="/js/auth-controller.min.js"></script>
 		<script src="/js/themes.js"></script>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -630,8 +628,7 @@
 				if (hideAds === null || hideAds === 'false') {
 					let script = document.createElement('script');
 					script.type = 'text/javascript';
-					script.src =
-						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+					script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
 					document.body.appendChild(script);
 				}
 			});

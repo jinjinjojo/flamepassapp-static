@@ -1,11 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="/css/index.css" />
-  <link rel="stylesheet" href="/css/themes.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <title>Signup - Flamepass</title>
   <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=6.0, user-scalable=yes" />
@@ -14,48 +9,29 @@
   <meta property="og:image" content="/assets/logo.webp" />
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/themes.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <link rel="stylesheet" href="/css/common.css" />
   <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
   <style>
-    :root {
-      --primary-bg: #121212;
-      --secondary-bg: #1e1e1e;
-      --accent-color: #ff6b00;
-      --text-color: #ffffff;
-      --border-color: #333333;
+    /* Overriding main-container to ensure proper layout */
+    .main-container {
+      padding: 50px 20px 50px 80px;
+      max-width: 800px;
     }
     
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background-color: var(--primary-bg);
-      color: var(--text-color);
-      margin: 0;
-      overflow-x: hidden;
-    }
-    
-    .signup-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-      position: relative;
-      z-index: 10;
-    }
-    
+    /* Card styles */
     .card {
       background-color: rgb(13, 13, 13);
       border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       padding: 30px;
-      width: 100%;
-      max-width: 800px;
       position: relative;
       overflow: hidden;
-      margin-top: 40px;
-      border: 1px solid var(--border-color);
+      border: 1px solid #333333;
     }
     
     .login-header {
@@ -72,7 +48,7 @@
       font-size: 24px;
       font-weight: 700;
       margin: 0;
-      color: var(--text-color);
+      color: #ffffff;
     }
     
     .login-subtitle {
@@ -84,8 +60,8 @@
       display: inline-flex;
       align-items: center;
       background-color: transparent;
-      color: var(--accent-color);
-      border: 1px solid var(--border-color);
+      color: #ff6600;
+      border: 1px solid #333333;
       padding: 12px 16px;
       border-radius: 6px;
       cursor: pointer;
@@ -101,141 +77,18 @@
     
     .divider {
       height: 1px;
-      background-color: var(--border-color);
+      background-color: #333333;
       margin: 20px 0;
     }
     
     stripe-pricing-table {
-      --button-color: var(--accent-color);
-      --primary-color: var(--accent-color);
-      --primary-text-color: var(--text-color);
+      --button-color: #ff6600;
+      --primary-color: #ff6600;
+      --primary-text-color: #ffffff;
       --body-text-color: #cccccc;
       font-family: 'DM Sans', sans-serif;
     }
     
-    /* Background effects */
-    .blob, .blobbig, .blobsmall, .blobtop {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(60px);
-      z-index: -1;
-      opacity: 0.4;
-    }
-    
-    .blob {
-      background: var(--accent-color);
-      width: 300px;
-      height: 300px;
-      left: -150px;
-      bottom: -150px;
-    }
-    
-    .blobbig {
-      background: var(--accent-color);
-      width: 600px;
-      height: 600px;
-      right: -300px;
-      top: -300px;
-      opacity: 0.2;
-    }
-    
-    .blobsmall {
-      background: var(--accent-color);
-      width: 200px;
-      height: 200px;
-      right: 10%;
-      bottom: 10%;
-    }
-    
-    .blobtop {
-      background: var(--accent-color);
-      width: 400px;
-      height: 400px;
-      left: 30%;
-      top: -200px;
-      opacity: 0.2;
-    }
-    
-    /* Navbar */
-    .navbar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.5);
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0;
-      z-index: 1000;
-      list-style-type: none;
-    }
-
-    .navbar a {
-      color: var(--text-color);
-      text-decoration: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      transition: background-color 0.3s;
-    }
-
-    .navbar a:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .logo {
-      width: 40px;
-      height: auto;
-    }
-
-    hr {
-      width: 30px;
-      border: none;
-      height: 1px;
-      background-color: var(--border-color);
-      margin: 5px 0;
-    }
-
-    .material-symbols-outlined {
-      font-size: 24px;
-    }
-    
-    .btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--accent-color);
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .btn:hover {
-      background-color: #ff8c00;
-    }
-    
-    .btn-secondary {
-      background-color: transparent;
-      border: 1px solid var(--border-color);
-    }
-    
-    .btn-secondary:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-
     /* Benefits Section */
     .benefits-container {
       display: grid;
@@ -244,12 +97,6 @@
       margin: 24px 0;
       justify-items: center;
       text-align: center;
-    }
-    
-    @media (max-width: 600px) {
-      .benefits-container {
-        grid-template-columns: 1fr;
-      }
     }
     
     .benefit-item {
@@ -278,6 +125,7 @@
       font-size: 16px;
       font-weight: 600;
       line-height: 1.4;
+      color: white;
     }
     
     .benefits-headline {
@@ -285,7 +133,7 @@
       margin-bottom: 26px;
       font-size: 22px;
       font-weight: 700;
-      color: var(--accent-color);
+      color: #ff6600;
       text-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
     }
 
@@ -298,7 +146,7 @@
     .premium-headline {
       font-size: 24px;
       font-weight: 700;
-      color: var(--accent-color);
+      color: #ff6600;
       margin-bottom: 24px;
       text-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
     }
@@ -317,7 +165,7 @@
       padding: 16px;
       border-radius: 8px;
       background-color: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
+      border: 1px solid #333333;
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
@@ -334,7 +182,7 @@
       min-width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: var(--accent-color);
+      background-color: #ff6600;
       color: #fff;
     }
 
@@ -346,7 +194,7 @@
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 8px 0;
-      color: var(--text-color);
+      color: #ffffff;
     }
 
     .detail-content p {
@@ -364,7 +212,7 @@
       font-size: 20px;
       font-weight: 600;
       margin-bottom: 15px;
-      color: var(--text-color);
+      color: #ffffff;
     }
 
     .testimonial-container {
@@ -381,11 +229,11 @@
       padding: 20px;
       border-radius: 8px;
       background-color: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
+      border: 1px solid #333333;
     }
 
     .rating {
-      color: var(--accent-color);
+      color: #ff6600;
       font-size: 18px;
       margin-bottom: 10px;
     }
@@ -450,7 +298,7 @@
       font-size: 22px;
       font-weight: 700;
       margin: 0 0 10px 0;
-      color: var(--accent-color);
+      color: #ff6600;
     }
 
     .cta-text {
@@ -481,10 +329,21 @@
     }
 
     .back-link:hover {
-      color: var(--accent-color);
+      color: #ff6600;
+    }
+
+    /* Media queries for mobile */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0 15px 50px 60px;
+      }
     }
 
     @media (max-width: 600px) {
+      .benefits-container {
+        grid-template-columns: 1fr;
+      }
+      
       .testimonial-container {
         flex-direction: column;
         align-items: center;
@@ -493,96 +352,101 @@
       .testimonial {
         max-width: 100%;
       }
+      
+      .card {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
   
   <ul class="navbar">
-			<li style="margin-left: -1px; margin-top: 2px">
-				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
-			</li>
-			<hr style="margin-top: 5px" />
-			<li>
-				<a href="/" title="Home">
-					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
-				</a>
-			</li>
-			<li>
-				<a href="/&.html" title="Search">
-					<span class="material-symbols-outlined">public</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/a.html" title="Apps">
-					<span class="material-symbols-outlined">apps</span>
-				</a>
-			</li>
-			<li>
-				<a href="/g.html" title="Games">
-					<span class="material-symbols-outlined">joystick</span>
-				</a>
-			</li>
-			<li>
-				<a href="/downloadable-games.html" title="Downloadable Games">
-					<span class="material-symbols-outlined">download</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ultimate-links.html" title="Ultimate Link List">
-					<span class="material-symbols-outlined">list</span>
-				</a>
-			</li>
-			<li>
-				<a href="/links.html" title="Link Generator">
-					<span class="material-symbols-outlined">link</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/exploits.html" title="Newest Exploit Methods">
-					<span class="material-symbols-outlined">security</span>
-				</a>
-			</li>
-			
-			<li>
-				<a href="/guides.html" title="Guides and Methods">
-					<span class="material-symbols-outlined">help_outline</span>
-				</a>
-			</li>
-			<li>
-				<a href="/cheats.html" title="School Cheats">
-					<span class="material-symbols-outlined">book</span>
-				</a>
-			</li>
-			<li>
-				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
-					<span class="material-symbols-outlined">play_circle</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ai.html" title="AI Chat">
-					<span class="material-symbols-outlined">smart_toy</span>
-				</a>
-			</li>
-			<hr />
-			<li>
-				<a href="/~.html" title="Settings">
-					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
-				</a>
-			</li>
-			<li>
-				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
-					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
-						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
-					</div>
-				</a>
-			</li>
-		</ul>  
-  <div class="signup-container">
+    <li style="margin-left: -1px; margin-top: 2px">
+      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+    </li>
+    <hr style="margin-top: 5px" />
+    <li>
+      <a href="/" title="Home">
+        <span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+      </a>
+    </li>
+    <li>
+      <a href="/&.html" title="Search">
+        <span class="material-symbols-outlined">public</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/a.html" title="Apps">
+        <span class="material-symbols-outlined">apps</span>
+      </a>
+    </li>
+    <li>
+      <a href="/g.html" title="Games">
+        <span class="material-symbols-outlined">joystick</span>
+      </a>
+    </li>
+    <li>
+      <a href="/downloadable-games.html" title="Downloadable Games">
+        <span class="material-symbols-outlined">download</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/ultimate-links.html" title="Ultimate Link List">
+        <span class="material-symbols-outlined">list</span>
+      </a>
+    </li>
+    <li>
+      <a href="/links.html" title="Link Generator">
+        <span class="material-symbols-outlined">link</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/exploits.html" title="Newest Exploit Methods">
+        <span class="material-symbols-outlined">security</span>
+      </a>
+    </li>
+    
+    <li>
+      <a href="/guides.html" title="Guides and Methods">
+        <span class="material-symbols-outlined">help_outline</span>
+      </a>
+    </li>
+    <li>
+      <a href="/cheats.html" title="School Cheats">
+        <span class="material-symbols-outlined">book</span>
+      </a>
+    </li>
+    <li>
+      <a href="/yt-channels.html" title="Unblocker YouTube Channels">
+        <span class="material-symbols-outlined">play_circle</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/ai.html" title="AI Chat">
+        <span class="material-symbols-outlined">smart_toy</span>
+      </a>
+    </li>
+    <hr />
+    <li>
+      <a href="/~.html" title="Settings">
+        <span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+      </a>
+    </li>
+    <li>
+      <a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+        <div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+          <i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+        </div>
+      </a>
+    </li>
+  </ul>  
+  
+  <div class="main-container">
     <div class="card">
       <div class="login-header">
         <img src="/assets/logo.png" alt="Flamepass Logo" class="login-logo">

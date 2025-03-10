@@ -1,0 +1,198 @@
+/* common.css */
+
+/* Main content container */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 50px 80px;
+  }
+  
+  /* Page title */
+  .page-title {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  /* Page description */
+  .page-description {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 800px;
+    margin: 0 auto 30px;
+    font-size: 1.1rem;
+  }
+  
+  /* Category/Section title */
+  .category-title {
+    color: white;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .category-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 40px;
+    height: 3px;
+    background-color: #de5c34;
+  }
+  
+  .category-icon {
+    margin-right: 10px;
+    color: #de5c34;
+  }
+  
+  /* Section container */
+  .content-section {
+    background-color: rgba(37, 37, 37, 0.7);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Search box */
+  .search-container {
+    max-width: 600px;
+    margin: 0 auto 40px;
+  }
+  
+  .search-input {
+    width: 100%;
+    background-color: rgba(46, 46, 46, 0.7);
+    border: 1px solid #3a3a3a;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .search-input:focus {
+    border-color: #de5c34;
+    box-shadow: 0 0 0 2px rgba(222, 92, 52, 0.2);
+  }
+  
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .main-container {
+      padding: 100px 15px 50px 60px;
+    }
+    
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .category-title {
+      margin-left: 20px;
+    }
+  }
+  
+  /* Button styling */
+  .btn {
+    background-color: #de5c34;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 10px rgba(222, 92, 52, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .btn:hover {
+    background-color: #ea6e47;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(222, 92, 52, 0.4);
+  }
+  
+  /* Background effects */
+  .blob, .blobbig, .blobsmall, .blobtop {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: -1;
+    opacity: 0.4;
+  }
+  
+  .blob {
+    background: #de5c34;
+    width: 300px;
+    height: 300px;
+    left: -150px;
+    bottom: -150px;
+  }
+  
+  .blobbig {
+    background: #de5c34;
+    width: 600px;
+    height: 600px;
+    right: -300px;
+    top: -300px;
+    opacity: 0.2;
+  }
+  
+  .blobsmall {
+    background: #de5c34;
+    width: 200px;
+    height: 200px;
+    right: 10%;
+    bottom: 10%;
+  }
+  
+  .blobtop {
+    background: #de5c34;
+    width: 400px;
+    height: 400px;
+    left: 30%;
+    top: -200px;
+    opacity: 0.2;
+  }
+  
+  /* Scrolltop button */
+  .scrolltop {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: #de5c34;
+    color: white;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .scrolltop:hover {
+    background-color: #ea6e47;
+    transform: translateY(-3px);
+  }

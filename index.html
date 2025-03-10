@@ -1,11 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="/css/index.css" />
-  <link rel="stylesheet" href="/css/themes.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <title>Flamepass App Homepage</title>
   <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=6.0, user-scalable=yes" />
@@ -23,9 +18,18 @@
   </script>
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="/css/themes.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <link rel="stylesheet" href="/css/common.css" />
   <style>
+    /* Page-specific styles that extend common.css */
+
+    .main-container {
+      padding: 0 20px 50px 80px!important;
+    }
     /* Modal Styles */
     .modal-overlay {
       position: fixed;
@@ -54,6 +58,7 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       padding: 30px;
       width: 90%;
+      max-width: 450px;
       transform: translateY(-20px);
       transition: all 0.3s ease;
       position: relative;
@@ -111,7 +116,7 @@
       background-color: #ff6600;
       color: white;
       border: none;
-	  gap:7px;
+      gap: 7px;
     }
     
     .login-button:hover {
@@ -122,7 +127,7 @@
       background-color: transparent;
       color: #ff6600;
       border: 1px solid #ff6600;
-	  gap:7px;
+      gap: 7px;
     }
     
     .signup-button:hover {
@@ -143,119 +148,128 @@
       color: #ff6600;
     }
     
-    .modal-button i {
-      margin-left: 8px;
+    .home-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      height: 100vh;
     }
+    
+   
   </style>
 </head>
 <body style="overflow: hidden">
   
   <ul class="navbar">
-			<li style="margin-left: -1px; margin-top: 2px">
-				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
-			</li>
-			<hr style="margin-top: 5px" />
-			<li>
-				<a href="/" title="Home">
-					<span id="navactive"  style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
-				</a>
-			</li>
-			<li>
-				<a href="/&.html" title="Search">
-					<span class="material-symbols-outlined">public</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/a.html" title="Apps">
-					<span class="material-symbols-outlined">apps</span>
-				</a>
-			</li>
-			<li>
-				<a href="/g.html" title="Games">
-					<span class="material-symbols-outlined">joystick</span>
-				</a>
-			</li>
-			<li>
-				<a href="/downloadable-games.html" title="Downloadable Games">
-					<span class="material-symbols-outlined">download</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ultimate-links.html" title="Ultimate Link List">
-					<span class="material-symbols-outlined">list</span>
-				</a>
-			</li>
-			<li>
-				<a href="/links.html" title="Link Generator">
-					<span class="material-symbols-outlined">link</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/exploits.html" title="Newest Exploit Methods">
-					<span class="material-symbols-outlined">security</span>
-				</a>
-			</li>
-			
-			<li>
-				<a href="/guides.html" title="Guides and Methods">
-					<span class="material-symbols-outlined">help_outline</span>
-				</a>
-			</li>
-			<li>
-				<a href="/cheats.html" title="School Cheats">
-					<span class="material-symbols-outlined">book</span>
-				</a>
-			</li>
-			<li>
-				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
-					<span class="material-symbols-outlined">play_circle</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ai.html" title="AI Chat">
-					<span class="material-symbols-outlined">smart_toy</span>
-				</a>
-			</li>
-			<hr />
-			<li>
-				<a href="/~.html" title="Settings">
-					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
-				</a>
-			</li>
-			<li>
-				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
-					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
-						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
-					</div>
-				</a>
-			</li>
-		</ul>  
-  <a href="/~/#/news" id="newsButton">
-    <i data-lucide="megaphone" class="sparkles"></i>
-  </a>
+    <li style="margin-left: -1px; margin-top: 2px">
+      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+    </li>
+    <hr style="margin-top: 5px" />
+    <li>
+      <a href="/" title="Home">
+        <span id="navactive"  style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+      </a>
+    </li>
+    <li>
+      <a href="/&.html" title="Search">
+        <span class="material-symbols-outlined">public</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/a.html" title="Apps">
+        <span class="material-symbols-outlined">apps</span>
+      </a>
+    </li>
+    <li>
+      <a href="/g.html" title="Games">
+        <span class="material-symbols-outlined">joystick</span>
+      </a>
+    </li>
+    <li>
+      <a href="/downloadable-games.html" title="Downloadable Games">
+        <span class="material-symbols-outlined">download</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/ultimate-links.html" title="Ultimate Link List">
+        <span class="material-symbols-outlined">list</span>
+      </a>
+    </li>
+    <li>
+      <a href="/links.html" title="Link Generator">
+        <span class="material-symbols-outlined">link</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/exploits.html" title="Newest Exploit Methods">
+        <span class="material-symbols-outlined">security</span>
+      </a>
+    </li>
+    
+    <li>
+      <a href="/guides.html" title="Guides and Methods">
+        <span class="material-symbols-outlined">help_outline</span>
+      </a>
+    </li>
+    <li>
+      <a href="/cheats.html" title="School Cheats">
+        <span class="material-symbols-outlined">book</span>
+      </a>
+    </li>
+    <li>
+      <a href="/yt-channels.html" title="Unblocker YouTube Channels">
+        <span class="material-symbols-outlined">play_circle</span>
+      </a>
+    </li>
+    <hr>
+    <li>
+      <a href="/ai.html" title="AI Chat">
+        <span class="material-symbols-outlined">smart_toy</span>
+      </a>
+    </li>
+    <hr />
+    <li>
+      <a href="/~.html" title="Settings">
+        <span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+      </a>
+    </li>
+    <li>
+      <a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+        <div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+          <i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+        </div>
+      </a>
+    </li>
+  </ul>
   
-  <div class="header" style="display: flex; flex-direction: column; align-items: center; width: 800px;">
-    <img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8;">
-    <h1 style="text-align: center; margin: -10px; animation: fade-in-top 0.6s ease-in-out; -webkit-animation: fade-in-top 0.6s ease-in-out;">
-      <span id="welcomeText">Welcome to</span> <span style="cursor: text">
-        <span class="typewrite" data-period="2000" data-type='[ "Flamepass.", "Internet Freedom.", "The Ultimate Hub.", "Endless Fun." ]'>
-          <span class="wrap"></span>
+  
+  <div class="main-container" style="height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="home-header">
+      <img src="/assets/logo.png" style="height: 180px; margin-bottom: 20px; opacity: 0.8;">
+      <h1 style="text-align: center; margin: -10px; animation: fade-in-top 0.6s ease-in-out; -webkit-animation: fade-in-top 0.6s ease-in-out;">
+        <span id="welcomeText">Welcome to</span> <span style="cursor: text">
+          <span class="typewrite" data-period="2000" data-type='[ "Flamepass.", "Internet Freedom.", "The Ultimate Hub.", "Endless Fun." ]'>
+            <span class="wrap"></span>
+          </span>
         </span>
-      </span>
-    </h1>
-    <div style="text-align: center">
-      <p style="opacity: 0; animation: fade-in-top 0.6s ease-in-out 3s forwards; animation-fill-mode: visible; animation-delay: 0.5s;">
-        The #1 Hub for Games, Tools & More
-      </p>
-      <button style="opacity: 0; animation: fade-in-bottom 0.6s ease-in-out forwards; animation-fill-mode: visible; animation-delay: 1.2s; display: inline-flex; margin-top:20px;" class="btn" id="getStartedBtn">
-        <p style="font-weight: 600; margin: 7px; font-size: 14px; display: flex; align-items: center; font-family: 'DM Sans', sans-serif;">
-          Get Started<i style="width: 18px; margin-left: 5px" alt="Get started icon" data-lucide="sparkles"></i>
+      </h1>
+      <div style="text-align: center">
+        <p style="opacity: 0; animation: fade-in-top 0.6s ease-in-out 3s forwards; animation-fill-mode: visible; animation-delay: 0.5s;">
+          The #1 Hub for Games, Tools & More
         </p>
-      </button>
+        <button style="opacity: 0; animation: fade-in-bottom 0.6s ease-in-out forwards; animation-fill-mode: visible; animation-delay: 1.2s; display: inline-flex; margin-top:20px;" class="btn" id="getStartedBtn">
+          <p style="font-weight: 600; margin: 7px; font-size: 14px; display: flex; align-items: center; font-family: 'DM Sans', sans-serif;">
+            Get Started<i style="width: 18px; margin-left: 5px" alt="Get started icon" data-lucide="sparkles"></i>
+          </p>
+        </button>
+      </div>
     </div>
   </div>
   
@@ -295,7 +309,6 @@
       const getStartedBtn = document.getElementById('getStartedBtn');
       const authModal = document.getElementById('authModal');
       const closeModal = document.getElementById('closeModal');
-      const newsButton = document.getElementById('newsButton');
       const welcomeText = document.getElementById('welcomeText');
       
       getStartedBtn.addEventListener('click', function() {
@@ -327,11 +340,6 @@
           window.location.href = '/&.html';
         });
         
-        // Change news button to account button
-        const newsButton = document.getElementById('newsButton');
-        newsButton.href = '/~.html#account';
-        newsButton.innerHTML = '<i data-lucide="user-circle" class="sparkles"></i>';
-        lucide.createIcons();
         
         // Change welcome text
         const welcomeText = document.getElementById('welcomeText');
