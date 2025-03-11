@@ -1,8 +1,0 @@
-# Redirects for Cloudflare Pages
-# This file helps with URL routing without .htaccess
-
-# Game URLs - redirect to the game.html with the slug preserved
-/game/*  /game.html  200
-
-# Fallback for 404s
-/*  /index.html  404
