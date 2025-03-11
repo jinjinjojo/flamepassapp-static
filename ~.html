@@ -51,7 +51,7 @@
 	</head>
 
 	<body style="overflow: hidden">
-		<div class="toast">
+		<div class="toast" style="display: none;">
 			<div class="toast-content">
 				<i class="fas fa-solid fa-check check"></i>
 				<div class="message">
@@ -110,22 +110,13 @@
 				</a>
 			</li>
 			<hr>
-			<li>
-				<a href="/exploits.html" title="Newest Exploit Methods">
-					<span class="material-symbols-outlined">security</span>
-				</a>
-			</li>
 			
 			<li>
 				<a href="/guides.html" title="Guides and Methods">
 					<span class="material-symbols-outlined">help_outline</span>
 				</a>
 			</li>
-			<li>
-				<a href="/cheats.html" title="School Cheats">
-					<span class="material-symbols-outlined">book</span>
-				</a>
-			</li>
+			
 			<li>
 				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
 					<span class="material-symbols-outlined">play_circle</span>
@@ -166,14 +157,14 @@
 			<ul class="sideSnav">
 				<h1>Settings</h1>
 				<div id="settingsShape" class="settingsShape"></div>
-				<a href="/~/#/blank">
+				<a href="/~.html#blank">
 					<li class="settingItem" data-id="blank">
 						<span class="material-symbols-outlined"
 							>ad_group_off</span
 						>Cloaking
 					</li>
 				</a>
-				<a href="/~/#/plugins">
+				<a href="/~.html#plugins">
 					<li class="settingItem" data-id="plugins">
 						<span class="material-symbols-outlined">crossword</span
 						>Plugins
@@ -192,7 +183,7 @@
 					</li>
 				</a>
 				<!--
-				<a href="/~/#/customkey">
+				<a href="/~.html#customkey">
 					<li class="settingItem" data-id="customkey">
 						<span class="material-symbols-outlined"
 							>deployed_code</span
@@ -200,54 +191,54 @@
 					</li>
 				</a>
 			-->
-				<a href="/~/#/performance">
+				<a href="/~.html#performance">
 					<!-- Bindable, programmable, set-able?-->
 					<li class="settingItem" data-id="performance">
 						<span class="material-symbols-outlined">speed</span
 						>Performance
 					</li>
 				</a>
-				<a href="/~/#/themes">
+				<a href="/~.html#themes">
 					<li class="settingItem" data-id="themes">
 						<span class="material-symbols-outlined">palette</span
 						>Themes
 					</li>
 				</a>
-				<a href="/~/#/proxy">
+				<a href="/~.html#proxy">
 					<li class="settingItem" data-id="proxy">
 						<span class="material-symbols-outlined">public</span
 						>Proxy & Browser
 					</li>
 				</a>
-				<a href="/~/#/ads">
+				<a href="/~.html#ads">
 					<li class="settingItem" data-id="ads">
 						<span class="material-symbols-outlined">ads_click</span
 						>Advertising
 					</li>
 				</a>
 				<hr style="margin-bottom: 20px" />
-				<a href="/~/#/account">
+				<a href="/~.html#account">
 					<li class="settingItem" data-id="account">
 						<span class="material-symbols-outlined"
 							>account_circle</span
 						>Account
 					</li>
 				</a>
-				<a href="/~/#/about">
+				<a href="/~.html#about">
 					<li class="settingItem" data-id="about">
 						<span class="material-symbols-outlined">help</span>About
 						& Statistics
 					</li>
 				</a>
 				<hr style="margin-bottom: 20px" />
-				<a href="/~/#/news">
+				<a href="/~.html#news">
 					<li class="settingItem" data-id="news">
 						<span class="material-symbols-outlined"
 							>rocket_launch</span
 						>News & Updates
 					</li>
 				</a>
-				<a href="/~/#/faq">
+				<a href="/~.html#faq">
 					<li class="settingItem" data-id="faq">
 						<span class="material-symbols-outlined"
 							>contact_support</span
@@ -1295,6 +1286,172 @@
 			<div style="z-index: -998; position: fixed" class="blobtop"></div>
 			<div style="z-index: -999" id="particles-js" class=""></div>
 		</div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+  // Check if the device is mobile based on screen width
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  // Function to handle mobile display
+  function handleMobileView() {
+    if (isMobile()) {
+      // First hide the problematic elements
+      const headerElement = document.querySelector('.header');
+      if (headerElement) {
+        headerElement.style.display = 'none';
+      }
+      
+      // Hide the navbar temporarily - we'll add it back in our mobile view
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        navbar.style.visibility = 'visible'; // Keep it but make it not interfere with our layout
+      }
+      
+      // Make sure any existing mobile view is removed first
+      const existingMobileView = document.querySelector('.mobile-settings-wrapper');
+      if (existingMobileView) {
+        existingMobileView.remove();
+      }
+      
+      // Create mobile view container with a style similar to YouTube channels page
+      const mobileViewContainer = document.createElement('div');
+      mobileViewContainer.className = 'mobile-settings-wrapper';
+      
+      // Apply the same container style as the channels-container
+      mobileViewContainer.style.maxWidth = '1200px';
+      mobileViewContainer.style.margin = '0 auto';
+      mobileViewContainer.style.padding = '100px 20px 50px 70px';
+      
+      mobileViewContainer.innerHTML = `
+        <h1 style="
+          text-align: center;
+          color: white;
+          font-size: 2.5rem;
+          font-weight: 600;
+          margin-bottom: 15px;
+        ">Settings</h1>
+        
+        <p style="
+          text-align: center;
+          color: rgba(255, 255, 255, 0.7);
+          max-width: 800px;
+          margin: 0 auto 30px;
+          font-size: 1.1rem;
+        ">Flamepass settings can only be accessed on a computer for the best experience.</p>
+        
+        <div style="
+          background-color: rgba(255, 50, 50, 0.1);
+          border-left: 4px solid #ff5050;
+          padding: 15px;
+          margin-bottom: 30px;
+          color: white;
+          border-radius: 5px;
+        ">
+          <strong>Notice:</strong> The settings page contains advanced configurations that require a larger screen. Please visit this page from a desktop browser to manage your settings.
+        </div>
+         <button id="backToHomeBtn" style="
+              background-color: #de5c34;
+              color: white;
+              border: none;
+              border-radius: 20px;
+              padding: 8px 15px;
+              font-weight: 500;
+              cursor: pointer;
+              transition: background-color 0.3s;
+              display: flex;
+              align-items: center;
+              gap: 5px;
+			  margin-left: auto;
+			  margin-right: auto;
+            ">
+              <i class="fa-solid fa-home" style="margin-right: 5px;"></i>
+              Return to Home
+            </button>
+        
+      `;
+      
+      // Add the mobile view to the body
+      document.body.appendChild(mobileViewContainer);
+      
+      // Add event listener to the button
+      document.getElementById('backToHomeBtn').addEventListener('click', function() {
+        window.location.href = '/';
+      });
+      
+      // Keep particles for visual effect but reduce them for better performance
+      if (window.pJSDom && window.pJSDom[0]) {
+        try {
+          window.pJSDom[0].pJS.particles.number.value = 40;
+          window.pJSDom[0].pJS.fn.particlesRefresh();
+        } catch(e) {
+          console.log("Could not update particles");
+        }
+      }
+      
+      // Add Font Awesome if not already loaded
+      if (!document.querySelector('link[href*="font-awesome"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css';
+        document.head.appendChild(link);
+      }
+      
+      // Make sure scrollbar works properly
+      document.body.style.overflow = 'auto';
+      document.body.style.overflowX = 'hidden';
+      
+      // Fix the position of particles container
+      const particlesContainer = document.getElementById('particles-js');
+      if (particlesContainer) {
+        particlesContainer.style.position = 'fixed';
+        particlesContainer.style.top = '0';
+        particlesContainer.style.left = '0';
+        particlesContainer.style.width = '100%';
+        particlesContainer.style.height = '100%';
+      }
+    }
+  }
+
+  // Run on page load
+  handleMobileView();
+  
+  // Also run on window resize
+  window.addEventListener('resize', function() {
+    // If switching to desktop
+    if (!isMobile()) {
+      const mobileView = document.querySelector('.mobile-settings-wrapper');
+      if (mobileView) {
+        // Remove the mobile view
+        mobileView.remove();
+        
+        // Show the original elements again
+        const headerElement = document.querySelector('.header');
+        if (headerElement) {
+          headerElement.style.display = '';
+        }
+        
+        // Restore original particles settings if needed
+        if (window.pJSDom && window.pJSDom[0]) {
+          try {
+            window.pJSDom[0].pJS.particles.number.value = 86; // Original value from settings page
+            window.pJSDom[0].pJS.fn.particlesRefresh();
+          } catch(e) {
+            console.log("Could not update particles");
+          }
+        }
+        
+        // Restore original body overflow
+        document.body.style.overflow = "hidden";
+      }
+    } 
+    // If switching to mobile
+    else if (isMobile() && !document.querySelector('.mobile-settings-wrapper')) {
+      handleMobileView();
+    }
+  });
+});
+		</script>
 		<script>
 			particlesJS('particles-js', {
 				particles: {

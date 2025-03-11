@@ -32,7 +32,7 @@
 	},
 	{
 		"name": "Settings",
-		"url": "/~/#/proxy",
+		"url": "/~.html#proxy",
 		"img": "/assets/imgs/s/Settings.webp",
 		"bg": "#fff"
 	},

@@ -1,15 +1,10 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<link rel="stylesheet" href="/css/index.css" />
-		<link rel="stylesheet" href="/css/themes.css" />
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-		/>
 		<title>AI Chat - Flamepass</title>
 		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="UTF-8" />
 		<meta
 			name="description"
 			content="Chat with AI using Flamepass, the next gen proxy."
@@ -46,20 +41,34 @@
 			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
 		/>
 		<link rel="stylesheet" href="/css/index.css" />
+		<link rel="stylesheet" href="/css/themes.css" />
 		<link rel="stylesheet" href="/css/ag.css" />
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  <link rel="stylesheet" href="/css/common.css" />
+		<link rel="stylesheet" href="/css/common.css" />
 		<style>
+			/* Page-specific styles that extend common.css */
+
+			#loading-text {
+				padding-left: 20px;
+				padding-right: 20px;
+			}
+
+			.ai-chat-wrapper {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 90vh;
+				width: 100%;
+				padding-top: 30px;
+				padding-bottom: 30px;
+			}
+			
 			.chat-container {
-				width: 85%;
-				max-width: 2000px;
+				width: 100%;
+				max-width: 1200px;
 				height: 80vh;
-				margin: 0 auto;
 				background-color: rgba(37, 37, 37, 0.7);
 				border-radius: 10px;
 				overflow: hidden;
@@ -142,16 +151,24 @@
 				transform: translateY(-50%) rotate(30deg);
 			}
 			
-			.ddg-logo {
+			.flamepass-logo {
 				height: 24px;
 				margin-right: 10px;
 				vertical-align: middle;
+			}
+			.main-container {
+				padding: 0px 15px 0px 60px
+			}
+			
+			@media (max-width: 768px) {
+				.chat-container {
+					height: 75vh;
+				}
 			}
 		</style>
 	</head>
 
 	<body>
-
 		<ul class="navbar">
 			<li style="margin-left: -1px; margin-top: 2px">
 				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
@@ -200,7 +217,6 @@
 					<span class="material-symbols-outlined">security</span>
 				</a>
 			</li>
-			
 			<li>
 				<a href="/guides.html" title="Guides and Methods">
 					<span class="material-symbols-outlined">help_outline</span>
@@ -241,22 +257,24 @@
 			<span class="material-symbols-outlined">arrow_upward</span>
 		</div>
 
-		<div style="z-index: 100; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding-top: 50px;">			
-			<div class="chat-container">
-				<div class="chat-header">
-					<img src="/assets/logo.png" alt="Flamepass Logo" class="ddg-logo">
-					Unlimited AI Chat
-					<button class="refresh-button" title="Refresh AI Chat" id="refresh-button">
-						<i class="fa-solid fa-rotate-right"></i>
-					</button>
-				</div>
-				
-				<div class="iframe-container">
-					<div class="loading-overlay" id="loading-overlay">
-						<div class="spinner"></div>
-						<div id="loading-text">Loading DuckDuckGo AI Chat...</div>
+		<div class="main-container">
+			<div class="ai-chat-wrapper">			
+				<div class="chat-container content-section">
+					<div class="chat-header">
+						<img src="/assets/logo.png" alt="Flamepass Logo" class="flamepass-logo">
+						Unlimited AI Chat
+						<button class="refresh-button" title="Refresh AI Chat" id="refresh-button">
+							<i class="fa-solid fa-rotate-right"></i>
+						</button>
 					</div>
-					<iframe id="ai-frame" src="about:blank" allow="camera;microphone;clipboard-write;"></iframe>
+					
+					<div class="iframe-container">
+						<div class="loading-overlay" id="loading-overlay">
+							<div class="spinner"></div>
+							<div id="loading-text">Loading DuckDuckGo AI Chat...</div>
+						</div>
+						<iframe id="ai-frame" src="about:blank" allow="camera;microphone;clipboard-write;"></iframe>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -270,6 +288,7 @@
 		</div>
 		
 		<script>
+			// Initialize particles.js
 			particlesJS('particles-js', {
 				particles: {
 					number: {
@@ -382,8 +401,8 @@
 			});
 		</script>
 		
-		<!-- DuckDuckGo AI Chat Integration -->
 		<script>
+			// DuckDuckGo AI Chat Integration
 			document.addEventListener('DOMContentLoaded', function() {
 				// Elements
 				const aiFrame = document.getElementById('ai-frame');
@@ -394,6 +413,20 @@
 				// DuckDuckGo AI chat URL
 				const DDG_AI_URL = "https://duckduckgo.com/aichat";
 				
+				// Function to check if user is logged in
+				function isUserLoggedIn() {
+					const loginData = JSON.parse(localStorage.getItem('loginData'));
+					if (!loginData) return false;
+					
+					const now = new Date();
+					const expirationDate = new Date(loginData.expiration);
+					if (now > expirationDate) {
+						localStorage.removeItem('loginData');
+						return false;
+					}
+					return true;
+				}
+				
 				// Function to create proxy URL
 				const createProxyUrl = (url) => {
 					// Encode the URL and create the proxy link
@@ -402,6 +435,12 @@
 				
 				// Function to load DuckDuckGo AI chat
 				const loadDuckDuckGoAI = () => {
+					// Only proceed if the user is logged in
+					if (!isUserLoggedIn()) {
+						loadingText.textContent = "Login required to use AI Chat";
+						return;
+					}
+					
 					// Show loading overlay
 					loadingOverlay.style.display = 'flex';
 					loadingText.textContent = 'Loading DuckDuckGo AI Chat...';
@@ -425,7 +464,15 @@
 				});
 				
 				// Handle refresh button click
-				refreshButton.addEventListener('click', loadDuckDuckGoAI);
+				refreshButton.addEventListener('click', function() {
+					if (isUserLoggedIn()) {
+						loadDuckDuckGoAI();
+					} else {
+						// If not logged in, do nothing or show a login message
+						loadingText.textContent = "Login required to use AI Chat";
+						loadingOverlay.style.display = 'flex';
+					}
+				});
 				
 				// Handle iframe error events
 				aiFrame.addEventListener('error', function() {
@@ -441,6 +488,12 @@
 				});
 				
 				function loadWithTimeout() {
+					// Check login status before initial load
+					if (!isUserLoggedIn()) {
+						loadingText.textContent = "Login required to use AI Chat";
+						return;
+					}
+					
 					loadDuckDuckGoAI();
 					
 					// Set a timeout to detect if the service doesn't load properly
@@ -464,6 +517,31 @@
 				loadWithTimeout();
 			});
 		</script>
+		
+		<!-- Scroll to top button functionality -->
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const scrollTop = document.querySelector('.scrolltop');
+				
+				// Handle scroll to top button
+				scrollTop.addEventListener('click', () => {
+					window.scrollTo({
+						top: 0,
+						behavior: 'smooth'
+					});
+				});
+				
+				// Show/hide scroll to top button
+				window.addEventListener('scroll', () => {
+					if (window.scrollY > 300) {
+						scrollTop.style.display = 'flex';
+					} else {
+						scrollTop.style.display = 'none';
+					}
+				});
+			});
+		</script>
+		
 		<script src="/js/localforage.min.js"></script>
 		<script src="/js/json-loader.js"></script>
 		<script src="/js/c.js"></script>

@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					const shortcutLink = document.createElement('a');
 
 					if (shortcut.name.toLowerCase() === 'settings') {
-						shortcutLink.href = '/~/#/proxy';
+						shortcutLink.href = '/~.html#proxy';
 					} else {
 						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.url)}`;
 					}
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					const shortcutLink = document.createElement('a');
 
 					if (shortcut.name.toLowerCase() === 'settings') {
-						shortcutLink.href = '/~/#/proxy';
+						shortcutLink.href = '/~.html#proxy';
 					} else {
 						shortcutLink.href = `/&.html?q=${encodeURIComponent(shortcut.url)}`;
 					}
