@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <title>Login - Flamepass</title>
   <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
@@ -8,10 +9,12 @@
   <meta name="keywords" content="Proxy, Unblocker, Flamepass Unblocker, Flamepass" />
   <meta property="og:image" content="/assets/logo.webp" />
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
   <link rel="stylesheet" href="/css/index.css" />
   <link rel="stylesheet" href="/css/themes.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <link rel="stylesheet" href="/css/common.css" />
@@ -24,8 +27,9 @@
       height: 100vh;
       z-index: 10;
       position: relative;
+      padding: 0px 15px 50px 60px !important;
     }
-    
+
     .login-card {
       background-color: #1e1e1e;
       border-radius: 12px;
@@ -37,46 +41,47 @@
       z-index: 100;
       border: 1px solid #333333;
     }
-    
+
     .login-header {
       text-align: center;
       margin-bottom: 24px;
     }
-    
+
     .login-logo {
       width: 80px;
       margin-bottom: 16px;
     }
-    
+
     .login-title {
       font-size: 24px;
       font-weight: 700;
       margin: 0;
       color: #ffffff;
     }
-    
+
     .login-subtitle {
       color: #aaaaaa;
       margin-top: 4px;
     }
-    
+
     .divider {
       height: 1px;
       background-color: #333333;
       margin: 20px 0;
     }
-    
+
     .form-group {
       margin-bottom: 16px;
+      color: white;
     }
-    
+
     .form-label {
       display: block;
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 500;
     }
-    
+
     .form-input {
       width: -webkit-fill-available;
       padding: 12px;
@@ -88,80 +93,110 @@
       font-size: 14px;
       transition: border-color 0.3s;
     }
-    
+
     .form-input:focus {
       border-color: #ff6600;
       outline: none;
     }
-    
+
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 9px 12px;
       border: none;
-      border-radius: 6px;
-      background-color: #ff6600;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #ff6600 0%, #ff8033 100%);
       color: white;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.3s ease;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
+      font-size: 15px;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
+      position: relative; /* Ensure the button's hover state doesn't extend */
+      z-index: 1; /* Lower z-index so it doesn't block links */
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(255, 102, 0, 0.2);
     }
     
     .btn:hover {
-      background-color: #ff8c00;
+      background: linear-gradient(135deg, #ff7e33 0%, #ff9255 100%);
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+      transform: translateY(-1px);
     }
-    
+
     .btn-secondary {
       background-color: transparent;
       border: 1px solid #333333;
     }
-    
+
     .btn-secondary:hover {
       background-color: rgba(255, 255, 255, 0.05);
     }
-    
+
     .links {
       display: flex;
       justify-content: space-between;
       margin-top: 16px;
       font-size: 14px;
+      position: relative;
+      z-index: 2;
+      /* Higher z-index to ensure links are clickable */
     }
-    
+
     .link {
       color: #ff6600;
       text-decoration: none;
       transition: color 0.3s;
+      padding: 5px;
+      /* Add padding to increase clickable area */
+      margin: -5px;
+      /* Offset padding to maintain visual alignment */
     }
-    
+
     .link:hover {
       color: #ff8c00;
       text-decoration: underline;
     }
-    
+
     .error-message {
       color: #ff4d4d;
       text-align: center;
       margin-top: 16px;
       font-size: 14px;
     }
-    
+
     .loading-message {
       text-align: center;
       margin-top: 16px;
       font-size: 14px;
     }
+
+    /* Fix for animation rotation */
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .rotate-animation {
+      animation: rotate 2s linear infinite;
+      display: inline-block;
+    }
+
   </style>
 </head>
 
 <body>
   <ul class="navbar">
     <li style="margin-left: -1px; margin-top: 2px">
-      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
     </li>
     <hr style="margin-top: 5px" />
     <li>
@@ -202,14 +237,14 @@
       </a>
     </li>
     <hr>
-    
-    
+
+
     <li>
       <a href="/guides.html" title="Guides and Methods">
         <span class="material-symbols-outlined">help_outline</span>
       </a>
     </li>
-    
+
     <li>
       <a href="/yt-channels.html" title="Unblocker YouTube Channels">
         <span class="material-symbols-outlined">play_circle</span>
@@ -227,15 +262,8 @@
         <span style="margin-top: 0" class="material-symbols-outlined">tune</span>
       </a>
     </li>
-    <li>
-      <a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
-        <div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
-          <i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
-        </div>
-      </a>
-    </li>
   </ul>
-  
+
   <div class="main-container login-container">
     <div class="login-card">
       <div id="login-form">
@@ -279,7 +307,8 @@
         <form id="reset" onsubmit="return handleReset(event)">
           <div class="form-group">
             <label for="reset-email" class="form-label">Email</label>
-            <input type="email" id="reset-email" name="reset-email" required class="form-input" placeholder="Enter your email">
+            <input type="email" id="reset-email" name="reset-email" required class="form-input"
+              placeholder="Enter your email">
           </div>
           <button type="submit" class="btn">
             Email my Key <span class="material-symbols-outlined">mail</span>
@@ -292,7 +321,7 @@
       </div>
 
       <div id="loading-message" style="display:none;" class="loading-message">
-        <span class="material-symbols-outlined" style="font-size: 24px; animation: rotate 2s linear infinite;">progress_activity</span>
+        <span class="material-symbols-outlined rotate-animation" style="font-size: 24px;">progress_activity</span>
         <p>Checking subscription status...</p>
       </div>
 
@@ -461,7 +490,7 @@
     }
 
     // Call this function when the page loads
-    window.onload = function() {
+    window.onload = function () {
       checkLoginStatus();
       initParticles();
     };
@@ -574,7 +603,7 @@
       });
     }
   </script>
-  
+
   <script src="/js/localforage.min.js"></script>
   <script src="/js/index.js"></script>
   <script src="/js/themes.js"></script>
@@ -585,4 +614,5 @@
     lucide.createIcons();
   </script>
 </body>
+
 </html>
