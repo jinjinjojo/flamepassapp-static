@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /game/
+Allow: /g.html
+Allow: /a.html
+
+Sitemap: https://app.flamepass.com/api/sitemap

@@ -21,112 +21,118 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
+// Only showing the relevant function that needs changes
 function loadGamesPage() {
 	fetch('/json/g.json')
-		.then(response => response.json())
-		.then(data => {
-			// Game container
-			const gameContainer = document.querySelector('.gameContain');
-			if (!gameContainer) return;
-			
-			// Add category selector at the top
-			const categorySelector = createCategorySelector();
-			const headerContainer = document.querySelector('.header');
-			if (headerContainer) {
-				headerContainer.appendChild(categorySelector);
-			}
-			
-			// Get current category and page from URL params
-			const urlParams = new URLSearchParams(window.location.search);
-			const currentCategory = urlParams.get('category') || 'browser';
-			const currentPage = parseInt(urlParams.get('page') || '1');
-			
-			// Update active category in selector
-			const categoryButtons = document.querySelectorAll('.category-button');
-			categoryButtons.forEach(button => {
-				if (button.dataset.category === currentCategory) {
-					button.classList.add('active');
-				}
+	  .then(response => response.json())
+	  .then(data => {
+		// Game container
+		const gameContainer = document.querySelector('.gameContain');
+		if (!gameContainer) return;
+		
+		// Add category selector at the top
+		const categorySelector = createCategorySelector();
+		const headerContainer = document.querySelector('.header');
+		if (headerContainer) {
+		  headerContainer.appendChild(categorySelector);
+		}
+		
+		// Get current category and page from URL params
+		const urlParams = new URLSearchParams(window.location.search);
+		const currentCategory = urlParams.get('category') || 'browser';
+		const currentPage = parseInt(urlParams.get('page') || '1');
+		
+		// Update active category in selector
+		const categoryButtons = document.querySelectorAll('.category-button');
+		categoryButtons.forEach(button => {
+		  if (button.dataset.category === currentCategory) {
+			button.classList.add('active');
+		  }
+		});
+		
+		// Filter games by category
+		let filteredGames = filterGamesByCategory(data, currentCategory);
+		
+		// Sort games alphabetically
+		filteredGames.sort((a, b) => a.name.localeCompare(b.name));
+		
+		// Calculate pagination
+		const gamesPerPage = 50;
+		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
+		const startIndex = (currentPage - 1) * gamesPerPage;
+		const endIndex = startIndex + gamesPerPage;
+		const currentGames = filteredGames.slice(startIndex, endIndex);
+		
+		// Clear existing games
+		gameContainer.innerHTML = '';
+		
+		// Add pagination controls above games
+		const paginationTop = createPaginationControls(currentPage, totalPages, currentCategory);
+		gameContainer.appendChild(paginationTop);
+		
+		// Add games to the container
+		currentGames.forEach(game => {
+		  const gameLink = document.createElement('a');
+		  
+		  // Ensure each game has a slug
+		  if (!game.slug) {
+			game.slug = createSlug(game.name);
+		  }
+		  
+		  // Use the correct SEO-friendly URL format
+		  gameLink.href = `/game/${game.slug}`;
+		  gameLink.className = 'gameAnchor';
+		  
+		  // Add tags as classes for filtering
+		  if (game.tags && game.name) {
+			game.tags.forEach(tag => {
+			  gameLink.id = (gameLink.id ? gameLink.id + ' ' : '') + tag;
 			});
 			
-			// Filter games by category
-			let filteredGames = filterGamesByCategory(data, currentCategory);
-			
-			// Sort games alphabetically
-			filteredGames.sort((a, b) => a.name.localeCompare(b.name));
-			
-			// Calculate pagination
-			const gamesPerPage = 50;
-			const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
-			const startIndex = (currentPage - 1) * gamesPerPage;
-			const endIndex = startIndex + gamesPerPage;
-			const currentGames = filteredGames.slice(startIndex, endIndex);
-			
-			// Clear existing games
-			gameContainer.innerHTML = '';
-			
-			// Add pagination controls above games
-			const paginationTop = createPaginationControls(currentPage, totalPages, currentCategory);
-			gameContainer.appendChild(paginationTop);
-			
-			// Add games to the container
-			currentGames.forEach(game => {
-				const gameLink = document.createElement('a');
-				
-				// Change to use the game-page.html for better static site compatibility
-				gameLink.href = `/game/${game.slug || createSlug(game.name)}`;
-				gameLink.className = 'gameAnchor';
-				
-				// Add tags as classes for filtering
-				if (game.tags && game.name) {
-					game.tags.forEach(tag => {
-						gameLink.id = (gameLink.id ? gameLink.id + ' ' : '') + tag;
-					});
-					
-					let gameNameClass = game.name
-						.toLowerCase()
-						.replace(/\s+/g, '-')
-						.replace(/[^a-z0-9]/g, '-');
-					gameLink.className += ' ' + gameNameClass;
-				}
-				
-				// Add category as data attribute
-				if (game.category) {
-					gameLink.dataset.category = game.category;
-				}
-				
-				// Add proxy flag as data attribute
-				if (game.proxy !== undefined) {
-					gameLink.dataset.proxy = game.proxy;
-				}
-				
-				const gameImage = document.createElement('img');
-				gameImage.src = game.img;
-				gameImage.alt = game.name;
-				gameImage.title = game.name;
-				gameImage.className = 'gameImage';
-				
-				// Don't use default.png for games - just keep the broken image
-				
-				gameLink.appendChild(gameImage);
-				gameContainer.appendChild(gameLink);
-			});
-			
-			// Add pagination controls below games
-			const paginationBottom = createPaginationControls(currentPage, totalPages, currentCategory);
-			gameContainer.appendChild(paginationBottom);
-			
-			// Set up game search
-			setupGameSearch(filteredGames);
-			
-			// Set up random game button
-			setupRandomGameButton();
-			
-			// Set up scroll to top button
-			setupScrollToTop();
-		})
-		.catch(error => console.error('Error loading games: ', error));
-}
+			let gameNameClass = game.name
+			  .toLowerCase()
+			  .replace(/\s+/g, '-')
+			  .replace(/[^a-z0-9]/g, '-');
+			gameLink.className += ' ' + gameNameClass;
+		  }
+		  
+		  // Add category as data attribute
+		  if (game.category) {
+			gameLink.dataset.category = game.category;
+		  }
+		  
+		  // Add proxy flag as data attribute
+		  if (game.proxy !== undefined) {
+			gameLink.dataset.proxy = game.proxy;
+		  }
+		  
+		  const gameImage = document.createElement('img');
+		  gameImage.src = game.img;
+		  gameImage.alt = game.name;
+		  gameImage.title = game.name;
+		  gameImage.className = 'gameImage';
+		  
+		  gameLink.appendChild(gameImage);
+		  gameContainer.appendChild(gameLink);
+		});
+		
+		// Add pagination controls below games
+		const paginationBottom = createPaginationControls(currentPage, totalPages, currentCategory);
+		gameContainer.appendChild(paginationBottom);
+		
+		// Set up game search
+		setupGameSearch(filteredGames);
+		
+		// Set up random game button
+		setupRandomGameButton();
+		
+		// Set up scroll to top button
+		setupScrollToTop();
+	  })
+	  .catch(error => console.error('Error loading games: ', error));
+  }
+  
+ 
 
 function createCategorySelector() {
 	const categorySelector = document.createElement('div');

@@ -1201,7 +1201,7 @@
 	  "tags": [
 		"all"
 	  ],
-	  "proxy": true,
+	  "proxy": false,
 	  "category": "browser",
 	  "slug": "precision-client-izkl6"
 	},

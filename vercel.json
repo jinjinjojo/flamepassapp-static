@@ -1,0 +1,6 @@
+{
+    "rewrites": [
+      { "source": "/game/:slug", "destination": "/game-page.html" }
+    ],
+    "trailingSlash": false
+  }
