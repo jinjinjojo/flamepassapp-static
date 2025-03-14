@@ -156,6 +156,7 @@
     left: auto !important;
     transform: none !important;
     translate: none !important;
+    left: 20px !important;
 }
 
 /* Page structure container */
@@ -360,6 +361,9 @@
   }
   .page-jump {
     display: none;
+  }
+  .gameContain {
+    width: 70% !important;
   }
 }
 
