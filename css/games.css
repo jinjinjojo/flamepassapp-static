@@ -82,6 +82,7 @@
 
 #pagination-bottom {
     margin-top:60px;
+    margin-bottom: 30px;
 }
 
 .pagination-button {
@@ -356,6 +357,9 @@
   .pagination-controls {
     width: 75% !important;
     margin-left: 53px;
+  }
+  .page-jump {
+    display: none;
   }
 }
 
