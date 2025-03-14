@@ -302,7 +302,7 @@
   /* Adjust search container */
   .search-container {
     flex-direction: column;
-    width: 75%;
+    width: 70%;
     padding: 15px;
     gap: 15px;
     align-items: center;
@@ -348,14 +348,14 @@
     justify-content: center !important;
     text-align: center !important;
     width: 100% !important;
-    min-width: 300px;
+    min-width: 250px;
     margin-left: 25px;
     margin-top: 5px;
   }
   
   /* Keep pagination controls centered */
   .pagination-controls {
-    width: 75% !important;
+    width: 70% !important;
     margin-left: 53px;
   }
   .page-jump {
