@@ -25,7 +25,7 @@ async function executeSearch(query, useProxy = null) {
 	
 	// Set the URL based on whether we should use proxy
 	if (shouldUseProxy) {
-		encodedUrl = `/@/?uul=${encodeURIComponent(query)}`;
+		encodedUrl = `/@/index.html?uul=${encodeURIComponent(query)}`;
 	} else {
 		encodedUrl = query;
 	}
