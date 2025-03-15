@@ -187,7 +187,7 @@ function createPaginationControls(currentPage, totalPages, category) {
 	// Previous button
 	const prevButton = document.createElement('button');
 	prevButton.className = 'pagination-button prev';
-	prevButton.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Previous';
+	prevButton.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back';
 	prevButton.disabled = currentPage <= 1;
 	prevButton.addEventListener('click', () => {
 		if (currentPage > 1) {
