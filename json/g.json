@@ -1,16 +1,5 @@
 [
 	{
-	  "name": "! Request an app",
-	  "url": "https://docs.google.com/forms/d/e/1FAIpQLSeZcPMt3toVL8EtKLfHMbKpx4lZzqAAr5ifvZJRwoXqsLSf-A/viewform?usp=pp_url",
-	  "img": "https://app.flamepass.com/assets/requestGame.jpg",
-	  "tags": [
-		"all"
-	  ],
-	  "proxy": true,
-	  "category": "browser",
-	  "slug": "request-an-app-53r0b"
-	},
-	{
 	  "name": "1v1.LOL",
 	  "url": "https://1v1.lol/",
 	  "img": "https://app.flamepass.com/assets/imgs/g/1v1_LOL.webp",

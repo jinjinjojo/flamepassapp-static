@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <title>Signup - Flamepass</title>
   <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
@@ -8,10 +9,12 @@
   <meta name="keywords" content="Proxy, Unblocker, Flamepass Unblocker, Flamepass" />
   <meta property="og:image" content="/assets/logo.webp" />
   <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
   <link rel="stylesheet" href="/css/index.css" />
   <link rel="stylesheet" href="/css/themes.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <link rel="stylesheet" href="/css/common.css" />
@@ -22,7 +25,7 @@
       padding: 50px 20px 50px 80px;
       max-width: 800px;
     }
-    
+
     /* Card styles */
     .card {
       background-color: rgb(13, 13, 13);
@@ -33,29 +36,30 @@
       overflow: hidden;
       border: 1px solid #333333;
     }
-    
+
     .login-header {
       text-align: center;
       margin-bottom: 24px;
     }
-    
+
     .login-logo {
       width: 80px;
       margin-bottom: 16px;
     }
-    
+
     .login-title {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
       margin: 0;
       color: #ffffff;
     }
-    
+
     .login-subtitle {
       color: #aaaaaa;
-      margin-top: 4px;
+      margin-top: 8px;
+      font-size: 16px;
     }
-    
+
     .back-button {
       display: inline-flex;
       align-items: center;
@@ -70,17 +74,17 @@
       text-decoration: none;
       margin-top: 20px;
     }
-    
+
     .back-button:hover {
       background-color: rgba(255, 107, 0, 0.1);
     }
-    
+
     .divider {
       height: 1px;
       background-color: #333333;
       margin: 20px 0;
     }
-    
+
     stripe-pricing-table {
       --button-color: #ff6600;
       --primary-color: #ff6600;
@@ -88,7 +92,7 @@
       --body-text-color: #cccccc;
       font-family: 'DM Sans', sans-serif;
     }
-    
+
     /* Benefits Section */
     .benefits-container {
       display: grid;
@@ -98,57 +102,160 @@
       justify-items: center;
       text-align: center;
     }
-    
+
     .benefit-item {
       display: flex;
+      width: -webkit-fill-available;
       flex-direction: column;
       align-items: center;
       gap: 10px;
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
+      padding: 16px;
+      border-radius: 10px;
       transition: transform 0.2s, background-color 0.2s;
+      background-color: transparent;
+      border: 1px solid rgba(255, 102, 0, 0.1);
     }
-    
+
     .benefit-item:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-      transform: translateY(-2px);
+      background-color: rgba(255, 102, 0, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
-    
+
     .checkmark {
-      color: #2ecc71;
+      color: #ff6600;
       font-size: 24px;
       flex-shrink: 0;
+      filter: drop-shadow(0 0 3px rgba(255, 102, 0, 0.5));
     }
-    
+
     .benefit-text {
       font-size: 16px;
-      font-weight: 600;
       line-height: 1.4;
-      color: white;
+      color: #f8f8f8;
     }
-    
+
+    .benefit-star {
+      color: gold;
+      font-size: 18px;
+      margin-left: 4px;
+      filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
+    }
+
     .benefits-headline {
       text-align: center;
       margin-bottom: 26px;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
-      color: #ff6600;
-      text-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
+      color: #ffffff;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 5px 15px;
+      border-radius: 20px;
+      margin-top: 5px;
     }
 
-    /* New Premium Benefits Section */
+    .benefits-headline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 149, 0, 0.15) 100%);
+      border-radius: 20px;
+      z-index: -1;
+    }
+
+    /* Signup Instructions */
+    .signup-instructions {
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 149, 0, 0.15) 100%);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      border: 1px solid rgba(255, 102, 0, 0.2);
+    }
+
+    .signup-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .signup-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 10px;
+      position: relative;
+    }
+
+    .signup-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -10px;
+      top: 25px;
+      font-size: 20px;
+      color: #ff6600;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background-color: #ff6600;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(255, 102, 0, 0.4);
+    }
+
+    .step-text {
+      color: #ffffff;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Premium Benefits Section */
     .premium-benefits-section {
       margin-top: 40px;
       text-align: center;
     }
 
     .premium-headline {
+      text-align: center;
+      margin-bottom: 26px;
       font-size: 24px;
       font-weight: 700;
-      color: #ff6600;
-      margin-bottom: 24px;
-      text-shadow: 0 0 10px rgba(255, 107, 0, 0.3);
+      color: #ffffff;
+      position: relative;
+      display: inline-block;
+      /* left: 39%; */
+      /* transform: translateX(-50%); */
+      padding: 5px 15px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 149, 0, 0.15) 100%);
+      margin-top: 5px;
+  }
+
+    .premium-headline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 149, 0, 0.15) 100%);
+      border-radius: 20px;
+      z-index: -1;
     }
 
     .premium-details {
@@ -162,46 +269,50 @@
       display: flex;
       text-align: left;
       gap: 15px;
-      padding: 16px;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.03);
-      border: 1px solid #333333;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: transparent;
+      border: 1px solid rgba(255, 102, 0, 0.1);
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .premium-detail-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      background-color: rgba(255, 107, 0, 0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 102, 0, 0.08);
     }
 
     .detail-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 40px;
-      height: 40px;
+      min-width: 46px;
+      height: 46px;
       border-radius: 50%;
-      background-color: #ff6600;
+      background: linear-gradient(135deg, #ff6600 0%, #ff9500 100%);
       color: #fff;
+      box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
     }
 
     .detail-icon .material-symbols-outlined {
-      font-size: 24px;
+      font-size: 26px;
     }
 
     .detail-content h3 {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
       margin: 0 0 8px 0;
       color: #ffffff;
+      background: linear-gradient(90deg, #ffffff, #dddddd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .detail-content p {
-      font-size: 14px;
-      color: #aaaaaa;
+      font-size: 15px;
+      color: #bbbbbb;
       margin: 0;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .testimonials {
@@ -211,7 +322,7 @@
     .testimonial-headline {
       font-size: 20px;
       font-weight: 600;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       color: #ffffff;
     }
 
@@ -227,9 +338,16 @@
       min-width: 220px;
       max-width: 320px;
       padding: 20px;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.03);
-      border: 1px solid #333333;
+      border-radius: 12px;
+      background-color: transparent;
+      border: 1px solid rgba(255, 102, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .testimonial:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 102, 0, 0.05);
     }
 
     .rating {
@@ -240,7 +358,7 @@
 
     .testimonial p {
       font-style: italic;
-      color: #cccccc;
+      color: #dddddd;
       margin: 0 0 10px 0;
       line-height: 1.5;
     }
@@ -259,14 +377,21 @@
       margin: 30px auto;
       padding: 16px;
       max-width: 500px;
-      border-radius: 8px;
+      border-radius: 12px;
       background-color: rgba(46, 204, 113, 0.05);
       border: 1px solid rgba(46, 204, 113, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .guarantee-badge:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
 
     .guarantee-badge .material-symbols-outlined {
       font-size: 36px;
       color: #2ecc71;
+      filter: drop-shadow(0 0 5px rgba(46, 204, 113, 0.4));
     }
 
     .guarantee-text {
@@ -286,33 +411,68 @@
       margin: 0;
     }
 
+    .guarantee-email {
+      font-size: 12px;
+      color: #777777;
+      margin-top: 4px;
+    }
+
     .cta-section {
       margin: 40px 0 30px;
       padding: 25px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0.2) 100%);
-      border: 1px solid rgba(255, 107, 0, 0.3);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 102, 0, 0.2) 100%);
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     }
 
     .cta-headline {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       margin: 0 0 10px 0;
-      color: #ff6600;
+      color: #ffffff;
     }
 
     .cta-text {
       font-size: 16px;
-      color: #cccccc;
+      color: #dddddd;
       margin: 0 0 20px 0;
     }
 
-    .cta-section .btn {
-      max-width: 300px;
-      margin: 0 auto;
-      padding: 14px;
+    .btn {
+      background: linear-gradient(135deg, #ff6600 0%, #ff9500 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 28px;
       font-size: 16px;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      max-width: 240px;
+      margin: 0 auto;
+      height: 46px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 102, 0, 0.5);
+      background: linear-gradient(135deg, #ff7b00 0%, #ffaa00 100%);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(255, 102, 0, 0.4);
+    }
+
+    .btn .material-symbols-outlined {
+      font-size: 18px;
     }
 
     .back-link-container {
@@ -337,33 +497,76 @@
       .main-container {
         padding: 50px 15px 50px 60px;
       }
+
+      .signup-steps {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .signup-step:not(:last-child)::after {
+        content: "↓";
+        position: absolute;
+        right: 50%;
+        top: auto;
+        bottom: -24px;
+        font-size: 20px;
+      }
     }
 
     @media (max-width: 600px) {
       .benefits-container {
         grid-template-columns: 1fr;
       }
-      
+
       .testimonial-container {
         flex-direction: column;
         align-items: center;
       }
-      
+
       .testimonial {
         max-width: 100%;
       }
-      
+
       .card {
         padding: 20px;
       }
     }
+    .info-section {
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 102, 0, 0.15);
+    }
+
+    .info-title {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 10px 0;
+      text-align: center;
+    }
+
+    .info-text {
+      color: #f8f8f8;
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0;
+      text-align: center;
+    }
+
+    .highlight {
+      color: #ff7b00;
+      font-weight: 600;
+    }
+
   </style>
 </head>
+
 <body>
-  
+
   <ul class="navbar">
     <li style="margin-left: -1px; margin-top: 2px">
-      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
+      <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
     </li>
     <hr style="margin-top: 5px" />
     <li>
@@ -404,14 +607,14 @@
       </a>
     </li>
     <hr>
-    
-    
+
+
     <li>
       <a href="/guides.html" title="Guides and Methods">
         <span class="material-symbols-outlined">help_outline</span>
       </a>
     </li>
-    
+
     <li>
       <a href="/yt-channels.html" title="Unblocker YouTube Channels">
         <span class="material-symbols-outlined">play_circle</span>
@@ -429,129 +632,159 @@
         <span style="margin-top: 0" class="material-symbols-outlined">tune</span>
       </a>
     </li>
-  </ul>  
-  
+  </ul>
+
   <div class="main-container">
     <div class="card">
       <div class="login-header">
         <img src="/assets/logo.png" alt="Flamepass Logo" class="login-logo">
         <h1 class="login-title">Sign Up for Flamepass</h1>
-        <p class="login-subtitle">Create your account to get started</p>
+        <p class="login-subtitle">Your hub for the latest unblocker links, games & tools</p>
       </div>
       <div class="divider"></div>
 
       <!-- Benefits Section -->
-      <div class="benefits-headline">🔥 UNLOCK PREMIUM FEATURES 🔥</div>
+      <h2 class="benefits-headline">🔥 UNLOCK PREMIUM FEATURES 🔥</h2>
       <div class="benefits-container">
         <div class="benefit-item">
           <i class="fas fa-check-circle checkmark"></i>
-          <span class="benefit-text">Full Ultimate Unblocker Links List</span>
+          <span class="benefit-text">Always-Updated Unblocker Links</span>
         </div>
         <div class="benefit-item">
           <i class="fas fa-check-circle checkmark"></i>
-          <span class="benefit-text">Unlimited Proxy Search Usage</span>
+          <span class="benefit-text">GPT-4 AI for Homework Help</span>
         </div>
         <div class="benefit-item">
           <i class="fas fa-check-circle checkmark"></i>
-          <span class="benefit-text">3,000+ Apps & Games Library</span>
+          <span class="benefit-text">4,000+ Unblocked Games & Apps</span>
         </div>
         <div class="benefit-item">
           <i class="fas fa-check-circle checkmark"></i>
-          <span class="benefit-text">Flamepass AI Chat Access</span>
+          <span class="benefit-text">Full Downloadable Games Access</span>
         </div>
         <div class="benefit-item">
           <i class="fas fa-check-circle checkmark"></i>
-          <span class="benefit-text">All Laptop Exploit Methods</span>
+          <span class="benefit-text">Access Us Through Any Unblocker</span>
         </div>
         <div class="benefit-item">
           <i class="fas fa-check-circle checkmark"></i>
-          <span class="benefit-text">All Guides & Methods</span>
+          <span class="benefit-text">10+ Exclusive Flamepass Guides</span>
         </div>
       </div>
-      
+
       <div class="divider"></div>
-Click "Subscribe" To Get Started!
 
+      <!-- Enhanced Info Section -->
+      <div class="info-section">
+        <h3 class="info-title">About Flamepass</h3>
+        <p class="info-text">
+          <span class="highlight">Flamepass</span> is the <span class="highlight">#1 School Hub</span> for staying one step ahead of school restrictions.
+          <br>
+          Access at home to get the <span class="highlight">latest unblocker links</span>,
+          <span class="highlight">downloadable games</span>, and tools to use on your school device.
+        </p>
+      </div>
 
+      <!-- New Signup Instructions -->
+      <div class="signup-instructions">
+        <h3 style="color: #ffffff; margin-top: 0; font-size: 20px;">Get Started in 3 Easy Steps:</h3>
 
-You'll receive your license key instantly after purchase.
+        <div class="signup-steps">
+          <div class="signup-step">
+            <div class="step-number">1</div>
+            <div class="step-text">Click "Subscribe" below</div>
+          </div>
+          <div class="signup-step">
+            <div class="step-number">2</div>
+            <div class="step-text">Receive instant license key</div>
+          </div>
+          <div class="signup-step">
+            <div class="step-number">3</div>
+            <div class="step-text"><a href="/login.html" style="color: white;">Login</a> with email & key</div>
+          </div>
+        </div>
+      </div>
 
-
-
-Login at app.flamepass.com using your email and key.
       <div class="divider"></div>
-      
-      <stripe-pricing-table pricing-table-id="prctbl_1PcvCBGaTtLRmjO9WuVy9Wnm" publishable-key="pk_live_51JhmbwGaTtLRmjO9GVL5T10HQILEWDSCbUR2MKCMpjxJkZSFBErtWeMQTMWqNhKB0bH2O8jqskHDCkyVo1va0TyC00NWcseq2P">
+
+      <stripe-pricing-table pricing-table-id="prctbl_1PcvCBGaTtLRmjO9WuVy9Wnm"
+        publishable-key="pk_live_51JhmbwGaTtLRmjO9GVL5T10HQILEWDSCbUR2MKCMpjxJkZSFBErtWeMQTMWqNhKB0bH2O8jqskHDCkyVo1va0TyC00NWcseq2P">
       </stripe-pricing-table>
-      
-      <!-- New Premium Benefits Section -->
+
+      <!-- Premium Benefits Section -->
       <div class="premium-benefits-section">
-        <h2 class="premium-headline">🚀 WHY FLAMEPASS IS WORTH IT 🚀</h2>
-        
+        <h2 class="premium-headline">🚀 WHY FLAMEPASS HITS DIFFERENT 🚀</h2>
+
         <div class="premium-details">
-          <div class="premium-detail-item">
-            <div class="detail-icon">
-              <span class="material-symbols-outlined">verified</span>
-            </div>
-            <div class="detail-content">
-              <h3>Unrestricted Access Anywhere</h3>
-              <p>Browse freely at school, work, or any restricted network. Our advanced proxy technology bypasses even the strictest filters and blocks.</p>
-            </div>
-          </div>
-          
-          <div class="premium-detail-item">
-            <div class="detail-icon">
-              <span class="material-symbols-outlined">speed</span>
-            </div>
-            <div class="detail-content">
-              <h3>Lightning-Fast Performance</h3>
-              <p>Experience zero lag with our optimized servers. Watch videos, play games, and browse without buffering or slowdowns.</p>
-            </div>
-          </div>
-          
           <div class="premium-detail-item">
             <div class="detail-icon">
               <span class="material-symbols-outlined">update</span>
             </div>
             <div class="detail-content">
-              <h3>Constantly Updated</h3>
-              <p>New games, apps, and unblocker methods added weekly. Our team works 24/7 to stay ahead of school and workplace restrictions.</p>
+              <h3>Always Updated Unblocker Links</h3>
+              <p>Never worry about broken links again. Flamepass is your central hub for the latest working proxy and
+                unblocker links that you can access from home, then use at school when you need them most.</p>
+            </div>
+          </div>
+
+          <div class="premium-detail-item">
+            <div class="detail-icon">
+              <span class="material-symbols-outlined">sports_esports</span>
+            </div>
+            <div class="detail-content">
+              <h3>Downloadable Games That Work Anywhere</h3>
+              <p>Download games at home that will work on any school device. Our collection is specifically designed to
+                bypass network restrictions and work offline when needed.</p>
+            </div>
+          </div>
+
+          <div class="premium-detail-item">
+            <div class="detail-icon">
+              <span class="material-symbols-outlined">school</span>
+            </div>
+            <div class="detail-content">
+              <h3>Access From Any Device</h3>
+              <p>Flamepass itself works through any basic unblocker, so even if your school blocks our main site, you
+                can still access all your premium features through one of our many alternate links.</p>
             </div>
           </div>
         </div>
-        
+
         <div class="testimonials">
-          <h3 class="testimonial-headline">What Our Users Say:</h3>
+          <h3 class="testimonial-headline">What Students Are Saying:</h3>
           <div class="testimonial-container">
             <div class="testimonial">
               <div class="rating">★★★★★</div>
-              <p>"Flamepass literally saved my sanity during school hours. Worth every penny!"</p>
-              <span class="user">- Alex T.</span>
+              <p>"no cap flamepass is goated for always having fresh links. i check it every morning and grab whatever's
+                new, then i'm set all day at school. worth every penny frfr 💀"</p>
+              <span class="user">- Tyler M.</span>
             </div>
             <div class="testimonial">
               <div class="rating">★★★★★</div>
-              <p>"I've tried 5 different proxies and Flamepass is by far the most reliable. Never gets blocked!"</p>
-              <span class="user">- Jamie K.</span>
+              <p>"our school IT blocks EVERYTHING but with flamepass i always have backup links ready to go. the
+                downloadable games are clutch too when wifi gets locked down."</p>
+              <span class="user">- Jake S.</span>
             </div>
           </div>
         </div>
-        
+
         <div class="guarantee-badge">
           <span class="material-symbols-outlined">verified_user</span>
           <div class="guarantee-text">
             <h3>100% Satisfaction Guarantee</h3>
-            <p>If you're not completely satisfied within 7 days, we'll refund your payment. No questions asked.</p>
+            <p>Not happy? Get a full refund within 7 days. No questions asked.</p>
+            <div class="guarantee-email">Just email us at: flamepassproxies@gmail.com</div>
           </div>
         </div>
-        
+
         <div class="cta-section">
-          <h2 class="cta-headline">🔥 UNLOCK UNLIMITED ACCESS TODAY 🔥</h2>
-          <p class="cta-text">Join thousands of satisfied users who browse without limits!</p>
+          <h2 class="cta-headline">🔥 LEVEL UP YOUR SCHOOL LIFE TODAY 🔥</h2>
+          <p class="cta-text">Join thousands of students who always have a working backup link!</p>
           <button class="btn" id="scroll-to-pricing">
-            GET STARTED NOW <span class="material-symbols-outlined">arrow_upward</span>
+            GET ACCESS NOW <span class="material-symbols-outlined">arrow_upward</span>
           </button>
         </div>
-        
+
         <div class="back-link-container">
           <a href="/" class="back-link">
             Back to Home <span class="material-symbols-outlined" style="margin-left: 4px; font-size: 16px;">home</span>
@@ -560,7 +793,7 @@ Login at app.flamepass.com using your email and key.
       </div>
     </div>
   </div>
-  
+
   <div style="z-index: -998">
     <div class="blob"></div>
     <div class="blobbig"></div>
@@ -568,7 +801,7 @@ Login at app.flamepass.com using your email and key.
     <div class="blobtop"></div>
     <div style="z-index: -999; position: fixed" id="particles-js"></div>
   </div>
-  
+
   <script>
     particlesJS('particles-js', {
       particles: {
@@ -597,16 +830,16 @@ Login at app.flamepass.com using your email and key.
       },
       retina_detect: true
     });
-    
+
     // Add event listener for the scroll-to-pricing button
-    document.getElementById('scroll-to-pricing').addEventListener('click', function() {
+    document.getElementById('scroll-to-pricing').addEventListener('click', function () {
       const pricingTable = document.querySelector('stripe-pricing-table');
       if (pricingTable) {
         pricingTable.scrollIntoView({ behavior: 'smooth' });
       }
     });
   </script>
-  
+
   <script src="/js/localforage.min.js"></script>
   <script src="/js/index.js"></script>
   <script src="/js/themes.js"></script>
@@ -617,4 +850,5 @@ Login at app.flamepass.com using your email and key.
     lucide.createIcons();
   </script>
 </body>
+
 </html>
