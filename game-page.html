@@ -1,283 +1,513 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<link rel="stylesheet" href="/css/index.css" />
-		<link rel="stylesheet" href="/css/themes.css" />
-		<link rel="stylesheet" href="/css/games.css" />
-		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-		/>
-		<!-- These meta tags will be dynamically updated by JavaScript, but provide defaults for SEO -->
-		<title>Play Online Games | Flamepass</title>
-		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta
-			name="description"
-			content="Play games online with Flamepass, the next gen proxy. No downloads required, works directly in your browser."
-		/>
-		<meta
-			name="keywords"
-			content="Games, Online Games, Free Games, Browser Games, Flamepass"
-		/>
-		<meta property="og:image" content="/assets/logo.webp" />
-		<meta property="og:title" content="Play Online Games | Flamepass" />
-		<!-- Add canonical link for SEO -->
-		<link rel="canonical" href="/game/" />
-		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
-		<script
-			async
-			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
-		></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
+
+<head>
+	<link rel="stylesheet" href="/css/index.css" />
+	<link rel="stylesheet" href="/css/themes.css" />
+	<link rel="stylesheet" href="/css/games.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+	<!-- These meta tags will be dynamically updated by JavaScript, but provide defaults for SEO -->
+	<title>Play Online Games | Flamepass</title>
+	<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description"
+		content="Play games online with Flamepass, the next gen proxy. No downloads required, works directly in your browser." />
+	<meta name="keywords" content="Games, Online Games, Free Games, Browser Games, Flamepass" />
+	<meta property="og:image" content="/assets/logo.webp" />
+	<meta property="og:title" content="Play Online Games | Flamepass" />
+	<!-- Add canonical link for SEO -->
+	<link rel="canonical" href="/game/" />
+	<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', 'G-SPVQHBL4J1');
+	</script>
+
+	<link rel="preload" as="style"
+		href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+	<link rel="stylesheet" href="/css/common.css" />
+
+	<!-- Custom styles for game page -->
+	<style>
+		/* Game page container */
+		.game-page-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 20px;
+			color: white;
+		}
+
+		/* Loading animation */
+		.loading-container {
+			text-align: center;
+			padding: 40px;
+		}
+
+		.loader {
+			display: inline-block;
+			width: 50px;
+			height: 50px;
+			border: 5px solid rgba(255, 102, 0, 0.3);
+			border-radius: 50%;
+			border-top-color: #ff6600;
+			animation: spin 1s ease-in-out infinite;
+			margin-bottom: 15px;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
 			}
-			gtag('js', new Date());
+		}
 
-			gtag('config', 'G-SPVQHBL4J1');
-		</script>
+		/* Game info section */
+		.game-info {
+			margin-bottom: 30px;
+			background-color: rgba(30, 30, 30, 0.7);
+			padding: 25px;
+			border-radius: 10px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
 
-		<link
-			rel="preload"
-			as="style"
-			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
-		/>
-		<link rel="stylesheet" href="/css/common.css" />
-	</head>
+		.game-info h1 {
+			margin-top: 0;
+			margin-bottom: 20px;
+			font-size: 2rem;
+			color: #ff6600;
+		}
 
-	<body>
-		<ul class="navbar">
-			<li style="margin-left: -1px; margin-top: 2px">
-				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
-			</li>
-			<hr style="margin-top: 5px" />
-			<li>
-				<a href="/" title="Home">
-					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
-				</a>
-			</li>
-			<li>
-				<a href="/&.html" title="Search">
-					<span class="material-symbols-outlined">public</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/a.html" title="Apps">
-					<span class="material-symbols-outlined">apps</span>
-				</a>
-			</li>
-			<li>
-				<a href="/g.html" title="Games">
-					<span id="navactive" class="material-symbols-outlined">joystick</span>
-				</a>
-			</li>
-			<li>
-				<a href="/downloadable-games.html" title="Downloadable Games">
-					<span class="material-symbols-outlined">download</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ultimate-links.html" title="Ultimate Link List">
-					<span class="material-symbols-outlined">list</span>
-				</a>
-			</li>
-			<li>
-				<a href="/links.html" title="Link Generator">
-					<span class="material-symbols-outlined">link</span>
-				</a>
-			</li>
-			<hr>
-			
-			<li>
-				<a href="/guides.html" title="Guides and Methods">
-					<span class="material-symbols-outlined">help_outline</span>
-				</a>
-			</li>
-			
-			<li>
-				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
-					<span class="material-symbols-outlined">play_circle</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ai.html" title="AI Chat">
-					<span class="material-symbols-outlined">smart_toy</span>
-				</a>
-			</li>
-			<hr />
-			<li>
-				<a href="/~.html" title="Settings">
-					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
-				</a>
-			</li>
-			<li>
-				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
-					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
-						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
-					</div>
-				</a>
-			</li>
-		</ul>
+		.game-detail-image {
+			max-width: 100%;
+			height: auto;
+			border-radius: 8px;
+			margin-bottom: 20px;
+			display: block;
+		}
 
-		<!-- Container for game content -->
-		<div id="game-container" class="game-page-container">
-			<!-- Content will be loaded dynamically via JavaScript -->
-			<div class="loading-container">
-				<div class="loader"></div>
-				<p>Loading game information...</p>
-			</div>
+		/* Game tags */
+		.game-tags {
+			margin-bottom: 20px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.category-badge {
+			display: inline-block;
+			padding: 5px 10px;
+			border-radius: 30px;
+			background-color: #ff6600;
+			color: white;
+			font-size: 0.9rem;
+			font-weight: 500;
+		}
+
+		.tag-badge {
+			display: inline-block;
+			padding: 5px 10px;
+			border-radius: 30px;
+			background-color: rgba(255, 255, 255, 0.1);
+			color: white;
+			font-size: 0.9rem;
+		}
+
+		/* Game description */
+		.game-description {
+			line-height: 1.6;
+			margin-bottom: 25px;
+			font-size: 1rem;
+			color: #f0f0f0;
+		}
+
+		/* Play button */
+		.play-game-button {
+			display: inline-block;
+			padding: 12px 30px;
+			background-color: #ff6600;
+			color: white;
+			border-radius: 30px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 1.1rem;
+			transition: background-color 0.3s;
+			margin-bottom: 10px;
+		}
+
+		.play-game-button:hover {
+			background-color: #ff8033;
+		}
+
+		/* Related games section */
+		.related-games {
+			margin-top: 40px;
+			margin-bottom: 30px;
+			background-color: rgba(30, 30, 30, 0.7);
+			padding: 25px;
+			border-radius: 10px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
+
+		.related-games h2 {
+			margin-top: 0;
+			margin-bottom: 20px;
+			font-size: 1.5rem;
+			color: #ff6600;
+		}
+
+		.related-games-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			gap: 20px;
+		}
+
+		.related-game-item {
+			position: relative;
+			text-decoration: none;
+			color: white;
+			transition: transform 0.3s;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+
+		.related-game-item:hover {
+			transform: translateY(-5px);
+		}
+
+		.related-game-item img {
+			width: 100%;
+			height: 110px;
+			object-fit: cover;
+			border-radius: 8px;
+		}
+
+		.related-game-item p {
+			margin-top: 8px;
+			font-size: 0.9rem;
+			text-align: center;
+		}
+
+		/* Game overlay */
+		.game-overlay {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			padding: 15px;
+			background: linear-gradient(transparent, rgb(0, 0, 0));
+			color: white;
+			opacity: 1;
+			transition: opacity 0.3s;
+		}
+
+		.game-title {
+			margin: 0;
+			font-size: 1.2rem;
+			font-weight: 600;
+		}
+
+		/* Back button */
+		.back-button {
+			margin-top: 30px;
+			text-align: center;
+		}
+
+		.back-link {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: rgba(255, 255, 255, 0.1);
+			color: white;
+			border-radius: 30px;
+			text-decoration: none;
+			transition: background-color 0.3s;
+		}
+
+		.back-link:hover {
+			background-color: rgba(255, 255, 255, 0.2);
+		}
+
+		/* Error message */
+		.error-message {
+			text-align: center;
+			padding: 40px;
+			background-color: rgba(30, 30, 30, 0.7);
+			border-radius: 10px;
+			max-width: 500px;
+			margin: 0 auto;
+		}
+
+		.error-message h1 {
+			color: #ff6600;
+			margin-bottom: 15px;
+		}
+
+		.error-message p {
+			margin-bottom: 20px;
+			font-size: 1.1rem;
+		}
+
+		/* Responsive adjustments */
+		@media (max-width: 768px) {
+			.game-page-container {
+				padding: 15px;
+			}
+
+			.related-games-grid {
+				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+			}
+
+			.game-info h1 {
+				font-size: 1.7rem;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.related-games-grid {
+				grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+			}
+
+			.play-game-button {
+				width: 100%;
+				text-align: center;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<ul class="navbar">
+		<li style="margin-left: -1px; margin-top: 2px">
+			<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
+		</li>
+		<hr style="margin-top: 5px" />
+		<li>
+			<a href="/" title="Home">
+				<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+			</a>
+		</li>
+		<li>
+			<a href="/&.html" title="Search">
+				<span class="material-symbols-outlined">public</span>
+			</a>
+		</li>
+		<hr>
+		<li>
+			<a href="/a.html" title="Apps">
+				<span class="material-symbols-outlined">apps</span>
+			</a>
+		</li>
+		<li>
+			<a href="/g.html" title="Games">
+				<span id="navactive" class="material-symbols-outlined">joystick</span>
+			</a>
+		</li>
+		<li>
+			<a href="/downloadable-games.html" title="Downloadable Games">
+				<span class="material-symbols-outlined">download</span>
+			</a>
+		</li>
+		<hr>
+		<li>
+			<a href="/ultimate-links.html" title="Ultimate Link List">
+				<span class="material-symbols-outlined">list</span>
+			</a>
+		</li>
+		<li>
+			<a href="/links.html" title="Link Generator">
+				<span class="material-symbols-outlined">link</span>
+			</a>
+		</li>
+		<hr>
+
+		<li>
+			<a href="/guides.html" title="Guides and Methods">
+				<span class="material-symbols-outlined">help_outline</span>
+			</a>
+		</li>
+
+		<li>
+			<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+				<span class="material-symbols-outlined">play_circle</span>
+			</a>
+		</li>
+		<hr>
+		<li>
+			<a href="/ai.html" title="AI Chat">
+				<span class="material-symbols-outlined">smart_toy</span>
+			</a>
+		</li>
+		<hr />
+		<li>
+			<a href="/~.html" title="Settings">
+				<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+			</a>
+		</li>
+		<li>
+			<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+				<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+					<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+				</div>
+			</a>
+		</li>
+	</ul>
+
+	<!-- Container for game content -->
+	<div id="game-container" class="game-page-container">
+		<!-- Content will be loaded dynamically via JavaScript -->
+		<div class="loading-container">
+			<div class="loader"></div>
+			<p>Loading game information...</p>
 		</div>
+	</div>
 
-		<!-- Background elements -->
-		<div style="z-index: -998">
-			<div style="z-index: -998; position: fixed" class="blob"></div>
-			<div style="z-index: -998; position: fixed" class="blobbig"></div>
-			<div style="z-index: -998; position: fixed" class="blobsmall"></div>
-			<div style="z-index: -998; position: fixed" class="blobtop"></div>
-			<div style="z-index: -999; position: fixed" id="particles-js"></div>
-		</div>
+	<!-- Background elements -->
+	<div style="z-index: -998">
+		<div style="z-index: -998; position: fixed" class="blob"></div>
+		<div style="z-index: -998; position: fixed" class="blobbig"></div>
+		<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+		<div style="z-index: -998; position: fixed" class="blobtop"></div>
+		<div style="z-index: -999; position: fixed" id="particles-js"></div>
+	</div>
 
-		<!-- Scripts -->
-		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-		<script src="/js/localforage.min.js"></script>
-		<script src="/js/game-loader.js"></script> <!-- Note: updated JS file -->
-		<script src="/js/themes.js"></script>
-		<script src="/js/c.js"></script>
-		<script src="/js/auth-controller.min.js"></script>
-		<script>
-			// Initialize particles.js
-			particlesJS('particles-js', {
-				particles: {
-					number: {
-						value: 86,
-						density: {
-							enable: true,
-							value_area: 800
-						}
-					},
-					color: {
-						value: '#ffffff'
-					},
-					shape: {
-						type: 'circle',
-						stroke: {
-							width: 0,
-							color: '#000000'
-						},
-						polygon: {
-							nb_sides: 5
-						},
-						image: {
-							src: 'img/github.svg',
-							width: 100,
-							height: 100
-						}
-					},
-					opacity: {
-						value: 1,
-						random: true,
-						anim: {
-							enable: false,
-							speed: 1,
-							opacity_min: 0.1,
-							sync: false
-						}
-					},
-					size: {
-						value: 2,
-						random: true,
-						anim: {
-							enable: false,
-							speed: 40,
-							size_min: 0.1,
-							sync: false
-						}
-					},
-					line_linked: {
-						enable: false,
-						distance: 150,
-						color: '#ffffff',
-						opacity: 0.4,
-						width: 1
-					},
-					move: {
+	<!-- Scripts -->
+	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+	<script src="/js/localforage.min.js"></script>
+	<script src="/js/game-loader.js"></script>
+	<script src="/js/themes.js"></script>
+	<script src="/js/c.js"></script>
+	<script src="/js/auth-controller.min.js"></script>
+	<script>
+		// Initialize particles.js
+		particlesJS('particles-js', {
+			particles: {
+				number: {
+					value: 86,
+					density: {
 						enable: true,
-						speed: 0.5,
-						direction: 'top',
-						random: false,
-						straight: false,
-						out_mode: 'out',
-						bounce: false,
-						attract: {
-							enable: false,
-							rotateX: 318.0130544358847,
-							rotateY: 556.5228452627983
-						}
+						value_area: 800
 					}
 				},
-				interactivity: {
-					detect_on: 'window',
-					events: {
-						onhover: {
-							enable: false,
-							mode: 'repulse'
-						},
-						onclick: {
-							enable: true,
-							mode: 'push'
-						},
-						resize: true
+				color: {
+					value: '#ffffff'
+				},
+				shape: {
+					type: 'circle',
+					stroke: {
+						width: 0,
+						color: '#000000'
 					},
-					modes: {
-						grab: {
-							distance: 400,
-							line_linked: {
-								opacity: 1
-							}
-						},
-						bubble: {
-							distance: 400,
-							size: 40,
-							duration: 2,
-							opacity: 8,
-							speed: 3
-						},
-						repulse: {
-							distance: 200,
-							duration: 0.4
-						},
-						push: {
-							particles_nb: 10
-						},
-						remove: {
-							particles_nb: 10
-						}
+					polygon: {
+						nb_sides: 5
+					},
+					image: {
+						src: 'img/github.svg',
+						width: 100,
+						height: 100
 					}
 				},
-				retina_detect: true
-			});
-			
-			// Handle ads based on user preferences
-			document.addEventListener('DOMContentLoaded', function () {
-				let hideAds = localStorage.getItem('hideAds');
-
-				if (hideAds === null || hideAds === 'false') {
-					let script = document.createElement('script');
-					script.type = 'text/javascript';
-					script.src =
-						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
-					document.body.appendChild(script);
+				opacity: {
+					value: 1,
+					random: true,
+					anim: {
+						enable: false,
+						speed: 1,
+						opacity_min: 0.1,
+						sync: false
+					}
+				},
+				size: {
+					value: 2,
+					random: true,
+					anim: {
+						enable: false,
+						speed: 40,
+						size_min: 0.1,
+						sync: false
+					}
+				},
+				line_linked: {
+					enable: false,
+					distance: 150,
+					color: '#ffffff',
+					opacity: 0.4,
+					width: 1
+				},
+				move: {
+					enable: true,
+					speed: 0.5,
+					direction: 'top',
+					random: false,
+					straight: false,
+					out_mode: 'out',
+					bounce: false,
+					attract: {
+						enable: false,
+						rotateX: 318.0130544358847,
+						rotateY: 556.5228452627983
+					}
 				}
-			});
-		</script>
-	</body>
+			},
+			interactivity: {
+				detect_on: 'window',
+				events: {
+					onhover: {
+						enable: false,
+						mode: 'repulse'
+					},
+					onclick: {
+						enable: true,
+						mode: 'push'
+					},
+					resize: true
+				},
+				modes: {
+					grab: {
+						distance: 400,
+						line_linked: {
+							opacity: 1
+						}
+					},
+					bubble: {
+						distance: 400,
+						size: 40,
+						duration: 2,
+						opacity: 8,
+						speed: 3
+					},
+					repulse: {
+						distance: 200,
+						duration: 0.4
+					},
+					push: {
+						particles_nb: 10
+					},
+					remove: {
+						particles_nb: 10
+					}
+				}
+			},
+			retina_detect: true
+		});
+
+		// Handle ads based on user preferences
+		document.addEventListener('DOMContentLoaded', function () {
+			let hideAds = localStorage.getItem('hideAds');
+
+			if (hideAds === null || hideAds === 'false') {
+				let script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.src =
+					'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+				document.body.appendChild(script);
+			}
+		});
+	</script>
+</body>
+
 </html>
