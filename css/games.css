@@ -318,7 +318,7 @@
   
   /* Keep pagination controls centered */
   .pagination-controls {
-    width: 70% !important;
+    width: 85% !important;
     margin-left: 53px;
   }
   .page-jump {

@@ -30,6 +30,53 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
+// Function to manage localStorage size - check if storage is near capacity
+function isStorageFull() {
+	let total = 0;
+	for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		const value = localStorage.getItem(key);
+		total += (key.length + value.length) * 2; // Unicode characters use 2 bytes
+	}
+
+	// Estimate remaining space (5MB is typical limit minus a safety margin)
+	const maxSize = 4.5 * 1024 * 1024; // ~4.5MB
+	return total > maxSize * 0.9; // Return true if using more than 90% of space
+}
+
+// Function to clear older cache items to make room
+function clearOldCache() {
+	const cacheKeys = [];
+	// Find all cache keys
+	for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		if (key.startsWith('cache_')) {
+			try {
+				const item = JSON.parse(localStorage.getItem(key));
+				cacheKeys.push({
+					key: key,
+					timestamp: item.timestamp || 0
+				});
+			} catch (e) {
+				// If item can't be parsed, mark it as old
+				cacheKeys.push({
+					key: key,
+					timestamp: 0
+				});
+			}
+		}
+	}
+
+	// Sort by timestamp (oldest first)
+	cacheKeys.sort((a, b) => a.timestamp - b.timestamp);
+
+	// Remove oldest items until we have removed at least 30% of cache items
+	const itemsToRemove = Math.ceil(cacheKeys.length * 0.3);
+	cacheKeys.slice(0, itemsToRemove).forEach(item => {
+		localStorage.removeItem(item.key);
+	});
+}
+
 // Function to load JSON data with caching
 async function fetchWithCache(url, cacheKey) {
 	// Return cached data if available
@@ -55,10 +102,31 @@ async function fetchWithCache(url, cacheKey) {
 
 		// Update cache
 		cache[cacheKey] = data;
-		localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
-			data,
-			timestamp: Date.now()
-		}));
+
+		// Check storage capacity and clear old cache if needed
+		if (isStorageFull()) {
+			clearOldCache();
+		}
+
+		try {
+			localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
+				data,
+				timestamp: Date.now()
+			}));
+		} catch (storageError) {
+			console.warn('localStorage quota exceeded, using memory cache only');
+			// Clear some items and try again
+			clearOldCache();
+			try {
+				localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
+					data,
+					timestamp: Date.now()
+				}));
+			} catch (retryError) {
+				console.error('Still unable to store in localStorage after cleanup');
+				// Continue using memory cache
+			}
+		}
 
 		return data;
 	} catch (error) {
@@ -94,8 +162,11 @@ async function loadGamesPage() {
 		// Filter games by category
 		let filteredGames = filterGamesByCategory(data, currentCategory);
 
-		// Sort games alphabetically (using memoization for better performance)
-		filteredGames = sortGames(filteredGames);
+		// Sort games alphabetically ONLY for non-cloud categories
+		// Cloud games remain in their original order as provided by the API
+		if (currentCategory !== 'cloud') {
+			filteredGames = sortGames(filteredGames);
+		}
 
 		// Calculate pagination
 		const gamesPerPage = 50;
@@ -110,13 +181,83 @@ async function loadGamesPage() {
 		// Render games with improvements
 		renderGames(currentGames, currentCategory, filteredGames);
 
-		// Set up event handlers - now uses all games in category for search
-		setupGameSearch(filteredGames);
+		// Set up event handlers
+		setupGameSearchFunction(filteredGames);
 		setupRandomGameButton();
 		setupScrollToTop();
 	} catch (error) {
 		console.error('Error loading games: ', error);
 	}
+}
+
+// Implement the missing setupGameSearch function
+function setupGameSearchFunction(games) {
+	const searchInput = document.getElementById('gameSearch');
+	if (!searchInput) return;
+
+	const gameContainer = document.querySelector('.gameContain');
+	if (!gameContainer) return;
+
+	// Clear any previous search results info
+	const existingResultsInfo = document.querySelector('.search-results-info');
+	if (existingResultsInfo) {
+		existingResultsInfo.remove();
+	}
+
+	// Set up the input event listener
+	searchInput.addEventListener('input', function () {
+		const searchValue = this.value.toLowerCase().trim();
+
+		if (!searchValue) {
+			// If search is empty, show all games
+			const gameLinks = gameContainer.querySelectorAll('.gameAnchor');
+			gameLinks.forEach(game => {
+				game.style.display = '';
+			});
+
+			// Remove any search results info
+			const resultsInfo = document.querySelector('.search-results-info');
+			if (resultsInfo) {
+				resultsInfo.remove();
+			}
+			return;
+		}
+
+		// Filter games based on search
+		let matchCount = 0;
+		const gameLinks = gameContainer.querySelectorAll('.gameAnchor');
+
+		gameLinks.forEach(game => {
+			const gameTitle = game.querySelector('.game-title').textContent.toLowerCase();
+
+			if (gameTitle.includes(searchValue)) {
+				game.style.display = '';
+				matchCount++;
+			} else {
+				game.style.display = 'none';
+			}
+		});
+
+		// Update or create search results info
+		let resultsInfo = document.querySelector('.search-results-info');
+		if (!resultsInfo) {
+			resultsInfo = document.createElement('div');
+			resultsInfo.className = 'search-results-info';
+			gameContainer.parentNode.insertBefore(resultsInfo, gameContainer);
+		}
+
+		// Create clear button
+		const clearButton = document.createElement('button');
+		clearButton.className = 'clear-search-button';
+		clearButton.textContent = 'Clear';
+		clearButton.addEventListener('click', () => {
+			searchInput.value = '';
+			searchInput.dispatchEvent(new Event('input'));
+		});
+
+		resultsInfo.innerHTML = `Found ${matchCount} game${matchCount === 1 ? '' : 's'} matching "${searchValue}"`;
+		resultsInfo.appendChild(clearButton);
+	});
 }
 
 function setupCategorySelector() {
@@ -141,9 +282,9 @@ function setupCategorySelector() {
 
 		// Add lock for categories that require authentication
 		let buttonContent = `
-      <span class="material-symbols-outlined category-icon">${category.icon}</span>
-      <span class="category-text">${category.name}</span>
-    `;
+          <span class="material-symbols-outlined category-icon">${category.icon}</span>
+          <span class="category-text">${category.name}</span>
+        `;
 
 		if (category.requiresAuth) {
 			buttonContent += `<span class="material-symbols-outlined lock-icon">lock</span>`;
@@ -173,12 +314,12 @@ function setupCategorySelector() {
 	// Add styles for lock icon
 	const style = document.createElement('style');
 	style.textContent = `
-		.lock-icon {
-			font-size: 16px;
-			margin-left: 5px;
-			color: #ff6600;
-		}
-	`;
+        .lock-icon {
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff6600;
+        }
+    `;
 	document.head.appendChild(style);
 }
 
@@ -633,35 +774,6 @@ function createSlug(name) {
 	return `${baseSlug}-${randomSuffix}`;
 }
 
-// Initialize on page load with performance optimizations
-document.addEventListener('DOMContentLoaded', () => {
-	// Initialize CSS for consistent styling
-	addGameOverlayStyles();
-	addCustomGameStyles();
-
-	// Check which page we're on and handle accordingly
-	const path = window.location.pathname;
-
-	if (path === '/g.html') {
-		// Use requestIdleCallback if available for non-critical init
-		if (window.requestIdleCallback) {
-			requestIdleCallback(() => loadGamesPage(), { timeout: 1000 });
-		} else {
-			// Fallback to setTimeout for browsers that don't support requestIdleCallback
-			setTimeout(loadGamesPage, 10);
-		}
-	} else if (path === '/&.html') {
-		const useSmallIcons = localStorage.getItem('smallIcons') === 'true';
-		if (useSmallIcons) {
-			loadSmallShortcuts();
-		} else {
-			loadBigShortcuts();
-		}
-	} else if (path === '/a.html') {
-		loadApps();
-	}
-});
-
 // Add game overlay styles
 function addGameOverlayStyles() {
 	if (document.getElementById('game-overlay-styles')) return;
@@ -669,28 +781,28 @@ function addGameOverlayStyles() {
 	const styleEl = document.createElement('style');
 	styleEl.id = 'game-overlay-styles';
 	styleEl.textContent = `
-		.game-overlay {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			padding: 15px;
-			background: linear-gradient(transparent, rgb(0, 0, 0));
-			color: white;
-			opacity: 1;
-			transition: opacity 0.3s;
-		}
-		
-		.game-title {
-			margin: 0;
-			font-size: 1.2rem;
-			font-weight: 600;
-			text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
-	`;
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 90%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgb(0, 0, 0));
+            color: white;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        .game-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    `;
 
 	document.head.appendChild(styleEl);
 }
@@ -702,75 +814,75 @@ function addCustomGameStyles() {
 	const styleEl = document.createElement('style');
 	styleEl.id = 'custom-game-styles';
 	styleEl.textContent = `
-		.gameAnchor {
-			position: relative;
-			overflow: hidden;
-			border-radius: 8px;
-			transition: transform 0.3s ease;
-		}
-		
-		.gameAnchor:hover {
-			transform: translateY(-5px);
-		}
-		
-		.gameImage {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			border-radius: 8px;
-		}
-		
-		.lock-overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.7);
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			color: white;
-			font-size: 24px;
-			z-index: 100;
-			cursor: pointer;
-			transition: opacity 0.3s ease;
-			border-radius: 8px;
-		}
-		
-		/* Search results info */
-		.search-results-info {
-			text-align: center;
-			margin: 20px 0;
-			color: #fff;
-			font-size: 16px;
-			background-color: rgba(30, 30, 30, 0.7);
-			padding: 15px;
-			border-radius: 8px;
-		}
-		
-		.clear-search-button {
-			padding: 5px 10px;
-			background-color: #ff6600;
-			border: none;
-			border-radius: 4px;
-			color: white;
-			cursor: pointer;
-			transition: background-color 0.3s;
-			margin-left: 10px;
-		}
-		
-		.clear-search-button:hover {
-			background-color: #ff8033;
-		}
-		
-		/* Lock icon for category buttons */
-		.lock-icon {
-			font-size: 16px;
-			margin-left: 5px;
-			color: #ff6600;
-		}
-	`;
+        .gameAnchor {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .gameAnchor:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gameImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            border-radius: 8px;
+        }
+        
+        /* Search results info */
+        .search-results-info {
+            text-align: center;
+            margin: 20px 0;
+            color: #fff;
+            font-size: 16px;
+            background-color: rgba(30, 30, 30, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .clear-search-button {
+            padding: 5px 10px;
+            background-color: #ff6600;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        
+        .clear-search-button:hover {
+            background-color: #ff8033;
+        }
+        
+        /* Lock icon for category buttons */
+        .lock-icon {
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff6600;
+        }
+    `;
 
 	document.head.appendChild(styleEl);
 }

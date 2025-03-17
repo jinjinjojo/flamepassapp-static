@@ -1,481 +1,1076 @@
-// game-loader.js - SEO-friendly game page loader with caching integration
-// This script will use pre-rendered data if available or fetch it from local cache
+// Enhanced JSON loader with caching, lazy loading, and performance improvements
+localforage.setItem('e', 'e');
+
+// Cache objects to prevent multiple fetches
+const cache = {
+  games: null,
+  smallShortcuts: null,
+  bigShortcuts: null,
+  apps: null
+};
+
+// Make cache available globally
+window.cache = cache;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // First check if we have pre-rendered game data from the Edge Function
-  if (window.GAME_DATA) {
-    console.log('Using pre-rendered game data');
-    renderGameDetails(document.getElementById('game-container'), window.GAME_DATA);
-    return;
-  }
-
-  // Extract the game slug from the URL path as a fallback
-  let slug = '';
+  // Check which page we're on and handle accordingly
   const path = window.location.pathname;
 
-  // If we're on a /game/ URL, extract the slug from the path
-  if (path.includes('/game/')) {
-    slug = path.split('/game/')[1].replace('/', '');
-  }
-
-  // Fallback to query parameters if provided
-  if (!slug) {
-    const urlParams = new URLSearchParams(window.location.search);
-    slug = urlParams.get('slug') || '';
-  }
-
-  if (slug) {
-    // Load the game details using the cached data from localforage if available
-    loadGameDetails(slug);
-  } else {
-    showError('Game not found');
+  if (path === '/g.html') {
+    loadGamesPage();
+  } else if (path === '/&.html') {
+    const useSmallIcons = localStorage.getItem('smallIcons') === 'true';
+    if (useSmallIcons) {
+      loadSmallShortcuts();
+    } else {
+      loadBigShortcuts();
+    }
+  } else if (path === '/a.html') {
+    loadApps();
   }
 });
 
-// Use the cached data from json-loader.js if available
-async function loadGameDetails(slug) {
+// Function to manage localStorage size - check if storage is near capacity
+function isStorageFull() {
+  let total = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    const value = localStorage.getItem(key);
+    total += (key.length + value.length) * 2; // Unicode characters use 2 bytes
+  }
+
+  // Estimate remaining space (5MB is typical limit minus a safety margin)
+  const maxSize = 4.5 * 1024 * 1024; // ~4.5MB
+  return total > maxSize * 0.9; // Return true if using more than 90% of space
+}
+
+// Function to clear older cache items to make room
+function clearOldCache() {
+  const cacheKeys = [];
+  // Find all cache keys
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('cache_')) {
+      try {
+        const item = JSON.parse(localStorage.getItem(key));
+        cacheKeys.push({
+          key: key,
+          timestamp: item.timestamp || 0
+        });
+      } catch (e) {
+        // If item can't be parsed, mark it as old
+        cacheKeys.push({
+          key: key,
+          timestamp: 0
+        });
+      }
+    }
+  }
+
+  // Sort by timestamp (oldest first)
+  cacheKeys.sort((a, b) => a.timestamp - b.timestamp);
+
+  // Remove oldest items until we have removed at least 30% of cache items
+  const itemsToRemove = Math.ceil(cacheKeys.length * 0.3);
+  cacheKeys.slice(0, itemsToRemove).forEach(item => {
+    localStorage.removeItem(item.key);
+  });
+}
+
+// Function to load JSON data with caching
+async function fetchWithCache(url, cacheKey) {
+  // Return cached data if available
+  if (cache[cacheKey]) {
+    return cache[cacheKey];
+  }
+
   try {
-    // Attempt to get games from the cache first
-    let data;
-
-    // Check if cache data is available in memory
-    if (window.cache && window.cache.games) {
-      data = window.cache.games;
-    } else {
-      // Try to fetch from localStorage cache
-      const cachedData = localStorage.getItem('cache_games');
-      if (cachedData) {
-        const parsed = JSON.parse(cachedData);
-        data = parsed.data;
-      }
-
-      // If still no data, fetch from server
-      if (!data) {
-        const response = await fetch('/json/g.json');
-        data = await response.json();
-
-        // Store in cache for future use
-        if (window.cache) {
-          window.cache.games = data;
-        }
-        localStorage.setItem('cache_games', JSON.stringify({
-          data,
-          timestamp: Date.now()
-        }));
-      }
-    }
-
-    const game = data.find(g => g.slug === slug);
-
-    if (!game) {
-      showError('Game not found');
-      return;
-    }
-
-    // Update page title and meta tags for SEO
-    document.title = `${game.name} - Play Online | Flamepass`;
-    updateMetaTags(game);
-
-    // Display game content
-    const container = document.getElementById('game-container');
-    renderGameDetails(container, game, data);
-  } catch (error) {
-    console.error('Error loading game details:', error);
-    showError('Error loading game data');
-  }
-}
-
-function updateMetaTags(game) {
-  // Update description
-  let metaDescription = document.querySelector('meta[name="description"]');
-  if (metaDescription) {
-    metaDescription.content = `Play ${game.name} online for free with Flamepass. No downloads required, works in your browser.`;
-  }
-
-  // Update keywords
-  let metaKeywords = document.querySelector('meta[name="keywords"]');
-  if (metaKeywords) {
-    // Combine game name with general keywords
-    const tags = game.tags || game.categories || [];
-    const keywordString = `${game.name}, ${tags.join(', ')}, Online Games, Free Games, Flamepass`;
-    metaKeywords.content = keywordString;
-  }
-
-  // Update open graph image
-  let ogImage = document.querySelector('meta[property="og:image"]');
-  if (ogImage) {
-    ogImage.content = game.img;
-  } else {
-    ogImage = document.createElement('meta');
-    ogImage.setAttribute('property', 'og:image');
-    ogImage.content = game.img;
-    document.head.appendChild(ogImage);
-  }
-
-  // Update open graph title
-  let ogTitle = document.querySelector('meta[property="og:title"]');
-  if (!ogTitle) {
-    ogTitle = document.createElement('meta');
-    ogTitle.setAttribute('property', 'og:title');
-    document.head.appendChild(ogTitle);
-  }
-  ogTitle.content = `${game.name} - Play Online | Flamepass`;
-
-  // Add canonical URL for SEO
-  let canonicalLink = document.querySelector('link[rel="canonical"]');
-  if (!canonicalLink) {
-    canonicalLink = document.createElement('link');
-    canonicalLink.rel = 'canonical';
-    document.head.appendChild(canonicalLink);
-  }
-  canonicalLink.href = `${window.location.origin}/game/${game.slug}`;
-}
-
-function renderGameDetails(container, game, allGames) {
-  // If we don't have all games data and we have game data from prerender,
-  // we need to fetch the full games list for related games
-  if (!allGames && game) {
-    // Try to get cached games data first
-    if (window.cache && window.cache.games) {
-      renderGameDetails(container, game, window.cache.games);
-      return;
-    }
-
-    // Check localStorage cache
-    const cachedData = localStorage.getItem('cache_games');
+    // Check if data exists in local storage
+    const cachedData = localStorage.getItem(`cache_${cacheKey}`);
     if (cachedData) {
-      const parsed = JSON.parse(cachedData);
-      renderGameDetails(container, game, parsed.data);
-      return;
+      const { data, timestamp } = JSON.parse(cachedData);
+      // Use cache if less than 1 hour old
+      if (Date.now() - timestamp < 3600000) {
+        cache[cacheKey] = data;
+        return data;
+      }
     }
 
-    // Fallback to fetch if no cache available
-    fetch('/json/g.json')
-      .then(response => response.json())
-      .then(data => {
-        // Store in cache for future use
-        if (window.cache) {
-          window.cache.games = data;
-        }
-        localStorage.setItem('cache_games', JSON.stringify({
+    // Fetch fresh data if cache is expired or doesn't exist
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Update cache
+    cache[cacheKey] = data;
+
+    // Check storage capacity and clear old cache if needed
+    if (isStorageFull()) {
+      clearOldCache();
+    }
+
+    try {
+      localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
+        data,
+        timestamp: Date.now()
+      }));
+    } catch (storageError) {
+      console.warn('localStorage quota exceeded, using memory cache only');
+      // Clear some items and try again
+      clearOldCache();
+      try {
+        localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
           data,
           timestamp: Date.now()
         }));
+      } catch (retryError) {
+        console.error('Still unable to store in localStorage after cleanup');
+        // Continue using memory cache
+      }
+    }
 
-        renderGameDetails(container, game, data);
-      })
-      .catch(error => {
-        console.error('Error loading full game list:', error);
-        // Still render the main game without related games
-        renderGameWithoutRelated(container, game);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching ${url}:`, error);
+
+    // If we have cached data, use it as fallback even if expired
+    const cachedData = localStorage.getItem(`cache_${cacheKey}`);
+    if (cachedData) {
+      return JSON.parse(cachedData).data;
+    }
+
+    return [];
+  }
+}
+
+// Optimized function to load games page with category authentication
+async function loadGamesPage() {
+  try {
+    // Only set up category selector and pagination controls once
+    setupCategorySelector();
+
+    // Get games data
+    const data = await fetchWithCache('/json/g.json', 'games');
+
+    // Get current category and page from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentCategory = urlParams.get('category') || 'cloud'; // Default to Cloud Gaming
+    const currentPage = parseInt(urlParams.get('page') || '1');
+
+    // Update active category in selector
+    updateActiveCategoryButton(currentCategory);
+
+    // Filter games by category
+    let filteredGames = filterGamesByCategory(data, currentCategory);
+
+    // Sort games alphabetically ONLY for non-cloud categories
+    // Cloud games remain in their original order as provided by the API
+    if (currentCategory !== 'cloud') {
+      filteredGames = sortGames(filteredGames);
+    }
+
+    // Calculate pagination
+    const gamesPerPage = 50;
+    const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
+    const startIndex = (currentPage - 1) * gamesPerPage;
+    const endIndex = startIndex + gamesPerPage;
+    const currentGames = filteredGames.slice(startIndex, endIndex);
+
+    // Create pagination controls
+    createPaginationControls(currentPage, totalPages, currentCategory);
+
+    // Render games with improvements
+    renderGames(currentGames, currentCategory, filteredGames);
+
+    // Set up event handlers
+    setupGameSearchFunction(filteredGames);
+    setupRandomGameButton();
+    setupScrollToTop();
+  } catch (error) {
+    console.error('Error loading games: ', error);
+  }
+}
+
+// Implement the improved search function that works with all games in the category
+function setupGameSearchFunction(allGamesInCategory) {
+  const searchInput = document.getElementById('gameSearch');
+  if (!searchInput) return;
+
+  const gameContainer = document.querySelector('.gameContain');
+  if (!gameContainer) return;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentCategory = urlParams.get('category') || 'cloud'; // Default to Cloud Gaming
+
+  // Clear any previous search results info
+  const existingResultsInfo = document.querySelector('.search-results-info');
+  if (existingResultsInfo) {
+    existingResultsInfo.remove();
+  }
+
+  // Set up the input event listener
+  searchInput.addEventListener('input', function () {
+    const searchValue = this.value.toLowerCase().trim();
+
+    if (!searchValue) {
+      // If search is empty, return to normal paginated view
+      // Reload current page to restore original view
+      const url = new URL(window.location);
+      window.location.href = url.toString();
+      return;
+    }
+
+    // Clear current view to show search results
+    gameContainer.innerHTML = '';
+
+    // Filter ALL games in the category based on search, not just current page
+    const matchingGames = allGamesInCategory.filter(game =>
+      game.name.toLowerCase().includes(searchValue)
+    );
+
+    // Create document fragment for better performance
+    const fragment = document.createDocumentFragment();
+
+    // Calculate optimal number of games per row based on viewport width
+    const containerWidth = gameContainer.offsetWidth || window.innerWidth - 100;
+    const aspectRatio = 460 / 215; // Width to height ratio
+    const gameWidth = Math.min(460, containerWidth / Math.floor(containerWidth / 460));
+    const gamesPerRow = Math.floor(containerWidth / gameWidth);
+
+    // Check if this category requires authentication
+    const requiresAuth = currentCategory === 'cloud';
+    const isLoggedIn = window.isLoggedIn ? window.isLoggedIn() : false;
+
+    // Render matching games
+    matchingGames.forEach(game => {
+      const gameLink = document.createElement('a');
+
+      // Ensure each game has a slug
+      if (!game.slug) {
+        game.slug = createSlug(game.name);
+      }
+
+      // Use the correct SEO-friendly URL format
+      gameLink.href = `/game/${game.slug}`;
+      gameLink.className = 'gameAnchor';
+      gameLink.style.aspectRatio = `${aspectRatio} / 1`;
+
+      // Add tags as classes for filtering
+      if (game.tags && game.name) {
+        game.tags.forEach(tag => {
+          gameLink.id = (gameLink.id ? gameLink.id + ' ' : '') + tag;
+        });
+
+        let gameNameClass = game.name
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9]/g, '-');
+        gameLink.className += ' ' + gameNameClass;
+      }
+
+      // Add category as data attribute
+      if (game.category) {
+        gameLink.dataset.category = game.category;
+      }
+
+      // Add proxy flag as data attribute
+      if (game.proxy !== undefined) {
+        gameLink.dataset.proxy = game.proxy;
+      }
+
+      const gameImage = document.createElement('img');
+      gameImage.src = game.img;
+      gameImage.alt = game.name;
+      gameImage.title = game.name;
+      gameImage.className = 'gameImage';
+      gameImage.loading = 'lazy'; // Add lazy loading for images
+
+      // Add game overlay with name
+      const gameOverlay = document.createElement('div');
+      gameOverlay.className = 'game-overlay';
+
+      const gameTitle = document.createElement('h3');
+      gameTitle.className = 'game-title';
+      gameTitle.textContent = game.name;
+
+      gameOverlay.appendChild(gameTitle);
+
+      gameLink.appendChild(gameImage);
+      gameLink.appendChild(gameOverlay);
+
+      // Add lock overlay for auth-required games if user not logged in
+      if (requiresAuth && !isLoggedIn) {
+        // Use the auth-controller function if available
+        if (window.addLockOverlay) {
+          window.addLockOverlay(gameLink, 0.7);
+        } else {
+          // Fallback if auth-controller not loaded
+          addLockOverlayFallback(gameLink);
+        }
+      }
+
+      fragment.appendChild(gameLink);
+    });
+
+    // Add games to container
+    gameContainer.appendChild(fragment);
+
+    // Update or create search results info
+    let resultsInfo = document.querySelector('.search-results-info');
+    if (!resultsInfo) {
+      resultsInfo = document.createElement('div');
+      resultsInfo.className = 'search-results-info';
+      gameContainer.parentNode.insertBefore(resultsInfo, gameContainer);
+    }
+
+    // Create clear button
+    const clearButton = document.createElement('button');
+    clearButton.className = 'clear-search-button';
+    clearButton.textContent = 'Clear';
+    clearButton.addEventListener('click', () => {
+      searchInput.value = '';
+      // Return to normal paginated view
+      const url = new URL(window.location);
+      window.location.href = url.toString();
+    });
+
+    resultsInfo.innerHTML = `Found ${matchingGames.length} game${matchingGames.length === 1 ? '' : 's'} matching "${searchValue}"`;
+    resultsInfo.appendChild(clearButton);
+  });
+}
+
+function setupCategorySelector() {
+  const categoryContainer = document.getElementById('category-container');
+  if (!categoryContainer || categoryContainer.querySelector('.category-selector')) {
+    return; // Already set up or container doesn't exist
+  }
+
+  const categorySelector = document.createElement('div');
+  categorySelector.className = 'category-selector';
+
+  const categories = [
+    { id: 'cloud', name: 'Cloud Gaming', icon: 'cloud', requiresAuth: true },
+    { id: 'browser', name: 'Browser Games', icon: 'language', requiresAuth: false },
+    { id: 'emulator', name: 'Emulator Games', icon: 'videogame_asset', requiresAuth: false }
+  ];
+
+  categories.forEach(category => {
+    const button = document.createElement('button');
+    button.className = 'category-button';
+    button.dataset.category = category.id;
+
+    // Add lock for categories that require authentication
+    let buttonContent = `
+          <span class="material-symbols-outlined category-icon">${category.icon}</span>
+          <span class="category-text">${category.name}</span>
+        `;
+
+    if (category.requiresAuth) {
+      buttonContent += `<span class="material-symbols-outlined lock-icon">lock</span>`;
+    }
+
+    button.innerHTML = buttonContent;
+
+    button.addEventListener('click', () => {
+      // For auth-required categories, show login if not authenticated
+      if (category.requiresAuth && window.isLoggedIn && !window.isLoggedIn()) {
+        window.showLoginPopup();
+        return;
+      }
+
+      // Update URL with new category and reset to page 1
+      const url = new URL(window.location);
+      url.searchParams.set('category', category.id);
+      url.searchParams.set('page', '1');
+      window.location.href = url.toString();
+    });
+
+    categorySelector.appendChild(button);
+  });
+
+  categoryContainer.appendChild(categorySelector);
+
+  // Add styles for lock icon
+  const style = document.createElement('style');
+  style.textContent = `
+        .lock-icon {
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff6600;
+        }
+    `;
+  document.head.appendChild(style);
+}
+
+function updateActiveCategoryButton(currentCategory) {
+  const categoryButtons = document.querySelectorAll('.category-button');
+  categoryButtons.forEach(button => {
+    button.classList.toggle('active', button.dataset.category === currentCategory);
+  });
+}
+
+function filterGamesByCategory(games, category) {
+  return games.filter(game => (game.category || 'browser') === category);
+}
+
+// Memoized sorting function for better performance
+const sortGames = (() => {
+  const cache = {};
+
+  return (games) => {
+    const cacheKey = games.map(g => g.id || g.slug).join('-');
+
+    if (cache[cacheKey]) {
+      return cache[cacheKey];
+    }
+
+    const sorted = [...games].sort((a, b) => a.name.localeCompare(b.name));
+    cache[cacheKey] = sorted;
+
+    return sorted;
+  };
+})();
+
+function createPaginationControls(currentPage, totalPages, category) {
+  const containers = [
+    document.getElementById('pagination-top'),
+    document.getElementById('pagination-bottom')
+  ];
+
+  containers.forEach(container => {
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const paginationContainer = document.createElement('div');
+    paginationContainer.className = 'pagination-controls';
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.className = 'pagination-button prev';
+    prevButton.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back';
+    prevButton.disabled = currentPage <= 1;
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 1) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', (currentPage - 1).toString());
+        window.location.href = url.toString();
+      }
+    });
+
+    // Page info
+    const pageInfo = document.createElement('span');
+    pageInfo.className = 'pagination-info';
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.className = 'pagination-button next';
+    nextButton.innerHTML = 'Next <i class="fa-solid fa-arrow-right"></i>';
+    nextButton.disabled = currentPage >= totalPages;
+    nextButton.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', (currentPage + 1).toString());
+        window.location.href = url.toString();
+      }
+    });
+
+    // Page jump selector
+    const pageJump = document.createElement('select');
+    pageJump.className = 'page-jump';
+
+    for (let i = 1; i <= totalPages; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = `Page ${i}`;
+      if (i === currentPage) {
+        option.selected = true;
+      }
+      pageJump.appendChild(option);
+    }
+
+    pageJump.addEventListener('change', (e) => {
+      const url = new URL(window.location);
+      url.searchParams.set('page', e.target.value);
+      window.location.href = url.toString();
+    });
+
+    // Append all controls
+    paginationContainer.appendChild(prevButton);
+    paginationContainer.appendChild(pageInfo);
+    paginationContainer.appendChild(pageJump);
+    paginationContainer.appendChild(nextButton);
+
+    container.appendChild(paginationContainer);
+  });
+}
+
+function renderGames(games, currentCategory, allGamesInCategory) {
+  const gameContainer = document.querySelector('.gameContain');
+  if (!gameContainer) return;
+
+  // Clear existing games
+  gameContainer.innerHTML = '';
+
+  // Use DocumentFragment for better performance
+  const fragment = document.createDocumentFragment();
+
+  // Check if this category requires authentication
+  const requiresAuth = currentCategory === 'cloud';
+  const isLoggedIn = window.isLoggedIn ? window.isLoggedIn() : false;
+
+  // Calculate optimal number of games per row based on viewport width
+  // to ensure consistent grid with no orphaned items
+  const containerWidth = gameContainer.offsetWidth || window.innerWidth - 100;
+  const aspectRatio = 460 / 215; // Width to height ratio
+  const gameWidth = Math.min(460, containerWidth / Math.floor(containerWidth / 460));
+  const gameHeight = gameWidth / aspectRatio;
+
+  // Calculate number of games per row
+  const gamesPerRow = Math.floor(containerWidth / gameWidth);
+
+  // Adjust the games array to fill complete rows
+  // This prevents orphaned items at the bottom
+  const adjustedGames = [...games];
+  const remainder = adjustedGames.length % gamesPerRow;
+
+  if (remainder > 0 && adjustedGames.length > gamesPerRow) {
+    // Ensure we display only complete rows
+    const displayCount = adjustedGames.length - remainder;
+    adjustedGames.length = displayCount;
+  }
+
+  // Update game container data attributes for search functionality
+  gameContainer.dataset.category = currentCategory;
+  gameContainer.dataset.totalGames = allGamesInCategory.length;
+
+  // Add custom styles for game overlays and other required styles if not already present
+  addGameOverlayStyles();
+  addCustomGameStyles();
+
+  // Add fixed aspect ratio styles
+  addFixedAspectRatioStyles(aspectRatio);
+
+  adjustedGames.forEach(game => {
+    const gameLink = document.createElement('a');
+
+    // Ensure each game has a slug
+    if (!game.slug) {
+      game.slug = createSlug(game.name);
+    }
+
+    // Use the correct SEO-friendly URL format
+    gameLink.href = `/game/${game.slug}`;
+    gameLink.className = 'gameAnchor';
+
+    // Apply fixed aspect ratio
+    gameLink.style.aspectRatio = `${aspectRatio} / 1`;
+
+    // Add tags as classes for filtering
+    if (game.tags && game.name) {
+      game.tags.forEach(tag => {
+        gameLink.id = (gameLink.id ? gameLink.id + ' ' : '') + tag;
       });
+
+      let gameNameClass = game.name
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9]/g, '-');
+      gameLink.className += ' ' + gameNameClass;
+    }
+
+    // Add category as data attribute
+    if (game.category) {
+      gameLink.dataset.category = game.category;
+    }
+
+    // Add proxy flag as data attribute
+    if (game.proxy !== undefined) {
+      gameLink.dataset.proxy = game.proxy;
+    }
+
+    const gameImage = document.createElement('img');
+    gameImage.src = game.img;
+    gameImage.alt = game.name;
+    gameImage.title = game.name;
+    gameImage.className = 'gameImage';
+    gameImage.loading = 'lazy'; // Add lazy loading for images
+
+    // Add game overlay with name
+    const gameOverlay = document.createElement('div');
+    gameOverlay.className = 'game-overlay';
+
+    const gameTitle = document.createElement('h3');
+    gameTitle.className = 'game-title';
+    gameTitle.textContent = game.name;
+
+    gameOverlay.appendChild(gameTitle);
+
+    gameLink.appendChild(gameImage);
+    gameLink.appendChild(gameOverlay);
+
+    // Add lock overlay for auth-required games if user not logged in
+    if (requiresAuth && !isLoggedIn) {
+      // Use the auth-controller function if available
+      if (window.addLockOverlay) {
+        window.addLockOverlay(gameLink, 0.7);
+      } else {
+        // Fallback if auth-controller not loaded
+        addLockOverlayFallback(gameLink);
+      }
+    }
+
+    fragment.appendChild(gameLink);
+  });
+
+  gameContainer.appendChild(fragment);
+}
+
+// Fallback function to add lock overlay if auth-controller not loaded
+function addLockOverlayFallback(element) {
+  const overlay = document.createElement('div');
+  overlay.className = 'lock-overlay';
+  overlay.innerHTML = '<i class="fa-solid fa-lock"></i>';
+  overlay.style.position = 'absolute';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+  overlay.style.display = 'flex';
+  overlay.style.justifyContent = 'center';
+  overlay.style.alignItems = 'center';
+  overlay.style.color = 'white';
+  overlay.style.fontSize = '24px';
+  overlay.style.zIndex = '100';
+  overlay.style.cursor = 'pointer';
+  overlay.style.opacity = '0.7';
+  overlay.style.transition = 'opacity 0.3s ease';
+
+  element.style.position = 'relative';
+
+  // Add hover effect
+  element.addEventListener('mouseenter', () => {
+    overlay.style.opacity = '1';
+  });
+
+  element.addEventListener('mouseleave', () => {
+    overlay.style.opacity = '0.7';
+  });
+
+  // Add click event to show login popup
+  overlay.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Show a basic login popup if auth-controller is not available
+    showBasicLoginPopup();
+  });
+
+  element.appendChild(overlay);
+}
+
+// Basic login popup fallback if auth-controller isn't loaded
+function showBasicLoginPopup() {
+  // Check if popup already exists
+  if (document.getElementById('basicAuthModal')) {
+    document.getElementById('basicAuthModal').style.display = 'flex';
     return;
   }
 
-  // Clear loading content
-  container.innerHTML = '';
+  const modal = document.createElement('div');
+  modal.id = 'basicAuthModal';
+  modal.style.position = 'fixed';
+  modal.style.top = '0';
+  modal.style.left = '0';
+  modal.style.width = '100%';
+  modal.style.height = '100%';
+  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  modal.style.display = 'flex';
+  modal.style.justifyContent = 'center';
+  modal.style.alignItems = 'center';
+  modal.style.zIndex = '1000';
 
-  // Create game info section
-  const gameInfo = document.createElement('div');
-  gameInfo.className = 'game-info';
+  const modalContent = document.createElement('div');
+  modalContent.style.backgroundColor = '#1e1e1e';
+  modalContent.style.padding = '30px';
+  modalContent.style.borderRadius = '10px';
+  modalContent.style.maxWidth = '400px';
+  modalContent.style.width = '90%';
+  modalContent.style.textAlign = 'center';
+  modalContent.style.position = 'relative';
+  modalContent.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.5)';
+  modalContent.style.border = '1px solid rgba(255, 102, 0, 0.3)';
 
-  // Game title
-  const gameTitle = document.createElement('h1');
-  gameTitle.textContent = game.name;
-  gameInfo.appendChild(gameTitle);
+  const closeButton = document.createElement('span');
+  closeButton.innerHTML = '&times;';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '15px';
+  closeButton.style.fontSize = '24px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.color = '#aaa';
+  closeButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
 
-  // Game image
-  const gameImage = document.createElement('img');
-  gameImage.src = game.img;
-  gameImage.alt = game.name;
-  gameImage.className = 'game-detail-image';
-  gameImage.loading = 'lazy'; // Add lazy loading for better performance
-  gameInfo.appendChild(gameImage);
+  const title = document.createElement('h2');
+  title.textContent = 'Login Required';
+  title.style.color = 'white';
+  title.style.marginBottom = '20px';
 
-  // Game tags section
-  const gameTags = document.createElement('div');
-  gameTags.className = 'game-tags';
+  const message = document.createElement('p');
+  message.textContent = 'You need to login to access Cloud Gaming features.';
+  message.style.color = 'white';
+  message.style.marginBottom = '25px';
 
-  // Add main category badge
-  const categoryBadge = document.createElement('span');
-  categoryBadge.className = 'category-badge primary';
-  categoryBadge.textContent = game.category || 'Browser Game';
-  gameTags.appendChild(categoryBadge);
+  const buttonsContainer = document.createElement('div');
+  buttonsContainer.style.display = 'flex';
+  buttonsContainer.style.flexDirection = 'column';
+  buttonsContainer.style.gap = '15px';
 
-  // Add tags
-  const tags = game.tags || game.categories || [];
-  if (tags.length > 0) {
-    tags.forEach(tag => {
-      if (tag !== 'all' && tag !== game.category) {
-        const tagBadge = document.createElement('span');
-        tagBadge.className = 'tag-badge';
-        tagBadge.textContent = tag;
-        gameTags.appendChild(tagBadge);
-      }
-    });
-  }
+  const loginButton = document.createElement('a');
+  loginButton.href = '/login.html';
+  loginButton.textContent = 'Login';
+  loginButton.style.backgroundColor = '#ff6600';
+  loginButton.style.color = 'white';
+  loginButton.style.padding = '12px 20px';
+  loginButton.style.borderRadius = '6px';
+  loginButton.style.textDecoration = 'none';
+  loginButton.style.fontWeight = 'bold';
+  loginButton.style.display = 'block';
 
-  gameInfo.appendChild(gameTags);
+  const signupButton = document.createElement('a');
+  signupButton.href = '/signup.html';
+  signupButton.textContent = 'Sign Up';
+  signupButton.style.backgroundColor = 'transparent';
+  signupButton.style.color = '#ff6600';
+  signupButton.style.padding = '11px 20px';
+  signupButton.style.borderRadius = '6px';
+  signupButton.style.textDecoration = 'none';
+  signupButton.style.fontWeight = 'bold';
+  signupButton.style.border = '1px solid #ff6600';
+  signupButton.style.display = 'block';
 
-  // Game description (if available)
-  if (game.description) {
-    const description = document.createElement('p');
-    description.className = 'game-description';
-    description.textContent = game.description;
-    gameInfo.appendChild(description);
-  }
+  buttonsContainer.appendChild(loginButton);
+  buttonsContainer.appendChild(signupButton);
 
-  // Play button
-  const playButton = document.createElement('a');
-  const useProxy = game.proxy !== undefined ? game.proxy : true; // Default to true if not specified
-  playButton.href = `/&.html?q=${encodeURIComponent(game.url)}&proxy=${useProxy}`;
-  playButton.className = 'play-game-button';
-  playButton.innerHTML = '<i class="fa-solid fa-play"></i> Play Game';
-  gameInfo.appendChild(playButton);
+  modalContent.appendChild(closeButton);
+  modalContent.appendChild(title);
+  modalContent.appendChild(message);
+  modalContent.appendChild(buttonsContainer);
 
-  // Add to container
-  container.appendChild(gameInfo);
+  modal.appendChild(modalContent);
+  document.body.appendChild(modal);
 
-  // Only add related games if we have the full games data
-  if (allGames) {
-    // Related games section - now showing random games from the same category
-    const relatedGames = document.createElement('div');
-    relatedGames.className = 'related-games';
-
-    const relatedTitle = document.createElement('h2');
-    relatedTitle.textContent = 'More ' + (game.category || 'Browser') + ' Games';
-    relatedGames.appendChild(relatedTitle);
-
-    // Find games from the same category
-    const gameCategory = game.category || 'browser';
-
-    const sameCategory = allGames.filter(g =>
-      g.slug !== game.slug &&
-      (g.category === gameCategory)
-    );
-
-    // Randomly select up to 6 games from the same category
-    const randomGames = getRandomGames(sameCategory, 6);
-
-    if (randomGames.length > 0) {
-      const relatedGrid = document.createElement('div');
-      relatedGrid.className = 'related-games-grid';
-
-      randomGames.forEach(relatedGame => {
-        const gameLink = document.createElement('a');
-        gameLink.href = `/game/${relatedGame.slug}`;
-        gameLink.className = 'related-game-item';
-
-        const gameImg = document.createElement('img');
-        gameImg.src = relatedGame.img;
-        gameImg.alt = relatedGame.name;
-        gameImg.title = relatedGame.name;
-        gameImg.loading = 'lazy'; // Add lazy loading for better performance
-
-        const gameName = document.createElement('p');
-        gameName.textContent = relatedGame.name;
-
-        // Add overlay with gradient and title
-        const gameOverlay = document.createElement('div');
-        gameOverlay.className = 'game-overlay';
-
-        const gameTitle = document.createElement('h3');
-        gameTitle.className = 'game-title';
-        gameTitle.textContent = relatedGame.name;
-
-        gameOverlay.appendChild(gameTitle);
-
-        gameLink.appendChild(gameImg);
-        gameLink.appendChild(gameOverlay);
-        relatedGrid.appendChild(gameLink);
-      });
-
-      relatedGames.appendChild(relatedGrid);
-    } else {
-      const noGames = document.createElement('p');
-      noGames.textContent = 'No other games in this category found.';
-      noGames.style.textAlign = 'center';
-      relatedGames.appendChild(noGames);
+  // Close modal when clicking outside
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
     }
-
-    // Add to container
-    container.appendChild(relatedGames);
-  }
-
-  // Add back button
-  const backButton = document.createElement('div');
-  backButton.className = 'back-button';
-
-  const backLink = document.createElement('a');
-  backLink.href = '/g.html';
-  backLink.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back to Games';
-  backLink.className = 'back-link';
-
-  backButton.appendChild(backLink);
-  container.appendChild(backButton);
-
-  // Add CSS for game overlays if not already present
-  addGameOverlayStyles();
+  });
 }
 
-// Helper function to get random games from an array
-function getRandomGames(games, count) {
-  // Shuffle array using Fisher-Yates algorithm
-  const shuffled = [...games];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
+// Setup random game button with enhanced functionality
+function setupRandomGameButton() {
+  const randomBtn = document.querySelector('.randomBtn');
+  if (!randomBtn) return;
 
-  // Return first {count} elements
-  return shuffled.slice(0, count);
-}
+  randomBtn.addEventListener('click', async () => {
+    // Get current category from URL or default to browser
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentCategory = urlParams.get('category') || 'cloud';
 
-// Simplified render function when we don't have related games
-function renderGameWithoutRelated(container, game) {
-  // Same as renderGameDetails but without the related games section
-  container.innerHTML = '';
+    try {
+      // Get all games or use cached data
+      let allGames;
 
-  const gameInfo = document.createElement('div');
-  gameInfo.className = 'game-info';
-
-  // Game title
-  const gameTitle = document.createElement('h1');
-  gameTitle.textContent = game.name;
-  gameInfo.appendChild(gameTitle);
-
-  // Game image
-  const gameImage = document.createElement('img');
-  gameImage.src = game.img;
-  gameImage.alt = game.name;
-  gameImage.className = 'game-detail-image';
-  gameImage.loading = 'lazy'; // Add lazy loading for better performance
-  gameInfo.appendChild(gameImage);
-
-  // Game tags section
-  const gameTags = document.createElement('div');
-  gameTags.className = 'game-tags';
-
-  // Add main category badge
-  const categoryBadge = document.createElement('span');
-  categoryBadge.className = 'category-badge primary';
-  categoryBadge.textContent = game.category || 'Browser Game';
-  gameTags.appendChild(categoryBadge);
-
-  // Add tags
-  const tags = game.tags || game.categories || [];
-  if (tags.length > 0) {
-    tags.forEach(tag => {
-      if (tag !== 'all' && tag !== game.category) {
-        const tagBadge = document.createElement('span');
-        tagBadge.className = 'tag-badge';
-        tagBadge.textContent = tag;
-        gameTags.appendChild(tagBadge);
+      if (cache.games) {
+        allGames = cache.games;
+      } else {
+        // Try localStorage
+        const cachedData = localStorage.getItem('cache_games');
+        if (cachedData) {
+          allGames = JSON.parse(cachedData).data;
+        } else {
+          // Fetch if not in cache
+          const response = await fetch('/json/g.json');
+          allGames = await response.json();
+        }
       }
-    });
-  }
 
-  gameInfo.appendChild(gameTags);
+      // Filter games by current category
+      const categoryGames = allGames.filter(g =>
+        (g.category || 'browser') === currentCategory
+      );
 
-  // Game description (if available)
-  if (game.description) {
-    const description = document.createElement('p');
-    description.className = 'game-description';
-    description.textContent = game.description;
-    gameInfo.appendChild(description);
-  }
+      // Select random game
+      if (categoryGames.length > 0) {
+        const randomIndex = Math.floor(Math.random() * categoryGames.length);
+        const randomGame = categoryGames[randomIndex];
 
-  // Play button
-  const playButton = document.createElement('a');
-  const useProxy = game.proxy !== undefined ? game.proxy : true; // Default to true if not specified
-  playButton.href = `/&.html?q=${encodeURIComponent(game.url)}&proxy=${useProxy}`;
-  playButton.className = 'play-game-button';
-  playButton.innerHTML = '<i class="fa-solid fa-play"></i> Play Game';
-  gameInfo.appendChild(playButton);
+        // Check if random game requires authentication
+        if (randomGame.category === 'cloud' && window.isLoggedIn && !window.isLoggedIn()) {
+          window.showLoginPopup ? window.showLoginPopup() : showBasicLoginPopup();
+          return;
+        }
 
-  // Add to container
-  container.appendChild(gameInfo);
+        // Navigate to the game page
+        window.location.href = `/game/${randomGame.slug}`;
+      }
+    } catch (error) {
+      console.error('Error selecting random game:', error);
 
-  // Add back button
-  const backButton = document.createElement('div');
-  backButton.className = 'back-button';
+      // Fallback to simpler method with visible games
+      const gameAnchors = Array.from(document.querySelectorAll('.gameAnchor'));
+      const visibleGameAnchors = gameAnchors.filter(
+        anchor => getComputedStyle(anchor).display !== 'none'
+      );
 
-  const backLink = document.createElement('a');
-  backLink.href = '/g.html';
-  backLink.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back to Games';
-  backLink.className = 'back-link';
-
-  backButton.appendChild(backLink);
-  container.appendChild(backButton);
+      if (visibleGameAnchors.length > 0) {
+        const randomIndex = Math.floor(
+          Math.random() * visibleGameAnchors.length
+        );
+        visibleGameAnchors[randomIndex].click();
+      }
+    }
+  });
 }
 
-// Add styles for game overlays
+// Setup scroll to top button with performance optimizations
+function setupScrollToTop() {
+  const scrollToTopBtn = document.querySelector('.scrolltop');
+  if (!scrollToTopBtn) return;
+
+  // Use IntersectionObserver for better performance than scroll event
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        // Show button when top of page is not visible
+        scrollToTopBtn.style.opacity = entry.isIntersecting ? '0' : '1';
+      });
+    },
+    { threshold: 0 }
+  );
+
+  // Observe the top of the page
+  const topElement = document.createElement('div');
+  topElement.style.height = '1px';
+  topElement.style.width = '1px';
+  topElement.style.position = 'absolute';
+  topElement.style.top = '0';
+  document.body.prepend(topElement);
+  observer.observe(topElement);
+
+  // Add click handler with smooth scrolling
+  scrollToTopBtn.addEventListener('click', function () {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
+// Helper function to create a slug for a game if it doesn't already have one
+function createSlug(name) {
+  const baseSlug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const randomSuffix = Math.random().toString(36).substring(2, 7);
+  return `${baseSlug}-${randomSuffix}`;
+}
+
+// Add game overlay styles
 function addGameOverlayStyles() {
   if (document.getElementById('game-overlay-styles')) return;
 
   const styleEl = document.createElement('style');
   styleEl.id = 'game-overlay-styles';
   styleEl.textContent = `
-    .game-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(transparent, rgb(0, 0, 0));
-      color: white;
-      opacity: 1;
-      transition: opacity 0.3s;
-    }
-    
-    .game-title {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-    
-    .related-game-item {
-      position: relative;
-      overflow: hidden;
-      border-radius: 8px;
-      transition: transform 0.3s ease;
-    }
-    
-    .related-game-item:hover {
-      transform: translateY(-5px);
-    }
-    
-    .related-games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
-      margin-top: 15px;
-    }
-    
-    .related-game-item img {
-      width: 100%;
-      height: 110px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    
-    @media (max-width: 768px) {
-      .related-games-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      }
-    }
-  `;
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgb(0, 0, 0));
+            color: white;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        .game-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    `;
 
   document.head.appendChild(styleEl);
 }
 
-function showError(message) {
-  const container = document.getElementById('game-container');
-  container.innerHTML = `
-    <div class="error-message">
-      <h1>Oops!</h1>
-      <p>${message}</p>
-      <a href="/g.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Games</a>
-    </div>
-  `;
+// Add other custom styles needed for the game page
+function addCustomGameStyles() {
+  if (document.getElementById('custom-game-styles')) return;
+
+  const styleEl = document.createElement('style');
+  styleEl.id = 'custom-game-styles';
+  styleEl.textContent = `
+        .gameAnchor {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            display: block;
+            height: 215px;
+            width: 460px;
+            max-width: 100%;
+        }
+        
+        .gameContain {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+        
+        .gameAnchor:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gameImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            border-radius: 8px;
+        }
+        
+        /* Search results info */
+        .search-results-info {
+            text-align: center;
+            margin: 20px 0;
+            color: #fff;
+            font-size: 16px;
+            background-color: rgba(30, 30, 30, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .clear-search-button {
+            padding: 5px 10px;
+            background-color: #ff6600;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        
+        .clear-search-button:hover {
+            background-color: #ff8033;
+        }
+        
+        /* Lock icon for category buttons */
+        .lock-icon {
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff6600;
+        }
+        
+        /* Media queries for responsive grid */
+        @media (max-width: 1400px) {
+            .gameContain {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            .gameAnchor {
+                width: 380px;
+                height: 177px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .gameContain {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            .gameAnchor {
+                width: 320px;
+                height: 150px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .gameContain {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            .gameAnchor {
+                width: 260px;
+                height: 121px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .gameContain {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            .gameAnchor {
+                width: 200px;
+                height: 93px;
+            }
+        }
+    `;
+
+  document.head.appendChild(styleEl);
+}
+
+// Add fixed aspect ratio styles
+function addFixedAspectRatioStyles(aspectRatio) {
+  if (document.getElementById('aspect-ratio-styles')) return;
+
+  const styleEl = document.createElement('style');
+  styleEl.id = 'aspect-ratio-styles';
+  styleEl.textContent = `
+        .gameContain {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            justify-items: center;
+            margin: 0 auto;
+        }
+        
+        .gameAnchor {
+            aspect-ratio: ${aspectRatio} / 1;
+            width: 100%;
+            max-width: 460px;
+            height: auto;
+        }
+        
+        @media (max-width: 480px) {
+            .gameContain {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    `;
+
+  document.head.appendChild(styleEl);
 }
