@@ -2,499 +2,235 @@
 <html lang="en">
 
 <head>
-	<link rel="stylesheet" href="/css/index.css" />
-	<link rel="stylesheet" href="/css/themes.css" />
-	<link rel="stylesheet" href="/css/games.css" />
-	<link rel="stylesheet" href="/css/game-page.css" />
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-	<!-- These meta tags will be dynamically updated by JavaScript, but provide defaults for SEO -->
-	<title>Play Online Games | Flamepass</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Game Details | Flamepass</title>
 	<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!-- Meta tags for SEO -->
 	<meta name="description"
 		content="Play games online with Flamepass, the next gen proxy. No downloads required, works directly in your browser." />
 	<meta name="keywords" content="Games, Online Games, Free Games, Browser Games, Flamepass" />
 	<meta property="og:image" content="/assets/logo.webp" />
 	<meta property="og:title" content="Play Online Games | Flamepass" />
-	<!-- Add canonical link for SEO -->
 	<link rel="canonical" href="/game/" />
+
+	<!-- Font imports -->
+	<link rel="preload" as="style"
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+
+	<!-- Icon libraries -->
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
+	<!-- Core stylesheets -->
+	<link rel="stylesheet" href="/css/index.css" />
+	<link rel="stylesheet" href="/css/themes.css" />
+	<link rel="stylesheet" href="/css/common.css" />
+	<link rel="stylesheet" href="/css/game-page.css" />
+
+	<!-- Google Analytics -->
 	<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"></script>
 	<script>
 		window.dataLayer = window.dataLayer || [];
-		function gtag() {
-			dataLayer.push(arguments);
-		}
+		function gtag() { dataLayer.push(arguments); }
 		gtag('js', new Date());
-
 		gtag('config', 'G-SPVQHBL4J1');
 	</script>
-
-	<link rel="preload" as="style"
-		href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
-	<link rel="stylesheet" href="/css/common.css" />
-
-	<!-- Custom styles for game page -->
-	<style>
-		/* Game page container */
-		.game-page-container {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 20px;
-			color: white;
-		}
-
-		/* Loading animation */
-		.loading-container {
-			text-align: center;
-			padding: 40px;
-		}
-
-		.loader {
-			display: inline-block;
-			width: 50px;
-			height: 50px;
-			border: 5px solid rgba(255, 102, 0, 0.3);
-			border-radius: 50%;
-			border-top-color: #ff6600;
-			animation: spin 1s ease-in-out infinite;
-			margin-bottom: 15px;
-		}
-
-		@keyframes spin {
-			to {
-				transform: rotate(360deg);
-			}
-		}
-
-		/* Game info section */
-		.game-info {
-			margin-bottom: 30px;
-			background-color: rgba(30, 30, 30, 0.7);
-			padding: 25px;
-			border-radius: 10px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
-
-		.game-info h1 {
-			margin-top: 0;
-			margin-bottom: 20px;
-			font-size: 2rem;
-			color: #ff6600;
-		}
-
-		.game-detail-image {
-			max-width: 100%;
-			height: auto;
-			border-radius: 8px;
-			margin-bottom: 20px;
-			display: block;
-		}
-
-		/* Game tags */
-		.game-tags {
-			margin-bottom: 20px;
-			display: flex;
-			flex-wrap: wrap;
-			gap: 10px;
-		}
-
-		.category-badge {
-			display: inline-block;
-			padding: 5px 10px;
-			border-radius: 30px;
-			background-color: #ff6600;
-			color: white;
-			font-size: 0.9rem;
-			font-weight: 500;
-		}
-
-		.tag-badge {
-			display: inline-block;
-			padding: 5px 10px;
-			border-radius: 30px;
-			background-color: rgba(255, 255, 255, 0.1);
-			color: white;
-			font-size: 0.9rem;
-		}
-
-		/* Game description */
-		.game-description {
-			line-height: 1.6;
-			margin-bottom: 25px;
-			font-size: 1rem;
-			color: #f0f0f0;
-		}
-
-		/* Play button */
-		.play-game-button {
-			display: inline-block;
-			padding: 12px 30px;
-			background-color: #ff6600;
-			color: white;
-			border-radius: 30px;
-			text-decoration: none;
-			font-weight: 600;
-			font-size: 1.1rem;
-			transition: background-color 0.3s;
-			margin-bottom: 10px;
-		}
-
-		.play-game-button:hover {
-			background-color: #ff8033;
-		}
-
-		/* Service Providers Section */
-		.service-providers-section {
-			margin-top: 25px;
-			margin-bottom: 25px;
-		}
-
-		.providers-title {
-			margin: 0 0 15px 0;
-			font-size: 1.4rem;
-			color: #f0f0f0;
-		}
-
-		.service-providers-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-			gap: 20px;
-		}
-
-		.provider-card {
-			background-color: rgba(40, 40, 40, 0.7);
-			border-radius: 10px;
-			padding: 15px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			transition: transform 0.3s, box-shadow 0.3s;
-			border: 1px solid #3a3a3a;
-		}
-
-		.provider-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-			border-color: #ff6600;
-		}
-
-		.provider-logo {
-			width: 60px;
-			height: 60px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin-bottom: 10px;
-		}
-
-		.provider-logo img {
-			max-width: 100%;
-			max-height: 100%;
-			object-fit: contain;
-		}
-
-		.provider-name {
-			font-size: 1rem;
-			font-weight: 600;
-			color: white;
-			margin-bottom: 12px;
-			text-align: center;
-		}
-
-		.provider-play-button {
-			background-color: #ff6600;
-			color: white;
-			border: none;
-			border-radius: 20px;
-			padding: 8px 16px;
-			font-size: 0.9rem;
-			font-weight: 500;
-			cursor: pointer;
-			transition: background-color 0.3s;
-			text-decoration: none;
-			display: flex;
-			align-items: center;
-			gap: 5px;
-			white-space: nowrap;
-		}
-
-		.provider-play-button:hover {
-			background-color: #ff8033;
-		}
-
-		/* Related games section */
-		.related-games {
-			margin-top: 40px;
-			margin-bottom: 30px;
-			background-color: rgba(30, 30, 30, 0.7);
-			padding: 25px;
-			border-radius: 10px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
-
-		.related-games h2 {
-			margin-top: 0;
-			margin-bottom: 20px;
-			font-size: 1.5rem;
-			color: #ff6600;
-		}
-
-		.related-games-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-			gap: 20px;
-		}
-
-		.related-game-item {
-			position: relative;
-			text-decoration: none;
-			color: white;
-			transition: transform 0.3s;
-			border-radius: 8px;
-			overflow: hidden;
-		}
-
-		.related-game-item:hover {
-			transform: translateY(-5px);
-		}
-
-		.related-game-item img {
-			width: 100%;
-			height: 110px;
-			object-fit: cover;
-			border-radius: 8px;
-		}
-
-		.related-game-item p {
-			margin-top: 8px;
-			font-size: 0.9rem;
-			text-align: center;
-		}
-
-		/* Game overlay */
-		.game-overlay {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			width: 90%;
-			padding: 15px;
-			background: linear-gradient(transparent, rgb(0, 0, 0));
-			color: white;
-			opacity: 1;
-			transition: opacity 0.3s;
-		}
-
-		.game-title {
-			margin: 0;
-			font-size: 1.2rem;
-			font-weight: 600;
-		}
-
-		/* Back button */
-		.back-button {
-			margin-top: 30px;
-			text-align: center;
-		}
-
-		.back-link {
-			display: inline-block;
-			padding: 10px 20px;
-			background-color: rgba(255, 255, 255, 0.1);
-			color: white;
-			border-radius: 30px;
-			text-decoration: none;
-			transition: background-color 0.3s;
-		}
-
-		.back-link:hover {
-			background-color: rgba(255, 255, 255, 0.2);
-		}
-
-		/* Error message */
-		.error-message {
-			text-align: center;
-			padding: 40px;
-			background-color: rgba(30, 30, 30, 0.7);
-			border-radius: 10px;
-			max-width: 500px;
-			margin: 0 auto;
-		}
-
-		.error-message h1 {
-			color: #ff6600;
-			margin-bottom: 15px;
-		}
-
-		.error-message p {
-			margin-bottom: 20px;
-			font-size: 1.1rem;
-		}
-
-		/* Game info metadata */
-		.game-metadata {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 20px;
-			margin-bottom: 20px;
-		}
-
-		.metadata-item {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-
-		.metadata-icon {
-			color: #ff6600;
-			font-size: 18px;
-		}
-
-		.metadata-label {
-			font-size: 0.9rem;
-			color: rgba(255, 255, 255, 0.7);
-		}
-
-		.metadata-value {
-			font-size: 0.9rem;
-			color: white;
-		}
-
-		/* Responsive adjustments */
-		@media (max-width: 768px) {
-			.game-page-container {
-				padding: 15px;
-			}
-
-			.related-games-grid {
-				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-			}
-
-			.game-info h1 {
-				font-size: 1.7rem;
-			}
-
-			.service-providers-grid {
-				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-			}
-		}
-
-		@media (max-width: 480px) {
-			.related-games-grid {
-				grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-			}
-
-			.play-game-button {
-				width: 100%;
-				text-align: center;
-			}
-
-			.service-providers-grid {
-				grid-template-columns: repeat(2, 1fr);
-			}
-
-			.game-metadata {
-				flex-direction: column;
-				gap: 10px;
-			}
-		}
-	</style>
 </head>
 
 <body>
-	<ul class="navbar">
-		<li style="margin-left: -1px; margin-top: 2px">
-			<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
-		</li>
-		<hr style="margin-top: 5px" />
-		<li>
-			<a href="/" title="Home">
-				<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+	<!-- Navigation Sidebar -->
+	<nav class="navbar">
+		<div class="navbar-top">
+			<a href="/" class="logo-link">
+				<img class="logo" src="/assets/logo.webp" alt="Flamepass Logo" />
 			</a>
-		</li>
-		<li>
-			<a href="/&.html" title="Search">
+			<hr class="nav-divider" />
+			<a href="/" title="Home" class="nav-item">
+				<span class="material-symbols-outlined">cottage</span>
+			</a>
+			<a href="/&.html" title="Search" class="nav-item">
 				<span class="material-symbols-outlined">public</span>
 			</a>
-		</li>
-		<hr>
-		<li>
-			<a href="/a.html" title="Apps">
+		</div>
+
+		<div class="navbar-middle">
+			<hr class="nav-divider" />
+			<a href="/a.html" title="Apps" class="nav-item">
 				<span class="material-symbols-outlined">apps</span>
 			</a>
-		</li>
-		<li>
-			<a href="/g.html" title="Games">
-				<span id="navactive" class="material-symbols-outlined">joystick</span>
+			<a href="/g.html" title="Games" class="nav-item active">
+				<span class="material-symbols-outlined">joystick</span>
 			</a>
-		</li>
-		<li>
-			<a href="/downloadable-games.html" title="Downloadable Games">
+			<a href="/downloadable-games.html" title="Downloadable Games" class="nav-item">
 				<span class="material-symbols-outlined">download</span>
 			</a>
-		</li>
-		<hr>
-		<li>
-			<a href="/ultimate-links.html" title="Ultimate Link List">
+			<hr class="nav-divider" />
+			<a href="/ultimate-links.html" title="Ultimate Link List" class="nav-item">
 				<span class="material-symbols-outlined">list</span>
 			</a>
-		</li>
-		<li>
-			<a href="/links.html" title="Link Generator">
+			<a href="/links.html" title="Link Generator" class="nav-item">
 				<span class="material-symbols-outlined">link</span>
 			</a>
-		</li>
-		<hr>
-
-		<li>
-			<a href="/guides.html" title="Guides and Methods">
+			<hr class="nav-divider" />
+			<a href="/guides.html" title="Guides and Methods" class="nav-item">
 				<span class="material-symbols-outlined">help_outline</span>
 			</a>
-		</li>
-
-		<li>
-			<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+			<a href="/yt-channels.html" title="Unblocker YouTube Channels" class="nav-item">
 				<span class="material-symbols-outlined">play_circle</span>
 			</a>
-		</li>
-		<hr>
-		<li>
-			<a href="/ai.html" title="AI Chat">
+			<hr class="nav-divider" />
+			<a href="/ai.html" title="AI Chat" class="nav-item">
 				<span class="material-symbols-outlined">smart_toy</span>
 			</a>
-		</li>
-		<hr />
-		<li>
-			<a href="/~.html" title="Settings">
-				<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
-			</a>
-		</li>
-		<li>
-			<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
-				<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
-					<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
-				</div>
-			</a>
-		</li>
-	</ul>
+		</div>
 
-	<!-- Container for game content -->
-	<div id="game-container" class="game-page-container">
-		<!-- Content will be loaded dynamically via JavaScript -->
-		<div class="loading-container">
-			<div class="loader"></div>
-			<p>Loading game information...</p>
+		<div class="navbar-bottom">
+			<hr class="nav-divider" />
+			<a href="/~.html" title="Settings" class="nav-item">
+				<span class="material-symbols-outlined">tune</span>
+			</a>
+			<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server" class="nav-item">
+				<i class="fab fa-discord"></i>
+			</a>
+		</div>
+	</nav>
+
+	<!-- Main Content -->
+	<main class="main-content">
+		<!-- Search button (top right corner) -->
+		<button class="search-trigger" id="searchTrigger">
+			<span class="material-symbols-outlined">search</span>
+			<span class="search-text">Search games...</span>
+			<span class="keyboard-shortcut">⌘K</span>
+		</button>
+
+		<!-- Game Container -->
+		<div id="game-container" class="game-container">
+			<!-- Loading animation (will be replaced by game content) -->
+			<div class="loading-container">
+				<div class="loader">
+					<svg viewBox="0 0 80 80">
+						<circle cx="40" cy="40" r="32" class="loader-circle" />
+					</svg>
+				</div>
+				<p class="loading-text">Loading game information...</p>
+			</div>
+		</div>
+
+		<!-- Categories Section -->
+		<section class="categories-section">
+			<div class="section-header">
+				<h2>Explore More Categories</h2>
+				<a href="/g.html" class="view-all-link">View all <span
+						class="material-symbols-outlined">arrow_forward</span></a>
+			</div>
+
+			<div class="categories-grid">
+				<a href="/g.html?category=action" class="category-card">
+					<div class="category-icon">
+						<span class="material-symbols-outlined">sports_score</span>
+					</div>
+					<h3>Action</h3>
+					<span class="game-count">128 Games</span>
+				</a>
+
+				<a href="/g.html?category=adventure" class="category-card">
+					<div class="category-icon">
+						<span class="material-symbols-outlined">hiking</span>
+					</div>
+					<h3>Adventure</h3>
+					<span class="game-count">94 Games</span>
+				</a>
+
+				<a href="/g.html?category=racing" class="category-card">
+					<div class="category-icon">
+						<span class="material-symbols-outlined">directions_car</span>
+					</div>
+					<h3>Racing</h3>
+					<span class="game-count">52 Games</span>
+				</a>
+
+				<a href="/g.html?category=strategy" class="category-card">
+					<div class="category-icon">
+						<span class="material-symbols-outlined">psychology</span>
+					</div>
+					<h3>Strategy</h3>
+					<span class="game-count">76 Games</span>
+				</a>
+			</div>
+		</section>
+
+		<!-- Trending Games (Added Section) -->
+		<section class="trending-section">
+			<div class="section-header">
+				<h2>Trending Now</h2>
+				<a href="/g.html?sort=trending" class="view-all-link">View all <span
+						class="material-symbols-outlined">arrow_forward</span></a>
+			</div>
+
+			<div id="trending-games" class="games-grid">
+				<!-- Will be populated by JS -->
+			</div>
+		</section>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="footer-content">
+				<div class="footer-logo">
+					<img src="/assets/logo.webp" alt="Flamepass Logo" />
+					<p>© 2023-2025 Flamepass</p>
+				</div>
+				<div class="footer-links">
+					<a href="/terms.html">Terms of Service</a>
+					<a href="/privacy.html">Privacy Policy</a>
+					<a href="/about.html">About Us</a>
+					<a href="https://discord.com/invite/gVaXCTqJDq" target="_blank">Discord</a>
+				</div>
+			</div>
+		</footer>
+
+		<!-- Scroll to top button -->
+		<button class="scroll-top" id="scrollTopBtn">
+			<span class="material-symbols-outlined">arrow_upward</span>
+		</button>
+	</main>
+
+	<!-- Search Modal -->
+	<div class="search-modal" id="searchModal">
+		<div class="search-modal-content">
+			<div class="search-header">
+				<div class="search-input-container">
+					<span class="material-symbols-outlined">search</span>
+					<input type="text" id="searchInput" placeholder="Search for games..." autofocus />
+					<button class="close-search" id="closeSearch">
+						<span class="material-symbols-outlined">close</span>
+					</button>
+				</div>
+				<div class="search-shortcuts">
+					<span class="shortcut-item"><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+					<span class="shortcut-item"><kbd>↵</kbd> to select</span>
+					<span class="shortcut-item"><kbd>Esc</kbd> to close</span>
+				</div>
+			</div>
+			<div class="search-results" id="searchResults">
+				<!-- Will be populated by JS -->
+			</div>
 		</div>
 	</div>
 
 	<!-- Background elements -->
-	<div style="z-index: -998">
-		<div style="z-index: -998; position: fixed" class="blob"></div>
-		<div style="z-index: -998; position: fixed" class="blobbig"></div>
-		<div style="z-index: -998; position: fixed" class="blobsmall"></div>
-		<div style="z-index: -998; position: fixed" class="blobtop"></div>
-		<div style="z-index: -999; position: fixed" id="particles-js"></div>
+	<div class="background-elements">
+		<div class="blob"></div>
+		<div class="blobbig"></div>
+		<div class="blobsmall"></div>
+		<div class="blobtop"></div>
+		<div id="particles-js"></div>
 	</div>
 
 	<!-- Scripts -->
@@ -508,113 +244,247 @@
 		// Initialize particles.js
 		particlesJS('particles-js', {
 			particles: {
-				number: {
-					value: 86,
-					density: {
-						enable: true,
-						value_area: 800
-					}
-				},
-				color: {
-					value: '#ffffff'
-				},
-				shape: {
-					type: 'circle',
-					stroke: {
-						width: 0,
-						color: '#000000'
-					},
-					polygon: {
-						nb_sides: 5
-					},
-					image: {
-						src: 'img/github.svg',
-						width: 100,
-						height: 100
-					}
-				},
-				opacity: {
-					value: 1,
-					random: true,
-					anim: {
-						enable: false,
-						speed: 1,
-						opacity_min: 0.1,
-						sync: false
-					}
-				},
-				size: {
-					value: 2,
-					random: true,
-					anim: {
-						enable: false,
-						speed: 40,
-						size_min: 0.1,
-						sync: false
-					}
-				},
-				line_linked: {
-					enable: false,
-					distance: 150,
-					color: '#ffffff',
-					opacity: 0.4,
-					width: 1
-				},
+				number: { value: 80, density: { enable: true, value_area: 800 } },
+				color: { value: '#ffffff' },
+				shape: { type: 'circle' },
+				opacity: { value: 0.5, random: true },
+				size: { value: 3, random: true },
+				line_linked: { enable: false },
 				move: {
 					enable: true,
-					speed: 0.5,
+					speed: 0.3,
 					direction: 'top',
-					random: false,
+					random: true,
 					straight: false,
-					out_mode: 'out',
-					bounce: false,
-					attract: {
-						enable: false,
-						rotateX: 318.0130544358847,
-						rotateY: 556.5228452627983
-					}
+					out_mode: 'out'
 				}
-			},
-			interactivity: {
-				detect_on: 'window',
-				events: {
-					onhover: {
-						enable: false,
-						mode: 'repulse'
-					},
-					onclick: {
-						enable: true,
-						mode: 'push'
-					},
-					resize: true
-				},
-				modes: {
-					grab: {
-						distance: 400,
-						line_linked: {
-							opacity: 1
+			}
+		});
+
+		// Search modal functionality
+		document.addEventListener('DOMContentLoaded', () => {
+			const searchTrigger = document.getElementById('searchTrigger');
+			const searchModal = document.getElementById('searchModal');
+			const closeSearch = document.getElementById('closeSearch');
+			const searchInput = document.getElementById('searchInput');
+			const searchResults = document.getElementById('searchResults');
+
+			// Open search modal
+			searchTrigger.addEventListener('click', () => {
+				searchModal.classList.add('active');
+				setTimeout(() => {
+					searchInput.focus();
+				}, 100);
+			});
+
+			// Close search modal
+			closeSearch.addEventListener('click', () => {
+				searchModal.classList.remove('active');
+			});
+
+			// Close on escape key
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && searchModal.classList.contains('active')) {
+					searchModal.classList.remove('active');
+				}
+
+				// Open on Cmd+K or Ctrl+K
+				if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+					e.preventDefault();
+					searchModal.classList.add('active');
+					setTimeout(() => {
+						searchInput.focus();
+					}, 100);
+				}
+			});
+
+			// Click outside to close
+			searchModal.addEventListener('click', (e) => {
+				if (e.target === searchModal) {
+					searchModal.classList.remove('active');
+				}
+			});
+
+			// Search input handler
+			searchInput.addEventListener('input', async () => {
+				const query = searchInput.value.trim().toLowerCase();
+
+				if (query.length < 2) {
+					searchResults.innerHTML = `
+            <div class="search-message">
+              <span class="material-symbols-outlined">search</span>
+              <p>Type at least 2 characters to search</p>
+            </div>
+          `;
+					return;
+				}
+
+				try {
+					// Try to get games from cache
+					let allGames = [];
+
+					if (window.cache && window.cache.games) {
+						allGames = window.cache.games;
+					} else {
+						// Get from localStorage
+						const cachedData = localStorage.getItem('cache_games');
+						if (cachedData) {
+							try {
+								allGames = JSON.parse(cachedData).data;
+							} catch (e) {
+								console.warn('Error parsing cached game data');
+							}
 						}
-					},
-					bubble: {
-						distance: 400,
-						size: 40,
-						duration: 2,
-						opacity: 8,
-						speed: 3
-					},
-					repulse: {
-						distance: 200,
-						duration: 0.4
-					},
-					push: {
-						particles_nb: 10
-					},
-					remove: {
-						particles_nb: 10
+
+						// Fallback to fetch
+						if (!allGames || !allGames.length) {
+							const response = await fetch('/json/g.json');
+							allGames = await response.json();
+						}
 					}
+
+					// Filter games based on query
+					const filteredGames = allGames.filter(game =>
+						game.name.toLowerCase().includes(query) ||
+						(game.description && game.description.toLowerCase().includes(query)) ||
+						(game.category && game.category.toLowerCase().includes(query)) ||
+						(game.tags && game.tags.some(tag => tag.toLowerCase().includes(query)))
+					);
+
+					// Display results
+					if (filteredGames.length === 0) {
+						searchResults.innerHTML = `
+              <div class="search-message">
+                <span class="material-symbols-outlined">sentiment_dissatisfied</span>
+                <p>No games found matching "${query}"</p>
+              </div>
+            `;
+					} else {
+						searchResults.innerHTML = '';
+
+						filteredGames.slice(0, 8).forEach(game => {
+							const resultItem = document.createElement('a');
+							resultItem.href = `/game/${game.slug}`;
+							resultItem.className = 'search-result-item';
+
+							resultItem.innerHTML = `
+                <div class="search-result-image">
+                  <img src="${game.img}" alt="${game.name}" loading="lazy">
+                </div>
+                <div class="search-result-info">
+                  <h3>${game.name}</h3>
+                  <div class="search-result-meta">
+                    <span class="category-pill">${game.category || 'Browser Game'}</span>
+                    ${game.publisher ? `<span class="publisher">${game.publisher}</span>` : ''}
+                  </div>
+                </div>
+              `;
+
+							searchResults.appendChild(resultItem);
+						});
+
+						if (filteredGames.length > 8) {
+							const viewAll = document.createElement('a');
+							viewAll.href = `/g.html?search=${encodeURIComponent(query)}`;
+							viewAll.className = 'view-all-results';
+							viewAll.innerHTML = `View all ${filteredGames.length} results <span class="material-symbols-outlined">arrow_forward</span>`;
+							searchResults.appendChild(viewAll);
+						}
+					}
+				} catch (error) {
+					console.error('Error during search:', error);
+					searchResults.innerHTML = `
+            <div class="search-message">
+              <span class="material-symbols-outlined">error</span>
+              <p>An error occurred while searching</p>
+            </div>
+          `;
 				}
-			},
-			retina_detect: true
+			});
+
+			// Populate trending games
+			const populateTrendingGames = async () => {
+				const trendingContainer = document.getElementById('trending-games');
+				if (!trendingContainer) return;
+
+				try {
+					// Try to get games from cache
+					let allGames = [];
+
+					if (window.cache && window.cache.games) {
+						allGames = window.cache.games;
+					} else {
+						// Get from localStorage
+						const cachedData = localStorage.getItem('cache_games');
+						if (cachedData) {
+							try {
+								allGames = JSON.parse(cachedData).data;
+							} catch (e) {
+								console.warn('Error parsing cached game data');
+							}
+						}
+
+						// Fallback to fetch
+						if (!allGames || !allGames.length) {
+							const response = await fetch('/json/g.json');
+							allGames = await response.json();
+						}
+					}
+
+					// Get 6 random games for trending
+					const randomGames = getRandomGames(allGames, 6);
+
+					trendingContainer.innerHTML = '';
+
+					randomGames.forEach(game => {
+						const gameCard = document.createElement('a');
+						gameCard.href = `/game/${game.slug}`;
+						gameCard.className = 'game-card';
+
+						gameCard.innerHTML = `
+              <div class="game-card-image">
+                <img src="${game.img}" alt="${game.name}" loading="lazy">
+                <div class="game-card-overlay">
+                  <h3>${game.name}</h3>
+                </div>
+              </div>
+              <div class="game-card-details">
+                <span class="game-category">${game.category || 'Browser Game'}</span>
+              </div>
+            `;
+
+						trendingContainer.appendChild(gameCard);
+					});
+				} catch (error) {
+					console.error('Error loading trending games:', error);
+				}
+			};
+
+			// Helper function to get random games
+			function getRandomGames(games, count) {
+				const shuffled = [...games].sort(() => 0.5 - Math.random());
+				return shuffled.slice(0, count);
+			}
+
+			// Init scroll to top button
+			const scrollTopBtn = document.getElementById('scrollTopBtn');
+			window.addEventListener('scroll', () => {
+				if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+					scrollTopBtn.classList.add('visible');
+				} else {
+					scrollTopBtn.classList.remove('visible');
+				}
+			});
+
+			scrollTopBtn.addEventListener('click', () => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				});
+			});
+
+			// Initialize the page
+			populateTrendingGames();
 		});
 
 		// Handle ads based on user preferences
