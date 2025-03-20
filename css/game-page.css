@@ -1510,6 +1510,7 @@ kbd {
     animation: loader 2s linear infinite;
 }
 
+  
 @keyframes loader {
     0% {
         stroke-dashoffset: 150;
