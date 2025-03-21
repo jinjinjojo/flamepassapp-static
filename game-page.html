@@ -31,6 +31,7 @@
 	<link rel="stylesheet" href="/css/themes.css" />
 	<link rel="stylesheet" href="/css/common.css" />
 	<link rel="stylesheet" href="/css/game-page.css" />
+	<link rel="stylesheet" href="/css/enhanced-game-page.css" />
 
 	<!-- Google Analytics -->
 	<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
@@ -123,24 +124,26 @@
 			</div>
 		</div>
 
-		<!-- Categories Section -->
-		<section class="categories-section">
-			<div class="section-header">
-				<h2>Explore More Categories</h2>
-				<a href="/g.html" class="view-all-link">View all <span
-						class="material-symbols-outlined">arrow_forward</span></a>
-			</div>
-		</section>
-
-		<!-- Trending Games (Added Section) -->
+		<!-- Trending section (will be populated by JS) -->
 		<section class="trending-section">
 			<div class="section-header">
 				<h2>Trending Now</h2>
 				<a href="/g.html?sort=trending" class="view-all-link">View all <span
 						class="material-symbols-outlined">arrow_forward</span></a>
 			</div>
-
 			<div id="trending-games" class="games-grid">
+				<!-- Will be populated by JS -->
+			</div>
+		</section>
+
+		<!-- Categories section (will be populated by JS) -->
+		<section class="categories-section">
+			<div class="section-header">
+				<h2>Explore More Categories</h2>
+				<a href="/g.html" class="view-all-link">View all <span
+						class="material-symbols-outlined">arrow_forward</span></a>
+			</div>
+			<div class="categories-grid">
 				<!-- Will be populated by JS -->
 			</div>
 		</section>
@@ -203,6 +206,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 	<script src="/js/localforage.min.js"></script>
 	<script src="/js/game-loader.js"></script>
+	<script src="/js/game-page.js"></script>
 	<script src="/js/themes.js"></script>
 	<script src="/js/c.js"></script>
 	<script src="/js/auth-controller.min.js"></script>
@@ -226,6 +230,155 @@
 				}
 			}
 		});
+
+		// IndexedDB Configuration
+		const DB_NAME = 'flamepass_games';
+		const DB_VERSION = 1;
+		const GAME_STORE = 'games';
+		const META_STORE = 'meta';
+		const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+		// Initialize IndexedDB
+		function initDB() {
+			return new Promise((resolve, reject) => {
+				if (!window.indexedDB) {
+					console.warn('IndexedDB not supported, falling back to localStorage');
+					resolve(null);
+					return;
+				}
+
+				const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+				request.onerror = event => {
+					console.error('IndexedDB error:', event.target.error);
+					resolve(null); // Resolve with null to indicate fallback needed
+				};
+
+				request.onupgradeneeded = event => {
+					const db = event.target.result;
+
+					// Create object stores if they don't exist
+					if (!db.objectStoreNames.contains(GAME_STORE)) {
+						db.createObjectStore(GAME_STORE, { keyPath: 'slug' });
+					}
+
+					if (!db.objectStoreNames.contains(META_STORE)) {
+						db.createObjectStore(META_STORE, { keyPath: 'key' });
+					}
+				};
+
+				request.onsuccess = event => {
+					resolve(event.target.result);
+				};
+			});
+		}
+
+		// Get all data from a store
+		async function getAllFromDB(db, storeName) {
+			return new Promise((resolve, reject) => {
+				if (!db) {
+					resolve(null);
+					return;
+				}
+
+				const transaction = db.transaction(storeName, 'readonly');
+				const store = transaction.objectStore(storeName);
+				const request = store.getAll();
+
+				request.onsuccess = event => {
+					resolve(event.target.result);
+				};
+
+				request.onerror = event => {
+					console.error(`Error getting data from ${storeName}:`, event.target.error);
+					resolve(null);
+				};
+			});
+		}
+
+		// Get a specific item from a store
+		async function getFromDB(db, storeName, key) {
+			return new Promise((resolve, reject) => {
+				if (!db) {
+					resolve(null);
+					return;
+				}
+
+				const transaction = db.transaction(storeName, 'readonly');
+				const store = transaction.objectStore(storeName);
+				const request = store.get(key);
+
+				request.onsuccess = event => {
+					resolve(event.target.result);
+				};
+
+				request.onerror = event => {
+					console.error(`Error getting item from ${storeName}:`, event.target.error);
+					resolve(null);
+				};
+			});
+		}
+
+		// Get games from cache, IndexedDB, or fetch from server
+		async function getGamesData() {
+			// Try to get from memory cache
+			if (window.cache && window.cache.games && Array.isArray(window.cache.games)) {
+				return window.cache.games;
+			}
+
+			// Initialize IndexedDB
+			const db = await initDB();
+
+			// Check IndexedDB
+			if (db) {
+				const meta = await getFromDB(db, META_STORE, 'lastUpdated');
+				const currentTime = Date.now();
+
+				// If we have fresh data in IndexedDB
+				if (meta && (currentTime - meta.timestamp < CACHE_DURATION)) {
+					console.log('Loading games from IndexedDB cache');
+					const games = await getAllFromDB(db, GAME_STORE);
+
+					if (games && games.length > 0) {
+						// Update memory cache if available
+						if (window.cache) {
+							window.cache.games = games;
+						}
+						return games;
+					}
+				}
+			}
+
+			// Try to get from localStorage as fallback
+			try {
+				const cachedData = localStorage.getItem('cache_games');
+				if (cachedData) {
+					const parsed = JSON.parse(cachedData);
+					if (parsed.data && Array.isArray(parsed.data)) {
+						return parsed.data;
+					}
+				}
+			} catch (e) {
+				console.warn('Error loading games from localStorage:', e);
+			}
+
+			// If nothing is cached, fetch from server
+			try {
+				console.log('Fetching fresh game data from server');
+				const response = await fetch('/json/g.json');
+				const games = await response.json();
+
+				// Update memory cache if available
+				if (window.cache) {
+					window.cache.games = games;
+				}
+
+				return games;
+			} catch (error) {
+				console.error('Error fetching games data:', error);
+				return [];
+			}
+		}
 
 		// Search modal functionality
 		document.addEventListener('DOMContentLoaded', () => {
@@ -271,166 +424,101 @@
 				}
 			});
 
-			// Search input handler
-			searchInput.addEventListener('input', async () => {
-				const query = searchInput.value.trim().toLowerCase();
+			// Search input handler with debounce
+			let debounceTimer;
+			searchInput.addEventListener('input', () => {
+				clearTimeout(debounceTimer);
+
+				const query = searchInput.value.trim();
 
 				if (query.length < 2) {
 					searchResults.innerHTML = `
-            <div class="search-message">
-              <span class="material-symbols-outlined">search</span>
-              <p>Type at least 2 characters to search</p>
-            </div>
-          `;
+						<div class="search-message">
+							<span class="material-symbols-outlined">search</span>
+							<p>Type at least 2 characters to search</p>
+						</div>
+					`;
 					return;
 				}
 
-				try {
-					// Try to get games from cache
-					let allGames = [];
+				// Set loading state
+				searchResults.innerHTML = `
+					<div class="search-message">
+						<div class="loader" style="width: 30px; height: 30px;">
+							<svg viewBox="0 0 80 80">
+								<circle cx="40" cy="40" r="32" class="loader-circle" />
+							</svg>
+						</div>
+						<p>Searching...</p>
+					</div>
+				`;
 
-					if (window.cache && window.cache.games) {
-						allGames = window.cache.games;
-					} else {
-						// Get from localStorage
-						const cachedData = localStorage.getItem('cache_games');
-						if (cachedData) {
-							try {
-								allGames = JSON.parse(cachedData).data;
-							} catch (e) {
-								console.warn('Error parsing cached game data');
+				// Debounce search request
+				debounceTimer = setTimeout(async () => {
+					try {
+						// Get games using IndexedDB
+						const allGames = await getGamesData();
+
+						// Filter games based on query
+						const lowerCaseQuery = query.toLowerCase();
+						const filteredGames = allGames.filter(game =>
+							(game.name && game.name.toLowerCase().includes(lowerCaseQuery)) ||
+							(game.description && game.description.toLowerCase().includes(lowerCaseQuery)) ||
+							(game.category && game.category.toLowerCase().includes(lowerCaseQuery)) ||
+							(game.tags && Array.isArray(game.tags) && game.tags.some(tag => tag.toLowerCase().includes(lowerCaseQuery)))
+						);
+
+						// Display results
+						if (filteredGames.length === 0) {
+							searchResults.innerHTML = `
+								<div class="search-message">
+									<span class="material-symbols-outlined">sentiment_dissatisfied</span>
+									<p>No games found matching "${query}"</p>
+								</div>
+							`;
+						} else {
+							searchResults.innerHTML = '';
+
+							filteredGames.slice(0, 8).forEach(game => {
+								const resultItem = document.createElement('a');
+								resultItem.href = `/game/${game.slug}`;
+								resultItem.className = 'search-result-item';
+
+								resultItem.innerHTML = `
+									<div class="search-result-image">
+										<img src="${game.img}" alt="${game.name}" loading="lazy">
+									</div>
+									<div class="search-result-info">
+										<h3>${game.name}</h3>
+										<div class="search-result-meta">
+											<span class="category-pill">${game.category ? game.category.charAt(0).toUpperCase() + game.category.slice(1) : 'Browser Game'}</span>
+											${game.publisher ? `<span class="publisher">${game.publisher}</span>` : ''}
+										</div>
+									</div>
+								`;
+
+								searchResults.appendChild(resultItem);
+							});
+
+							if (filteredGames.length > 8) {
+								const viewAll = document.createElement('a');
+								viewAll.href = `/g.html?search=${encodeURIComponent(query)}`;
+								viewAll.className = 'view-all-results';
+								viewAll.innerHTML = `View all ${filteredGames.length} results <span class="material-symbols-outlined">arrow_forward</span>`;
+								searchResults.appendChild(viewAll);
 							}
 						}
-
-						// Fallback to fetch
-						if (!allGames || !allGames.length) {
-							const response = await fetch('/json/g.json');
-							allGames = await response.json();
-						}
-					}
-
-					// Filter games based on query
-					const filteredGames = allGames.filter(game =>
-						game.name.toLowerCase().includes(query) ||
-						(game.description && game.description.toLowerCase().includes(query)) ||
-						(game.category && game.category.toLowerCase().includes(query)) ||
-						(game.tags && game.tags.some(tag => tag.toLowerCase().includes(query)))
-					);
-
-					// Display results
-					if (filteredGames.length === 0) {
+					} catch (error) {
+						console.error('Error during search:', error);
 						searchResults.innerHTML = `
-              <div class="search-message">
-                <span class="material-symbols-outlined">sentiment_dissatisfied</span>
-                <p>No games found matching "${query}"</p>
-              </div>
-            `;
-					} else {
-						searchResults.innerHTML = '';
-
-						filteredGames.slice(0, 8).forEach(game => {
-							const resultItem = document.createElement('a');
-							resultItem.href = `/game/${game.slug}`;
-							resultItem.className = 'search-result-item';
-
-							resultItem.innerHTML = `
-                <div class="search-result-image">
-                  <img src="${game.img}" alt="${game.name}" loading="lazy">
-                </div>
-                <div class="search-result-info">
-                  <h3>${game.name}</h3>
-                  <div class="search-result-meta">
-                    <span class="category-pill">${game.category || 'Browser Game'}</span>
-                    ${game.publisher ? `<span class="publisher">${game.publisher}</span>` : ''}
-                  </div>
-                </div>
-              `;
-
-							searchResults.appendChild(resultItem);
-						});
-
-						if (filteredGames.length > 8) {
-							const viewAll = document.createElement('a');
-							viewAll.href = `/g.html?search=${encodeURIComponent(query)}`;
-							viewAll.className = 'view-all-results';
-							viewAll.innerHTML = `View all ${filteredGames.length} results <span class="material-symbols-outlined">arrow_forward</span>`;
-							searchResults.appendChild(viewAll);
-						}
+							<div class="search-message">
+								<span class="material-symbols-outlined">error</span>
+								<p>An error occurred while searching</p>
+							</div>
+						`;
 					}
-				} catch (error) {
-					console.error('Error during search:', error);
-					searchResults.innerHTML = `
-            <div class="search-message">
-              <span class="material-symbols-outlined">error</span>
-              <p>An error occurred while searching</p>
-            </div>
-          `;
-				}
+				}, 300);
 			});
-
-			// Populate trending games
-			const populateTrendingGames = async () => {
-				const trendingContainer = document.getElementById('trending-games');
-				if (!trendingContainer) return;
-
-				try {
-					// Try to get games from cache
-					let allGames = [];
-
-					if (window.cache && window.cache.games) {
-						allGames = window.cache.games;
-					} else {
-						// Get from localStorage
-						const cachedData = localStorage.getItem('cache_games');
-						if (cachedData) {
-							try {
-								allGames = JSON.parse(cachedData).data;
-							} catch (e) {
-								console.warn('Error parsing cached game data');
-							}
-						}
-
-						// Fallback to fetch
-						if (!allGames || !allGames.length) {
-							const response = await fetch('/json/g.json');
-							allGames = await response.json();
-						}
-					}
-
-					// Get 6 random games for trending
-					const randomGames = getRandomGames(allGames, 6);
-
-					trendingContainer.innerHTML = '';
-
-					randomGames.forEach(game => {
-						const gameCard = document.createElement('a');
-						gameCard.href = `/game/${game.slug}`;
-						gameCard.className = 'game-card';
-
-						gameCard.innerHTML = `
-              <div class="game-card-image">
-                <img src="${game.img}" alt="${game.name}" loading="lazy">
-                <div class="game-card-overlay">
-                  <h3>${game.name}</h3>
-                </div>
-              </div>
-              <div class="game-card-details">
-                <span class="game-category">${game.category || 'Browser Game'}</span>
-              </div>
-            `;
-
-						trendingContainer.appendChild(gameCard);
-					});
-				} catch (error) {
-					console.error('Error loading trending games:', error);
-				}
-			};
-
-			// Helper function to get random games
-			function getRandomGames(games, count) {
-				const shuffled = [...games].sort(() => 0.5 - Math.random());
-				return shuffled.slice(0, count);
-			}
 
 			// Init scroll to top button
 			const scrollTopBtn = document.getElementById('scrollTopBtn');
@@ -449,8 +537,45 @@
 				});
 			});
 
-			// Initialize the page
-			populateTrendingGames();
+			// Check if current page is a game detail page
+			const path = window.location.pathname;
+			if (path.startsWith('/game/')) {
+				// Extract game slug from URL
+				const slug = path.split('/').pop();
+
+				// Check if slug exists and load game details
+				if (slug && typeof window.loadGameDetails === 'function') {
+					window.loadGameDetails(slug);
+				} else {
+					// Fallback error handling
+					setTimeout(() => {
+						const container = document.getElementById('game-container');
+						if (container && container.querySelector('.loading-container')) {
+							console.warn('Game loading timeout detected, attempting to recover');
+
+							// Try to load game details through IndexedDB
+							getGamesData().then(games => {
+								const game = games.find(g => g.slug === slug);
+
+								if (game && typeof window.renderGameDetails === 'function') {
+									window.renderGameDetails(container, game, games);
+								} else {
+									container.innerHTML = `
+										<div class="error-message">
+											<span class="material-symbols-outlined">error</span>
+											<h3>Game Not Found</h3>
+											<p>Sorry, we couldn't find the game you're looking for.</p>
+											<a href="/g.html" class="retry-button">Browse All Games</a>
+										</div>
+									`;
+								}
+							}).catch(error => {
+								console.error('Error loading game details:', error);
+							});
+						}
+					}, 3000);
+				}
+			}
 		});
 
 		// Handle ads based on user preferences
