@@ -1198,6 +1198,22 @@ function renderGameDetails(container, game, allGames) {
   const gameMeta = document.createElement('div');
   gameMeta.className = 'game-metadata';
 
+  // Add publisher if available
+  if (game.publisher) {
+    const publisherItem = document.createElement('div');
+    publisherItem.className = 'metadata-item';
+    publisherItem.innerHTML = `
+            <div class="metadata-icon">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div>
+                <span class="metadata-label">Publisher</span>
+                <div class="metadata-value">${game.publisher}</div>
+            </div>
+        `;
+    gameMeta.appendChild(publisherItem);
+  }
+
   // Add category if available
   if (game.category) {
     const categoryItem = document.createElement('div');
@@ -1212,6 +1228,38 @@ function renderGameDetails(container, game, allGames) {
             </div>
         `;
     gameMeta.appendChild(categoryItem);
+  }
+
+  // Add release date if available
+  if (game.releaseDate) {
+    const releaseDateItem = document.createElement('div');
+    releaseDateItem.className = 'metadata-item';
+
+    // Format date
+    let formattedDate = game.releaseDate;
+    try {
+      const date = new Date(game.releaseDate);
+      if (!isNaN(date.getTime())) {
+        formattedDate = date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+    } catch (e) {
+      console.warn('Error formatting date:', e);
+    }
+
+    releaseDateItem.innerHTML = `
+            <div class="metadata-icon">
+                <i class="fa-solid fa-calendar"></i>
+            </div>
+            <div>
+                <span class="metadata-label">Released</span>
+                <div class="metadata-value">${formattedDate}</div>
+            </div>
+        `;
+    gameMeta.appendChild(releaseDateItem);
   }
 
   gameInfo.appendChild(gameMeta);
@@ -1260,13 +1308,18 @@ function renderGameDetails(container, game, allGames) {
   description.textContent = game.description || `Play ${game.name} online with Flamepass. No downloads required, works directly in your browser.`;
   gameInfo.appendChild(description);
 
-  // Standard play button
-  const playButton = document.createElement('a');
-  const useProxy = game.proxy !== undefined ? game.proxy : true;
-  playButton.href = `/&.html?q=${encodeURIComponent(game.url)}&proxy=${useProxy}`;
-  playButton.className = 'play-game-button';
-  playButton.innerHTML = '<i class="fa-solid fa-play"></i> Play Game';
-  gameInfo.appendChild(playButton);
+  // Handle cloud gaming service providers
+  if (game.category === 'cloud' && game.serviceProviders) {
+    renderServiceProviders(gameInfo, game);
+  } else {
+    // Standard play button
+    const playButton = document.createElement('a');
+    const useProxy = game.proxy !== undefined ? game.proxy : true;
+    playButton.href = `/&.html?q=${encodeURIComponent(game.url)}&proxy=${useProxy}`;
+    playButton.className = 'play-game-button';
+    playButton.innerHTML = '<i class="fa-solid fa-play"></i> Play Game';
+    gameInfo.appendChild(playButton);
+  }
 
   // Add to container
   container.appendChild(gameInfo);
@@ -1285,6 +1338,104 @@ function renderGameDetails(container, game, allGames) {
 
   backButton.appendChild(backLink);
   container.appendChild(backButton);
+}
+
+// Function to render service providers section
+function renderServiceProviders(container, game) {
+  if (!game.serviceProviders) return;
+
+  // Create service providers section
+  const providersSection = document.createElement('div');
+  providersSection.className = 'service-providers-section';
+
+  const providersTitle = document.createElement('h3');
+  providersTitle.className = 'providers-title';
+  providersTitle.textContent = 'Play on:';
+  providersSection.appendChild(providersTitle);
+
+  // Service providers grid
+  const providersGrid = document.createElement('div');
+  providersGrid.className = 'service-providers-grid';
+
+  // Service provider logos and links
+  const providerLogos = {
+    'GeForceNow': '/assets/providers/geforcenow.png',
+    'Boosteroid': '/assets/providers/boosteroid.png',
+    'Xbox': '/assets/providers/xbox.png',
+    'PlayStation': '/assets/providers/playstation.png',
+    'Amazon': '/assets/providers/amazon.png',
+    'Google': '/assets/providers/google.png',
+    'Meta': '/assets/providers/meta.png',
+    'Nintendo': '/assets/providers/nintendo.png'
+  };
+
+  // Default logo for providers not in our known list
+  const defaultLogo = '/assets/providers/default.png';
+
+  // Add each service provider
+  let index = 0;
+  for (const provider in game.serviceProviders) {
+    const providerCard = document.createElement('div');
+    providerCard.className = 'provider-card';
+
+    // For staggered animation
+    providerCard.style.animationDelay = `${index * 0.1}s`;
+    index++;
+
+    // Provider logo
+    const logoContainer = document.createElement('div');
+    logoContainer.className = 'provider-logo';
+
+    const logo = document.createElement('img');
+    // Fallback to placeholder if logo URL is missing
+    if (!providerLogos[provider] && !defaultLogo) {
+      logo.src = `https://via.placeholder.com/60x60?text=${provider}`;
+    } else {
+      logo.src = providerLogos[provider] || defaultLogo;
+    }
+    logo.alt = `${provider} logo`;
+    logo.onerror = function () {
+      this.src = `https://via.placeholder.com/60x60?text=${provider}`;
+    };
+    logoContainer.appendChild(logo);
+
+    providerCard.appendChild(logoContainer);
+
+    // Provider name
+    const providerName = document.createElement('div');
+    providerName.className = 'provider-name';
+    providerName.textContent = provider;
+    providerCard.appendChild(providerName);
+
+    // Play button
+    const playButton = document.createElement('a');
+    const providerUrl = game.serviceProviders[provider].url;
+    const useProxy = game.proxy !== undefined ? game.proxy : true;
+    playButton.href = `/&.html?q=${encodeURIComponent(providerUrl)}&proxy=${useProxy}`;
+    playButton.className = 'provider-play-button';
+    playButton.innerHTML = '<i class="fa-solid fa-play"></i> Play';
+
+    // Add click analytics
+    playButton.addEventListener('click', () => {
+      try {
+        if (window.gtag) {
+          window.gtag('event', 'play_game', {
+            'event_category': 'engagement',
+            'event_label': `${game.name} on ${provider}`,
+            'value': 1
+          });
+        }
+      } catch (e) {
+        console.warn('Analytics error:', e);
+      }
+    });
+
+    providerCard.appendChild(playButton);
+    providersGrid.appendChild(providerCard);
+  }
+
+  providersSection.appendChild(providersGrid);
+  container.appendChild(providersSection);
 }
 
 // Render related games section
