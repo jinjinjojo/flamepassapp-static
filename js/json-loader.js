@@ -785,7 +785,7 @@ function addGameOverlayStyles() {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 90%;
+            width: 93%;
             padding: 15px;
             background: linear-gradient(transparent, rgb(0, 0, 0));
             color: white;
