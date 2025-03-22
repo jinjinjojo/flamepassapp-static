@@ -16,22 +16,158 @@
 	<meta property="og:title" content="Play ${game.name} Unblocked | Flamepass" />
 	<link rel="canonical" href="/game/${game.slug}" />
 
-	<!-- Font imports -->
-	<link rel="preload" as="style"
-		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-
-	<!-- Icon libraries -->
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-
-	<!-- Core stylesheets -->
+	<!-- Stylesheets -->
 	<link rel="stylesheet" href="/css/index.css" />
 	<link rel="stylesheet" href="/css/themes.css" />
 	<link rel="stylesheet" href="/css/common.css" />
-	<link rel="stylesheet" href="/css/game-page.css" />
+
+	<!-- Add this line to fix section headers and layouts -->
+	<style>
+		/* Fix for section headers - must be properly centered */
+		.section-header-container {
+			max-width: 1200px;
+			margin: 0 auto 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 20px;
+		}
+
+		.section-header-container h2 {
+			position: relative;
+			margin: 0;
+			font-size: 1.5rem;
+			font-weight: 600;
+			color: white;
+			display: inline-block;
+			padding-left: 15px;
+		}
+
+		.section-header-container h2::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 4px;
+			height: 20px;
+			background-color: #ff6600;
+			border-radius: 2px;
+		}
+
+		.view-all-link {
+			color: #ff6600;
+			font-size: 0.9rem;
+			font-weight: 500;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			white-space: nowrap;
+		}
+
+		/* Game cards container */
+		.games-grid-container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+
+		/* Fix for showing dual play buttons */
+		.game-buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			margin-bottom: 20px;
+		}
+
+		.play-button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: #ff6600;
+			color: white;
+			padding: 14px 24px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 1rem;
+			gap: 10px;
+			box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3);
+			text-align: center;
+			transition: all 0.3s ease;
+		}
+
+		.play-button:hover {
+			background-color: #ff8033;
+			transform: translateY(-3px);
+		}
+
+		.proxy-button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: rgba(30, 34, 45, 0.8);
+			color: white;
+			padding: 14px 24px;
+			border-radius: 50px;
+			font-weight: 600;
+			font-size: 1rem;
+			gap: 10px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		.proxy-button:hover {
+			background-color: rgba(37, 41, 54, 0.9);
+			border-color: #ff6600;
+		}
+
+		.lock-icon {
+			color: #ff6600;
+			margin-right: 5px;
+		}
+
+		/* Fix for Explore More Categories section */
+		.categories-section {
+			margin: 40px 0;
+		}
+
+		.categories-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 20px;
+		}
+
+		.category-card {
+			background-color: rgba(30, 34, 45, 0.6);
+			border-radius: 12px;
+			padding: 20px;
+			text-align: center;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			transition: all 0.3s ease;
+		}
+
+		.category-card:hover {
+			transform: translateY(-5px);
+			border-color: #ff6600;
+		}
+
+		.category-icon {
+			margin-bottom: 15px;
+			font-size: 2rem;
+			color: #ff6600;
+		}
+
+		.category-card h3 {
+			margin-bottom: 5px;
+			font-size: 1.1rem;
+		}
+
+		.game-count {
+			color: rgba(255, 255, 255, 0.6);
+			font-size: 0.9rem;
+		}
+	</style>
 
 	<!-- Google Analytics -->
 	<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
@@ -45,7 +181,7 @@
 </head>
 
 <body>
-	<!-- Navigation Sidebar - Using the YouTube channels style -->
+	<!-- Navigation Sidebar from YouTube channels page -->
 	<ul class="navbar">
 		<li style="margin-left: -1px; margin-top: 2px">
 			<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
@@ -146,268 +282,143 @@
 							<div class="metadata-value">Browser Game</div>
 						</div>
 					</div>
-					<div class="metadata-item">
-						<div class="metadata-icon">
-							<i class="fa-solid fa-tag"></i>
-						</div>
-						<div>
-							<span class="metadata-label">Genre</span>
-							<div class="metadata-value">Action</div>
-						</div>
-					</div>
 				</div>
 
 				<div class="game-image-container">
-					<img src="/assets/game-placeholder.jpg" alt="Game Title" class="game-detail-image">
+					<img src="${game.img}" alt="${game.name}" class="game-detail-image">
 				</div>
 
 				<div class="game-description">
 					<h3>Play Unblocked at School</h3>
 					<p>This game is unblocked and playable right from your school or work browser. Flamepass allows you
 						to bypass web filters and restrictions to enjoy your favorite games during breaks.</p>
-					<p>Choose between directly opening the game in a new tab or using our secure Flamepass Proxy which
-						can help bypass additional restrictions. The proxy option requires a free Flamepass account and
-						adds an extra layer of protection.</p>
-					<p>For the best experience, we recommend using the Flamepass Proxy option which helps evade content
-						filtering systems and keeps your gaming activities private.</p>
 				</div>
 
-				<!-- Cloud Gaming Buttons (GeForce Now, Boosteroid) -->
-				<div class="game-buttons-container">
-					<div class="game-type-buttons">
-						<div class="game-type-title">
-							<i class="fa-solid fa-cloud"></i> Cloud Gaming
-						</div>
-
-						<div class="game-buttons">
-							<a href="#" class="play-button" id="openCloudGameBtn">
-								<i class="fa-solid fa-up-right-from-square"></i>
-								Open in New Tab
-							</a>
-							<a href="#" class="proxy-button" id="proxyCloudGameBtn">
-								<i class="fa-solid fa-lock lock-icon"></i>
-								Play in Flamepass Proxy
-							</a>
-						</div>
-					</div>
-
-					<!-- Browser Game Buttons -->
-					<div class="game-type-buttons">
-						<div class="game-type-title">
-							<i class="fa-solid fa-globe"></i> Browser Version
-						</div>
-
-						<div class="game-buttons">
-							<a href="#" class="play-button" id="openBrowserGameBtn">
-								<i class="fa-solid fa-up-right-from-square"></i>
-								Open in New Tab
-							</a>
-							<a href="#" class="proxy-button" id="proxyBrowserGameBtn">
-								<i class="fa-solid fa-lock lock-icon"></i>
-								Play in Flamepass Proxy
-							</a>
-						</div>
-					</div>
-
-					<!-- Emulator Game Buttons -->
-					<div class="game-type-buttons">
-						<div class="game-type-title">
-							<i class="fa-solid fa-gamepad"></i> Emulator Version
-						</div>
-
-						<div class="game-buttons">
-							<a href="#" class="play-button" id="openEmulatorGameBtn">
-								<i class="fa-solid fa-up-right-from-square"></i>
-								Open in New Tab
-							</a>
-							<a href="#" class="proxy-button" id="proxyEmulatorGameBtn">
-								<i class="fa-solid fa-lock lock-icon"></i>
-								Play in Flamepass Proxy
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Unblocking Info Section -->
-			<div class="unblock-info-section">
-				<h2>How to Play Unblocked Games at School</h2>
-				<p>Flamepass provides multiple ways to access blocked content at school or work. Here are some tips to
-					enhance your experience:</p>
-
-				<div class="unblock-tips">
-					<div class="tip-card">
-						<div class="tip-icon">
-							<i class="fa-solid fa-shield"></i>
-						</div>
-						<h3 class="tip-title">Use Flamepass Proxy</h3>
-						<p class="tip-description">Our secure proxy can bypass most school filters and keeps your gaming
-							activity hidden from monitoring systems.</p>
-					</div>
-
-					<div class="tip-card">
-						<div class="tip-icon">
-							<i class="fa-solid fa-clock"></i>
-						</div>
-						<h3 class="tip-title">Private Browsing</h3>
-						<p class="tip-description">Use incognito or private browsing mode to prevent browsing history
-							from being stored on school computers.</p>
-					</div>
-
-					<div class="tip-card">
-						<div class="tip-icon">
-							<i class="fa-solid fa-bolt"></i>
-						</div>
-						<h3 class="tip-title">Alternative Links</h3>
-						<p class="tip-description">Check our Discord for alternative domain links if the main Flamepass
-							site gets blocked at your school.</p>
-					</div>
-				</div>
-			</div>
-
-			<!-- Related Games Section -->
-			<div class="section-header-container">
-				<h2>Related Games</h2>
-				<a href="/g.html" class="view-all-link">
-					View all games <span class="material-symbols-outlined">arrow_forward</span>
-				</a>
-			</div>
-
-			<div class="games-grid-container">
-				<div class="games-grid" id="related-games">
-					<!-- Related games will be added by JavaScript -->
-					<a href="/game/sample-game-1" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Sample Game 1" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Sample Game 1</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
+				<!-- Game Buttons - IMPORTANT: These are the dual play buttons -->
+				<div class="game-buttons">
+					<!-- First Button: Open in New Tab -->
+					<a href="${game.url}" target="_blank" class="play-button" id="openInNewTabBtn">
+						<i class="fa-solid fa-up-right-from-square"></i>
+						Open in New Tab
 					</a>
 
-					<a href="/game/sample-game-2" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Sample Game 2" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Sample Game 2</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
-					</a>
-
-					<a href="/game/sample-game-3" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Sample Game 3" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Sample Game 3</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
-					</a>
-
-					<a href="/game/sample-game-4" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Sample Game 4" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Sample Game 4</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
+					<!-- Second Button: Play in Flamepass Proxy -->
+					<a href="/&.html?q=${encodeURIComponent(game.url)}&proxy=true" class="proxy-button"
+						id="proxyGameBtn">
+						<i class="fa-solid fa-lock lock-icon"></i>
+						Play in Flamepass Proxy
 					</a>
 				</div>
 			</div>
-
-			<!-- Trending Games Section -->
-			<div class="section-header-container">
-				<h2>Trending Now</h2>
-				<a href="/g.html?sort=trending" class="view-all-link">
-					View all <span class="material-symbols-outlined">arrow_forward</span>
-				</a>
-			</div>
-
-			<div class="games-grid-container">
-				<div class="games-grid" id="trending-games">
-					<!-- Trending games will be added by JavaScript -->
-					<a href="/game/trending-game-1" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Trending Game 1" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Trending Game 1</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
-					</a>
-
-					<a href="/game/trending-game-2" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Trending Game 2" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Trending Game 2</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
-					</a>
-
-					<a href="/game/trending-game-3" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Trending Game 3" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Trending Game 3</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
-					</a>
-
-					<a href="/game/trending-game-4" class="game-card">
-						<div class="game-card-image">
-							<img src="/assets/game-placeholder.jpg" alt="Trending Game 4" loading="lazy">
-							<div class="game-card-overlay">
-								<h3>Trending Game 4</h3>
-							</div>
-						</div>
-						<div class="game-card-details">
-							<span class="game-category">Browser Game</span>
-						</div>
-					</a>
-				</div>
-			</div>
-
-			<!-- Scroll to top button -->
-			<button class="scroll-top" id="scrollTopBtn">
-				<span class="material-symbols-outlined">arrow_upward</span>
-			</button>
-
-			<!-- Footer -->
-			<footer class="footer">
-				<div class="footer-content">
-					<div class="footer-logo">
-						<img src="/assets/logo.webp" alt="Flamepass Logo" />
-						<p>© 2023-2025 Flamepass - School Unblocked Games & Proxies</p>
-					</div>
-					<div class="footer-links">
-						<a href="/terms.html">Terms of Service</a>
-						<a href="/privacy.html">Privacy Policy</a>
-						<a href="/about.html">About Us</a>
-						<a href="https://discord.com/invite/gVaXCTqJDq" target="_blank">Discord</a>
-					</div>
-				</div>
-			</footer>
 		</div>
+
+		<!-- Trending Now Section - Fixed Header -->
+		<div class="section-header-container">
+			<h2>Trending Now</h2>
+			<a href="/g.html?sort=trending" class="view-all-link">
+				View all <span class="material-symbols-outlined">arrow_forward</span>
+			</a>
+		</div>
+
+		<div class="games-grid-container">
+			<div class="games-grid" id="trending-games">
+				<!-- Trending games populated by JavaScript -->
+			</div>
+		</div>
+
+		<!-- Browser Games Section - Fixed Header -->
+		<div class="section-header-container">
+			<h2>Browser Games</h2>
+			<a href="/g.html?category=browser" class="view-all-link">
+				View all 1468 <span class="material-symbols-outlined">arrow_forward</span>
+			</a>
+		</div>
+
+		<div class="games-grid-container">
+			<div class="games-grid" id="browser-games">
+				<!-- Browser games populated by JavaScript -->
+			</div>
+		</div>
+
+		<!-- Cloud Games Section - Fixed Header -->
+		<div class="section-header-container">
+			<h2>Cloud Games</h2>
+			<a href="/g.html?category=cloud" class="view-all-link">
+				View all 2558 <span class="material-symbols-outlined">arrow_forward</span>
+			</a>
+		</div>
+
+		<div class="games-grid-container">
+			<div class="games-grid" id="cloud-games">
+				<!-- Cloud games populated by JavaScript -->
+			</div>
+		</div>
+
+		<!-- Emulator Games Section - Fixed Header -->
+		<div class="section-header-container">
+			<h2>Emulator Games</h2>
+			<a href="/g.html?category=emulator" class="view-all-link">
+				View all 2936 <span class="material-symbols-outlined">arrow_forward</span>
+			</a>
+		</div>
+
+		<div class="games-grid-container">
+			<div class="games-grid" id="emulator-games">
+				<!-- Emulator games populated by JavaScript -->
+			</div>
+		</div>
+
+		<!-- Explore More Categories Section - Fixed Layout -->
+		<div class="section-header-container">
+			<h2>Explore More Categories</h2>
+			<a href="/categories.html" class="view-all-link">
+				View all <span class="material-symbols-outlined">arrow_forward</span>
+			</a>
+		</div>
+
+		<div class="games-grid-container">
+			<div class="categories-grid">
+				<a href="/g.html?category=cloud" class="category-card">
+					<div class="category-icon">
+						<i class="fa-solid fa-cloud"></i>
+					</div>
+					<h3>Cloud Games</h3>
+					<span class="game-count">2558 Games</span>
+				</a>
+
+				<a href="/g.html?category=emulator" class="category-card">
+					<div class="category-icon">
+						<i class="fa-solid fa-gamepad"></i>
+					</div>
+					<h3>Emulator Games</h3>
+					<span class="game-count">2936 Games</span>
+				</a>
+
+				<a href="/g.html?category=browser" class="category-card">
+					<div class="category-icon">
+						<i class="fa-solid fa-globe"></i>
+					</div>
+					<h3>Browser Games</h3>
+					<span class="game-count">1468 Games</span>
+				</a>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer class="footer">
+			<div class="footer-content">
+				<div class="footer-logo">
+					<img src="/assets/logo.webp" alt="Flamepass Logo" />
+					<p>© 2023-2025 Flamepass - School Unblocked Games & Proxies</p>
+				</div>
+				<div class="footer-links">
+					<a href="/terms.html">Terms of Service</a>
+					<a href="/privacy.html">Privacy Policy</a>
+					<a href="/about.html">About Us</a>
+					<a href="https://discord.com/invite/gVaXCTqJDq" target="_blank">Discord</a>
+				</div>
+			</div>
+		</footer>
 	</main>
 
 	<!-- Search Modal -->
@@ -471,9 +482,6 @@
 	<!-- Scripts -->
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 	<script src="/js/localforage.min.js"></script>
-	<script src="/js/game-loader.js"></script>
-	<script src="/js/game-page.js"></script>
-	<script src="/js/themes.js"></script>
 	<script src="/js/c.js"></script>
 	<script src="/js/auth-controller.min.js"></script>
 	<script>
@@ -497,102 +505,41 @@
 			}
 		});
 
-		// IndexedDB Configuration - Fixed to avoid duplicate declarations
+		// Fixed IndexedDB Configuration
 		let gameDB;
 		let gameCache = {};
 
-		// Initialize IndexedDB
-		async function initGameDB() {
-			return new Promise((resolve, reject) => {
-				if (!window.indexedDB) {
-					console.warn('IndexedDB not supported, falling back to localStorage');
-					resolve(null);
-					return;
-				}
-
-				const request = indexedDB.open('flamepass_games', 1);
-
-				request.onerror = event => {
-					console.error('IndexedDB error:', event.target.error);
-					resolve(null);
-				};
-
-				request.onupgradeneeded = event => {
-					const db = event.target.result;
-
-					// Create object stores if they don't exist
-					if (!db.objectStoreNames.contains('games')) {
-						db.createObjectStore('games', { keyPath: 'slug' });
-					}
-
-					if (!db.objectStoreNames.contains('meta')) {
-						db.createObjectStore('meta', { keyPath: 'key' });
-					}
-				};
-
-				request.onsuccess = event => {
-					gameDB = event.target.result;
-					resolve(gameDB);
-				};
-			});
-		}
-
-		// Custom game page functionality
+		// Custom simplified search functionality
 		document.addEventListener('DOMContentLoaded', () => {
-			// Initialize database
-			initGameDB();
-
-			// Set up search modal functionality
+			// Open/close search modal
 			const searchTrigger = document.getElementById('searchTrigger');
 			const searchModal = document.getElementById('searchModal');
 			const closeSearch = document.getElementById('closeSearch');
-			const searchInput = document.getElementById('searchInput');
 
-			// Auth modal functionality for proxy buttons
-			const proxyButtons = document.querySelectorAll('.proxy-button');
+			if (searchTrigger && searchModal && closeSearch) {
+				searchTrigger.addEventListener('click', () => {
+					searchModal.classList.add('active');
+				});
+
+				closeSearch.addEventListener('click', () => {
+					searchModal.classList.remove('active');
+				});
+
+				// Close on escape key
+				document.addEventListener('keydown', (e) => {
+					if (e.key === 'Escape' && searchModal.classList.contains('active')) {
+						searchModal.classList.remove('active');
+					}
+				});
+			}
+
+			// Auth modal for proxy buttons
+			const proxyGameBtn = document.getElementById('proxyGameBtn');
 			const authModal = document.getElementById('authModal');
 			const closeAuthModal = document.getElementById('closeAuthModal');
-			const loginForm = document.getElementById('loginForm');
 
-			// Open search modal
-			searchTrigger.addEventListener('click', () => {
-				searchModal.classList.add('active');
-				setTimeout(() => {
-					searchInput.focus();
-				}, 100);
-			});
-
-			// Close search modal
-			closeSearch.addEventListener('click', () => {
-				searchModal.classList.remove('active');
-			});
-
-			// Close on escape key
-			document.addEventListener('keydown', (e) => {
-				if (e.key === 'Escape' && searchModal.classList.contains('active')) {
-					searchModal.classList.remove('active');
-				}
-
-				// Open on Cmd+K or Ctrl+K
-				if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-					e.preventDefault();
-					searchModal.classList.add('active');
-					setTimeout(() => {
-						searchInput.focus();
-					}, 100);
-				}
-			});
-
-			// Click outside to close
-			searchModal.addEventListener('click', (e) => {
-				if (e.target === searchModal) {
-					searchModal.classList.remove('active');
-				}
-			});
-
-			// Auth modal handlers for all proxy buttons
-			proxyButtons.forEach(button => {
-				button.addEventListener('click', (e) => {
+			if (proxyGameBtn && authModal && closeAuthModal) {
+				proxyGameBtn.addEventListener('click', (e) => {
 					// Check if user is logged in
 					const isLoggedIn = false; // This would be replaced with actual auth check
 
@@ -600,226 +547,11 @@
 						e.preventDefault();
 						authModal.classList.add('active');
 					}
-					// If logged in, the button works normally
 				});
-			});
 
-			// Close auth modal
-			closeAuthModal.addEventListener('click', () => {
-				authModal.classList.remove('active');
-			});
-
-			// Click outside to close auth modal
-			authModal.addEventListener('click', (e) => {
-				if (e.target === authModal) {
+				closeAuthModal.addEventListener('click', () => {
 					authModal.classList.remove('active');
-				}
-			});
-
-			// Handle login form
-			loginForm.addEventListener('submit', (e) => {
-				e.preventDefault();
-
-				// Here you would handle the actual login logic
-				console.log('Login submitted');
-
-				// For demo, just close the modal and simulate successful login
-				setTimeout(() => {
-					authModal.classList.remove('active');
-					// Show success message
-					alert('Login successful! You can now use Flamepass Proxy.');
-				}, 1000);
-			});
-
-			// Scroll to top button
-			const scrollTopBtn = document.getElementById('scrollTopBtn');
-
-			window.addEventListener('scroll', () => {
-				if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-					scrollTopBtn.classList.add('visible');
-				} else {
-					scrollTopBtn.classList.remove('visible');
-				}
-			});
-
-			scrollTopBtn.addEventListener('click', () => {
-				window.scrollTo({
-					top: 0,
-					behavior: 'smooth'
 				});
-			});
-
-			// Open game buttons functionality
-			const openGameBtns = document.querySelectorAll('.play-button');
-
-			openGameBtns.forEach(button => {
-				button.addEventListener('click', (e) => {
-					e.preventDefault();
-					const gameUrl = "https://example.com/game-url"; // This would be dynamic
-					window.open(gameUrl, '_blank');
-				});
-			});
-
-			// Initialize search functionality with debounce
-			let debounceTimer;
-			searchInput.addEventListener('input', () => {
-				clearTimeout(debounceTimer);
-				const query = searchInput.value.trim();
-				const searchResults = document.getElementById('searchResults');
-
-				if (query.length < 2) {
-					searchResults.innerHTML = `
-                        <div class="search-message">
-                            <span class="material-symbols-outlined">search</span>
-                            <p>Type at least 2 characters to search</p>
-                        </div>
-                    `;
-					return;
-				}
-
-				// Set loading state
-				searchResults.innerHTML = `
-                    <div class="search-message">
-                        <div class="loader" style="width: 30px; height: 30px;">
-                            <svg viewBox="0 0 80 80">
-                                <circle cx="40" cy="40" r="32" class="loader-circle" />
-                            </svg>
-                        </div>
-                        <p>Searching...</p>
-                    </div>
-                `;
-
-				// Perform search with fixed duplicate DB issue
-				performSearch(query.toLowerCase());
-			});
-
-			// Function to perform search
-			async function performSearch(query) {
-				const searchResults = document.getElementById('searchResults');
-
-				try {
-					// Get games data
-					let allGames;
-
-					if (typeof window.fetchGames === 'function') {
-						allGames = await window.fetchGames();
-					} else {
-						// Fallback to getting games from cache
-						if (gameCache.allGames) {
-							allGames = gameCache.allGames;
-						} else {
-							const games = await getAllGamesFromDB();
-
-							if (games && games.length > 0) {
-								gameCache.allGames = games;
-								allGames = games;
-							} else {
-								// Fetch from API as last resort
-								const response = await fetch('/json/g.json');
-								const data = await response.json();
-								allGames = data;
-								gameCache.allGames = data;
-							}
-						}
-					}
-
-					// Filter games based on query
-					const filteredGames = allGames.filter(game =>
-						(game.name && game.name.toLowerCase().includes(query)) ||
-						(game.description && game.description.toLowerCase().includes(query)) ||
-						(game.category && game.category.toLowerCase().includes(query)) ||
-						(game.tags && Array.isArray(game.tags) && game.tags.some(tag => tag.toLowerCase().includes(query)))
-					);
-
-					// Display results
-					if (filteredGames.length === 0) {
-						searchResults.innerHTML = `
-                            <div class="search-message">
-                                <span class="material-symbols-outlined">sentiment_dissatisfied</span>
-                                <p>No games found matching "${query}"</p>
-                            </div>
-                        `;
-					} else {
-						searchResults.innerHTML = '';
-
-						filteredGames.slice(0, 8).forEach(game => {
-							const resultItem = document.createElement('a');
-							resultItem.href = `/game/${game.slug}`;
-							resultItem.className = 'search-result-item';
-
-							resultItem.innerHTML = `
-                                <div class="search-result-image">
-                                    <img src="${game.img}" alt="${game.name}" loading="lazy">
-                                </div>
-                                <div class="search-result-info">
-                                    <h3>${game.name}</h3>
-                                    <div class="search-result-meta">
-                                        <span class="category-pill">${game.category ? game.category.charAt(0).toUpperCase() + game.category.slice(1) : 'Browser Game'}</span>
-                                        ${game.publisher ? `<span class="publisher">${game.publisher}</span>` : ''}
-                                    </div>
-                                </div>
-                            `;
-
-							searchResults.appendChild(resultItem);
-						});
-
-						if (filteredGames.length > 8) {
-							const viewAll = document.createElement('a');
-							viewAll.href = `/g.html?search=${encodeURIComponent(query)}`;
-							viewAll.className = 'view-all-results';
-							viewAll.innerHTML = `View all ${filteredGames.length} results <span class="material-symbols-outlined">arrow_forward</span>`;
-							searchResults.appendChild(viewAll);
-						}
-					}
-				} catch (error) {
-					console.error('Error during search:', error);
-					searchResults.innerHTML = `
-                        <div class="search-message">
-                            <span class="material-symbols-outlined">error</span>
-                            <p>An error occurred while searching</p>
-                        </div>
-                    `;
-				}
-			}
-
-			// Helper function to get all games from DB
-			async function getAllGamesFromDB() {
-				return new Promise((resolve, reject) => {
-					if (!gameDB) {
-						resolve([]);
-						return;
-					}
-
-					try {
-						const transaction = gameDB.transaction(['games'], 'readonly');
-						const store = transaction.objectStore('games');
-						const request = store.getAll();
-
-						request.onsuccess = event => {
-							resolve(event.target.result);
-						};
-
-						request.onerror = event => {
-							console.error('Error getting games from IndexedDB:', event.target.error);
-							resolve([]);
-						};
-					} catch (error) {
-						console.error('Error accessing IndexedDB:', error);
-						resolve([]);
-					}
-				});
-			}
-
-			// Check if we're on a game detail page
-			const path = window.location.pathname;
-			if (path.startsWith('/game/')) {
-				// Extract game slug from URL
-				const slug = path.split('/').pop();
-
-				if (slug && typeof window.loadGameDetails === 'function') {
-					// Load game details
-					window.loadGameDetails(slug);
-				}
 			}
 		});
 
