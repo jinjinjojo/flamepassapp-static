@@ -1,519 +1,332 @@
-// Enhanced JSON loader with IndexedDB for improved performance and offline access
-// localStorage has been completely removed to avoid size limitations
+/**
+ * Enhanced Game Loader
+ * Optimized with IndexedDB for improved performance and offline access
+ */
 
 // Cache objects to prevent multiple fetches
 const cache = {
   games: null,
-  smallShortcuts: null,
-  bigShortcuts: null,
-  apps: null,
   gamesByCategory: {
     cloud: null,
     browser: null,
     emulator: null
-  }
+  },
+  categoryCount: null
 };
 
 // Make cache available globally
 window.cache = cache;
 
 // IndexedDB Configuration
-const DB_NAME = 'flamepass_data';
-const DB_VERSION = 2; // Increment version to clear old data
-const STORES = {
-  GAMES: 'games',
-  SHORTCUTS_SMALL: 'shortcuts_small',
-  SHORTCUTS_BIG: 'shortcuts_big',
-  APPS: 'apps',
-  META: 'meta'
-};
-
+const DB_NAME = 'flamepass_games';
+const DB_VERSION = 1;
+const GAME_STORE = 'games';
+const META_STORE = 'meta';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-// Log when an item is read from or written to the database
-const logStorageOperation = (type, store, success) => {
-  console.log(`[IndexedDB] ${type} operation on ${store} ${success ? 'succeeded' : 'failed'}`);
-};
-
-// Initialize IndexedDB with better error handling
+// Initialize IndexedDB
 function initDB() {
   return new Promise((resolve, reject) => {
     if (!window.indexedDB) {
-      console.warn('IndexedDB not supported, falling back to memory cache only');
+      console.warn('IndexedDB not supported, falling back to localStorage');
       resolve(null);
       return;
     }
 
-    console.log('Initializing IndexedDB...');
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = event => {
       console.error('IndexedDB error:', event.target.error);
-      console.error('IndexedDB error details:', event.target.errorCode);
       resolve(null); // Resolve with null to indicate fallback needed
     };
 
-    request.onblocked = event => {
-      console.warn('IndexedDB blocked - please close other tabs with this site');
-      resolve(null);
-    };
-
     request.onupgradeneeded = event => {
-      console.log('Upgrading database structure...');
       const db = event.target.result;
 
       // Create object stores if they don't exist
-      for (const store of Object.values(STORES)) {
-        // Delete old stores if they exist (for version upgrades)
-        if (db.objectStoreNames.contains(store)) {
-          db.deleteObjectStore(store);
-        }
+      if (!db.objectStoreNames.contains(GAME_STORE)) {
+        db.createObjectStore(GAME_STORE, { keyPath: 'slug' });
+      }
 
-        // Create new stores
-        if (store === STORES.META) {
-          db.createObjectStore(store, { keyPath: 'key' });
-        } else {
-          // For data that might not have a consistent key
-          db.createObjectStore(store);
-        }
+      if (!db.objectStoreNames.contains(META_STORE)) {
+        db.createObjectStore(META_STORE, { keyPath: 'key' });
       }
     };
 
     request.onsuccess = event => {
-      const db = event.target.result;
-      console.log('IndexedDB initialized successfully');
-
-      // Add error handling for the database connection
-      db.onerror = event => {
-        console.error('IndexedDB error:', event.target.error);
-      };
-
-      resolve(db);
+      resolve(event.target.result);
     };
   });
 }
 
-// Setup scroll to top button with performance optimizations
-function setupScrollToTop() {
-  const scrollToTopBtn = document.querySelector('.scrolltop');
-  if (!scrollToTopBtn) return;
+// Store data in IndexedDB
+async function storeInDB(db, storeName, data) {
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      resolve(false);
+      return;
+    }
 
-  // Use IntersectionObserver for better performance than scroll event
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        // Show button when top of page is not visible
-        scrollToTopBtn.style.opacity = entry.isIntersecting ? '0' : '1';
+    const transaction = db.transaction(storeName, 'readwrite');
+    const store = transaction.objectStore(storeName);
+
+    transaction.oncomplete = () => resolve(true);
+    transaction.onerror = event => {
+      console.error(`Error storing in ${storeName}:`, event.target.error);
+      resolve(false);
+    };
+
+    if (Array.isArray(data)) {
+      // Clear existing data for bulk inserts
+      store.clear();
+
+      // Add each item
+      data.forEach(item => {
+        store.add(item);
       });
-    },
-    { threshold: 0 }
-  );
-
-  // Observe the top of the page
-  const topElement = document.createElement('div');
-  topElement.style.height = '1px';
-  topElement.style.width = '1px';
-  topElement.style.position = 'absolute';
-  topElement.style.top = '0';
-  document.body.prepend(topElement);
-  observer.observe(topElement);
-
-  // Add click handler with smooth scrolling
-  scrollToTopBtn.addEventListener('click', function () {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  });
-}
-
-// Helper function to create a slug for a game if it doesn't already have one
-function createSlug(name) {
-  const baseSlug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-  const randomSuffix = Math.random().toString(36).substring(2, 7);
-  return `${baseSlug}-${randomSuffix}`;
-}
-
-// Add game overlay styles
-function addGameOverlayStyles() {
-  if (document.getElementById('game-overlay-styles')) return;
-
-  const styleEl = document.createElement('style');
-  styleEl.id = 'game-overlay-styles';
-  styleEl.textContent = `
-        .game-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 93%;
-            padding: 15px;
-            background: linear-gradient(transparent, rgb(0, 0, 0));
-            color: white;
-            opacity: 1;
-            transition: opacity 0.3s;
-        }
-        
-        .game-title {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    `;
-
-  document.head.appendChild(styleEl);
-}
-
-// Add other custom styles needed for the game page
-function addCustomGameStyles() {
-  if (document.getElementById('custom-game-styles')) return;
-
-  const styleEl = document.createElement('style');
-  styleEl.id = 'custom-game-styles';
-  styleEl.textContent = `
-        .gameAnchor {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-        
-        .gameAnchor:hover {
-            transform: translateY(-5px);
-        }
-        
-        .gameImage {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        
-        .lock-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 24px;
-            z-index: 100;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-            border-radius: 8px;
-        }
-        
-        /* Search results info */
-        .search-results-info {
-            text-align: center;
-            margin: 20px 0;
-            color: #fff;
-            font-size: 16px;
-            background-color: rgba(30, 30, 30, 0.7);
-            padding: 15px;
-            border-radius: 8px;
-        }
-        
-        .clear-search-button {
-            padding: 5px 10px;
-            background-color: #ff6600;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-left: 10px;
-        }
-        
-        .clear-search-button:hover {
-            background-color: #ff8033;
-        }
-        
-        /* Lock icon for category buttons */
-        .lock-icon {
-            font-size: 16px;
-            margin-left: 5px;
-            color: #ff6600;
-        }
-    `;
-
-  document.head.appendChild(styleEl);
-}
-
-// Store data in IndexedDB with verification
-async function storeInDB(db, storeName, data, key = 'data') {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      console.log('No database available for storage');
-      resolve(false);
-      return;
-    }
-
-    console.log(`Storing data in ${storeName}...`);
-    try {
-      const transaction = db.transaction(storeName, 'readwrite');
-      const store = transaction.objectStore(storeName);
-
-      transaction.oncomplete = () => {
-        logStorageOperation('Write', storeName, true);
-
-        // Verify data was stored
-        verifyDataStored(db, storeName, key).then(verified => {
-          if (verified) {
-            console.log(`Data successfully stored and verified in ${storeName}`);
-            resolve(true);
-          } else {
-            console.error(`Data storage verification failed for ${storeName}`);
-            resolve(false);
-          }
-        });
-      };
-
-      transaction.onerror = event => {
-        console.error(`Error storing in ${storeName}:`, event.target.error);
-        logStorageOperation('Write', storeName, false);
-        resolve(false);
-      };
-
-      // Store data with the provided key
-      const request = store.put(data, key);
-
-      request.onerror = event => {
-        console.error(`Error in put operation for ${storeName}:`, event.target.error);
-      };
-    } catch (error) {
-      console.error(`Exception during storeInDB for ${storeName}:`, error);
-      resolve(false);
+    } else {
+      // Single item
+      store.put(data);
     }
   });
 }
 
-// Verify data was stored correctly
-async function verifyDataStored(db, storeName, key) {
-  try {
-    const result = await getFromDB(db, storeName, key);
-    return result !== undefined && result !== null;
-  } catch (error) {
-    console.error('Verification error:', error);
-    return false;
-  }
-}
-
-// Get data from IndexedDB
-async function getFromDB(db, storeName, key = 'data') {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      console.log(`No database available to get data from ${storeName}`);
-      resolve(null);
-      return;
-    }
-
-    try {
-      const transaction = db.transaction(storeName, 'readonly');
-      const store = transaction.objectStore(storeName);
-      const request = store.get(key);
-
-      request.onsuccess = event => {
-        const result = event.target.result;
-        if (result) {
-          logStorageOperation('Read', storeName, true);
-          console.log(`Successfully retrieved data from ${storeName}`);
-        } else {
-          console.log(`No data found in ${storeName} for key ${key}`);
-        }
-        resolve(result);
-      };
-
-      request.onerror = event => {
-        console.error(`Error getting item from ${storeName}:`, event.target.error);
-        logStorageOperation('Read', storeName, false);
-        resolve(null);
-      };
-    } catch (error) {
-      console.error(`Exception during getFromDB for ${storeName}:`, error);
-      resolve(null);
-    }
-  });
-}
-
-// Get metadata from IndexedDB
-async function getMetaFromDB(db, key) {
+// Get all data from a store
+async function getAllFromDB(db, storeName) {
   return new Promise((resolve, reject) => {
     if (!db) {
       resolve(null);
       return;
     }
 
-    try {
-      const transaction = db.transaction(STORES.META, 'readonly');
-      const store = transaction.objectStore(STORES.META);
-      const request = store.get(key);
+    const transaction = db.transaction(storeName, 'readonly');
+    const store = transaction.objectStore(storeName);
+    const request = store.getAll();
 
-      request.onsuccess = event => {
-        resolve(event.target.result);
-      };
+    request.onsuccess = event => {
+      resolve(event.target.result);
+    };
 
-      request.onerror = event => {
-        console.error(`Error getting metadata for ${key}:`, event.target.error);
-        resolve(null);
-      };
-    } catch (error) {
-      console.error('Error in getMetaFromDB:', error);
+    request.onerror = event => {
+      console.error(`Error getting data from ${storeName}:`, event.target.error);
       resolve(null);
-    }
+    };
   });
 }
 
-// Store metadata in IndexedDB
-async function storeMetaInDB(db, key, timestamp) {
+// Get a specific item from a store
+async function getFromDB(db, storeName, key) {
   return new Promise((resolve, reject) => {
     if (!db) {
-      resolve(false);
+      resolve(null);
       return;
     }
 
-    try {
-      const transaction = db.transaction(STORES.META, 'readwrite');
-      const store = transaction.objectStore(STORES.META);
+    const transaction = db.transaction(storeName, 'readonly');
+    const store = transaction.objectStore(storeName);
+    const request = store.get(key);
 
-      transaction.oncomplete = () => resolve(true);
-      transaction.onerror = event => {
-        console.error(`Error storing metadata for ${key}:`, event.target.error);
-        resolve(false);
-      };
+    request.onsuccess = event => {
+      resolve(event.target.result);
+    };
 
-      store.put({ key, timestamp });
-    } catch (error) {
-      console.error('Error in storeMetaInDB:', error);
-      resolve(false);
-    }
+    request.onerror = event => {
+      console.error(`Error getting item from ${storeName}:`, event.target.error);
+      resolve(null);
+    };
   });
 }
 
-// Function to load JSON data with caching (using IndexedDB exclusively)
-async function fetchWithCache(url, cacheKey, storeKey) {
-  // Return cached data if available in memory
-  if (cache[cacheKey]) {
-    console.log(`Using memory cache for ${cacheKey}`);
-    return cache[cacheKey];
-  }
-
+// Function to fetch games with advanced caching
+async function fetchGames() {
   try {
     // Initialize IndexedDB
     const db = await initDB();
 
-    // Check IndexedDB for cached data
+    // First, check memory cache
+    if (cache.games) {
+      return cache.games;
+    }
+
+    // Next, check IndexedDB
     if (db) {
-      const meta = await getMetaFromDB(db, cacheKey);
+      const meta = await getFromDB(db, META_STORE, 'lastUpdated');
       const currentTime = Date.now();
 
       // If we have fresh data in IndexedDB
       if (meta && (currentTime - meta.timestamp < CACHE_DURATION)) {
-        console.log(`Loading ${cacheKey} from IndexedDB cache`);
-        const data = await getFromDB(db, storeKey);
+        console.log('Loading games from IndexedDB cache');
+        const games = await getAllFromDB(db, GAME_STORE);
 
-        if (data) {
+        if (games && games.length > 0) {
           // Update memory cache
-          cache[cacheKey] = data;
-          console.log(`Successfully loaded ${cacheKey} from IndexedDB`);
+          cache.games = games;
 
-          // Return early with cached data
-          return data;
+          // Also cache games by category
+          populateCategoryCaches(games);
+
+          return games;
         }
       }
     }
 
-    // No valid cache, fetch fresh data
-    console.log(`Fetching fresh data for ${cacheKey} from ${url}`);
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Network response failed: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    console.log(`Successfully fetched ${cacheKey}, data size:`, JSON.stringify(data).length);
+    // If no cache or cache expired, fetch from network
+    console.log('Fetching fresh game data from server');
+    const response = await fetch('/json/g.json');
+    const games = await response.json();
 
     // Update memory cache
-    cache[cacheKey] = data;
+    cache.games = games;
 
-    // Update IndexedDB
+    // Also cache games by category
+    populateCategoryCaches(games);
+
+    // Store in IndexedDB for future use
     if (db) {
-      console.log(`Storing ${cacheKey} in IndexedDB...`);
-      // Try to store in chunks if it's the games data which might be large
-      let storeSuccess;
-
-      if (cacheKey === 'games' && data.length > 1000) {
-        console.log('Games data is large, storing in chunks...');
-        storeSuccess = await storeInDB(db, storeKey, data);
-      } else {
-        storeSuccess = await storeInDB(db, storeKey, data);
-      }
-
-      if (storeSuccess) {
-        console.log(`Successfully stored ${cacheKey} in IndexedDB`);
-        await storeMetaInDB(db, cacheKey, Date.now());
-      } else {
-        console.error(`Failed to store ${cacheKey} in IndexedDB`);
-      }
+      await storeInDB(db, GAME_STORE, games);
+      await storeInDB(db, META_STORE, {
+        key: 'lastUpdated',
+        timestamp: Date.now()
+      });
     }
 
-    return data;
+    return games;
   } catch (error) {
-    console.error(`Error fetching ${url}:`, error);
+    console.error('Error fetching games:', error);
 
-    // If we have a database but fetching failed, try to get whatever is in the database
-    // even if it might be expired
-    const db = await initDB();
-    if (db) {
-      console.log(`Attempting to load expired data for ${cacheKey} from IndexedDB as fallback`);
-      const data = await getFromDB(db, storeKey);
-      if (data) {
-        console.log(`Using expired IndexedDB data for ${cacheKey} as fallback`);
-        cache[cacheKey] = data;
+    // Attempt localStorage fallback if available
+    try {
+      const cachedData = localStorage.getItem('cache_games');
+      if (cachedData) {
+        const { data } = JSON.parse(cachedData);
+        cache.games = data;
+        populateCategoryCaches(data);
         return data;
       }
+    } catch (localStorageError) {
+      console.error('Error accessing localStorage:', localStorageError);
     }
 
-    // All fallbacks failed, return empty array
-    console.log(`All fallbacks failed for ${cacheKey}, returning empty array`);
     return [];
   }
 }
 
-// Load Games Page
+// Populates category-specific caches for faster access
+function populateCategoryCaches(games) {
+  if (!Array.isArray(games) || games.length === 0) return;
+
+  // Reset category caches
+  cache.gamesByCategory = {
+    cloud: [],
+    browser: [],
+    emulator: []
+  };
+
+  // Count games by category
+  const categoryCount = {
+    cloud: 0,
+    browser: 0,
+    emulator: 0
+  };
+
+  // Group games by category
+  games.forEach(game => {
+    const category = game.category || 'browser'; // Default to browser if no category
+
+    if (cache.gamesByCategory[category]) {
+      cache.gamesByCategory[category].push(game);
+      categoryCount[category]++;
+    }
+  });
+
+  // Store category counts
+  cache.categoryCount = categoryCount;
+
+  // Save category counts to localStorage for quick access
+  try {
+    localStorage.setItem('game_category_counts', JSON.stringify(categoryCount));
+  } catch (e) {
+    console.warn('Failed to store category counts in localStorage:', e);
+  }
+}
+
+// Get games by category
+async function getGamesByCategory(category) {
+  // Check memory cache first
+  if (cache.gamesByCategory && cache.gamesByCategory[category] && cache.gamesByCategory[category].length > 0) {
+    return cache.gamesByCategory[category];
+  }
+
+  // If not in memory cache, load all games and filter
+  const allGames = await fetchGames();
+  return allGames.filter(game => (game.category || 'browser') === category);
+}
+
+// Function to load games page
 async function loadGamesPage() {
   try {
+    console.log('Loading games page');
+
     // Only set up category selector and pagination controls once
     setupCategorySelector();
 
     // Get games data
-    const data = await fetchWithCache('/json/g.json', 'games', STORES.GAMES);
+    const data = await fetchGames();
 
     // Get current category and page from URL params
     const urlParams = new URLSearchParams(window.location.search);
     const currentCategory = urlParams.get('category') || 'cloud'; // Default to Cloud Gaming
     const currentPage = parseInt(urlParams.get('page') || '1');
+    const searchQuery = urlParams.get('search') || '';
+    const sortType = urlParams.get('sort') || '';
 
     // Update active category in selector
     updateActiveCategoryButton(currentCategory);
 
-    // Filter games by category
-    let filteredGames = filterGamesByCategory(data, currentCategory);
+    // Filter games by category and search if applicable
+    let filteredGames = data.filter(game => (game.category || 'browser') === currentCategory);
 
-    // Cache games by category for faster access
-    populateCategoryCaches(data);
+    // Handle search if present
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredGames = filteredGames.filter(game =>
+        game.name.toLowerCase().includes(query) ||
+        (game.description && game.description.toLowerCase().includes(query)) ||
+        (game.tags && Array.isArray(game.tags) && game.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
 
-    // Sort games alphabetically ONLY for non-cloud categories
-    // Cloud games remain in their original order as provided by the API
-    if (currentCategory !== 'cloud') {
+      // Add search results info
+      const infoEl = document.createElement('div');
+      infoEl.className = 'search-results-info';
+      infoEl.innerHTML = `Found ${filteredGames.length} game${filteredGames.length === 1 ? '' : 's'} matching "${searchQuery}"`;
+
+      const gameContainer = document.querySelector('.gameContain');
+      if (gameContainer) {
+        gameContainer.parentNode.insertBefore(infoEl, gameContainer);
+      }
+    }
+
+    // Handle sort options
+    if (sortType === 'trending') {
+      // For trending, we'll use a random selection of popular games
+      filteredGames = filteredGames.filter(game =>
+        game.tags && Array.isArray(game.tags) && game.tags.includes('popular')
+      );
+
+      // If not enough popular games, add some random ones
+      if (filteredGames.length < 10) {
+        const otherGames = data.filter(game =>
+          (game.category || 'browser') === currentCategory &&
+          (!game.tags || !game.tags.includes('popular'))
+        );
+
+        // Shuffle and get enough to reach 10 total
+        const shuffled = [...otherGames].sort(() => 0.5 - Math.random());
+        filteredGames = [...filteredGames, ...shuffled.slice(0, 10 - filteredGames.length)];
+      }
+    } else if (currentCategory !== 'cloud') {
+      // Sort games alphabetically ONLY for non-cloud categories
+      // Cloud games remain in their original order as provided by the API
       filteredGames = sortGames(filteredGames);
     }
 
@@ -525,7 +338,7 @@ async function loadGamesPage() {
     const currentGames = filteredGames.slice(startIndex, endIndex);
 
     // Create pagination controls
-    createPaginationControls(currentPage, totalPages, currentCategory);
+    createPaginationControls(currentPage, totalPages, currentCategory, searchQuery, sortType);
 
     // Render games with improvements
     renderGames(currentGames, currentCategory, filteredGames);
@@ -536,281 +349,29 @@ async function loadGamesPage() {
     setupScrollToTop();
   } catch (error) {
     console.error('Error loading games: ', error);
-  }
-}
 
-// Initial database check to verify it's working
-async function checkDatabaseConnection() {
-  try {
-    console.log('Checking IndexedDB connection...');
-    const db = await initDB();
-
-    if (!db) {
-      console.warn('IndexedDB initialization failed, using memory cache only');
-      return false;
+    // Show error message to user
+    const gameContainer = document.querySelector('.gameContain');
+    if (gameContainer) {
+      gameContainer.innerHTML = `
+                <div class="error-message">
+                    <span class="material-symbols-outlined">error</span>
+                    <h3>Error Loading Games</h3>
+                    <p>There was a problem loading the games. Please try again later.</p>
+                    <button class="retry-button" onclick="window.location.reload()">Retry</button>
+                </div>
+            `;
     }
-
-    // Try a basic write/read operation
-    const testData = { test: 'data', timestamp: Date.now() };
-    const writeSuccess = await storeInDB(db, STORES.META, testData, 'test_connection');
-
-    if (!writeSuccess) {
-      console.warn('IndexedDB write test failed');
-      return false;
-    }
-
-    const readData = await getFromDB(db, STORES.META, 'test_connection');
-    if (!readData) {
-      console.warn('IndexedDB read test failed');
-      return false;
-    }
-
-    console.log('IndexedDB connection verified and working correctly');
-    return true;
-  } catch (error) {
-    console.error('Error checking database connection:', error);
-    return false;
   }
 }
 
-// Run database check on startup
-checkDatabaseConnection().then(isWorking => {
-  if (isWorking) {
-    console.log('IndexedDB is ready for use');
-  } else {
-    console.warn('IndexedDB is not working properly, will use memory cache only');
-  }
-});
-
-// Populates category-specific caches for faster access
-function populateCategoryCaches(games) {
-  if (!Array.isArray(games) || games.length === 0) return;
-
-  console.log('Populating category caches...');
-
-  // Reset category caches
-  cache.gamesByCategory = {
-    cloud: [],
-    browser: [],
-    emulator: []
-  };
-
-  // Group games by category
-  games.forEach(game => {
-    const category = game.category || 'browser'; // Default to browser if no category
-
-    if (cache.gamesByCategory[category]) {
-      cache.gamesByCategory[category].push(game);
-    }
-  });
-
-  // Log category counts
-  console.log('Category cache counts:', {
-    cloud: cache.gamesByCategory.cloud.length,
-    browser: cache.gamesByCategory.browser.length,
-    emulator: cache.gamesByCategory.emulator.length
-  });
-}
-
-// Load Small Shortcuts
-async function loadSmallShortcuts() {
-  try {
-    const data = await fetchWithCache('/json/s.json', 'smallShortcuts', STORES.SHORTCUTS_SMALL);
-    console.log('Small shortcuts loaded:', data.length);
-
-    // Get the shortcuts container
-    const shortcuts = document.querySelector('.shortcuts');
-    if (!shortcuts) return;
-
-    // Clear existing shortcuts
-    shortcuts.innerHTML = '';
-
-    data.forEach(shortcut => {
-      const shortcutLink = document.createElement('a');
-
-      if (shortcut.name.toLowerCase() === 'settings') {
-        shortcutLink.href = '/~/#/proxy';
-      } else {
-        shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
-      }
-
-      const shortcutImage = document.createElement('img');
-      shortcutImage.src = shortcut.img;
-      shortcutImage.alt = shortcut.name;
-      shortcutImage.title = shortcut.name;
-      shortcutImage.classList.add('shortcut');
-
-      shortcutImage.style.width = '28px';
-      shortcutImage.style.height = '28px';
-      shortcutImage.style.padding = '11px';
-      shortcutImage.style.objectFit = 'cover';
-      shortcutImage.style.transition = '0.2s';
-
-      document.querySelector('.searchEngineIcon').style.display = 'none';
-      document.querySelector('.gointospaceSearchButton').style.cssText =
-        'transform: translate(-11px, 3px); user-select: none; cursor: default;';
-      document.getElementById('formintospace').style.transform = 'translateY(150px)';
-
-      if (shortcut.style) {
-        shortcutImage.style.cssText += shortcut.style;
-      }
-
-      if (shortcut.bg) {
-        shortcutImage.style.backgroundColor = shortcut.bg;
-      }
-
-      shortcutImage.onerror = () => {
-        shortcutImage.src = '/assets/default.png';
-      };
-
-      shortcutLink.appendChild(shortcutImage);
-      shortcuts.appendChild(shortcutLink);
-    });
-  } catch (error) {
-    console.error('Error loading small shortcuts:', error);
-  }
-}
-
-// Load Big Shortcuts
-async function loadBigShortcuts() {
-  try {
-    const data = await fetchWithCache('/json/sb.json', 'bigShortcuts', STORES.SHORTCUTS_BIG);
-    console.log('Big shortcuts loaded:', data.length);
-
-    // Get the shortcuts container
-    const shortcuts = document.querySelector('.shortcutsBig');
-    if (!shortcuts) return;
-
-    // Clear existing shortcuts
-    shortcuts.innerHTML = '';
-
-    data.forEach(shortcut => {
-      const shortcutLink = document.createElement('a');
-
-      if (shortcut.name.toLowerCase() === 'settings') {
-        shortcutLink.href = '/~/#/proxy';
-      } else {
-        shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
-      }
-
-      const shortcutImage = document.createElement('img');
-      shortcutImage.src = shortcut.img;
-      shortcutImage.alt = shortcut.name;
-      shortcutImage.title = shortcut.name;
-      shortcutLink.classList.add('shortcutBig');
-      shortcutImage.classList.add('shortcutBigimg');
-
-      shortcutImage.style.width = '170px';
-      shortcutImage.style.height = '90px';
-      shortcutImage.style.padding = '0';
-      shortcutImage.style.transition = '0.2s';
-
-      document.getElementById('gointospace').style.cssText =
-        'width: 500px; text-align: left; padding: 15px; margin-right: -0.5rem; padding-left: 49.5px;';
-      document.querySelector('.gointospaceSearchButton').style.cssText =
-        'transform: translate(-34px, 3px); user-select: none; cursor: default;';
-
-      shortcutImage.onerror = () => {
-        shortcutImage.src = '/assets/default.png';
-      };
-
-      shortcutLink.appendChild(shortcutImage);
-      shortcuts.appendChild(shortcutLink);
-    });
-  } catch (error) {
-    console.error('Error loading big shortcuts:', error);
-  }
-}
-
-// Load Apps
-async function loadApps() {
-  try {
-    const data = await fetchWithCache('/json/a.json', 'apps', STORES.APPS);
-    console.log('Apps loaded:', data.length);
-
-    // Get the apps container
-    const appsContainer = document.querySelector('.appsContainer');
-    if (!appsContainer) return;
-
-    // Clear existing apps
-    appsContainer.innerHTML = '';
-
-    // Sort apps alphabetically
-    data.sort((a, b) => a.name.localeCompare(b.name));
-
-    data.forEach(app => {
-      const appLink = document.createElement('a');
-      appLink.href = `/&?q=${encodeURIComponent(app.name)}`;
-
-      if (app.categories && app.name) {
-        app.categories.forEach(category => {
-          appLink.id = (appLink.id ? appLink.id + ' ' : '') + category;
-        });
-
-        let appNameClass = app.name
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9]/g, '-');
-        appLink.className = appNameClass;
-      }
-
-      const appImage = document.createElement('img');
-      appImage.src = app.img;
-      appImage.alt = app.name;
-      appImage.title = app.name;
-      appImage.className = 'appImage';
-
-      appImage.onerror = () => {
-        appImage.src = '/assets/default.png';
-      };
-
-      appLink.appendChild(appImage);
-      appsContainer.appendChild(appLink);
-    });
-
-    // Set up search functionality
-    const appsSearchInput = document.querySelector('.appsSearchInput');
-    if (appsSearchInput) {
-      // Remove any existing listeners
-      const newInput = appsSearchInput.cloneNode(true);
-      appsSearchInput.parentNode.replaceChild(newInput, appsSearchInput);
-
-      newInput.addEventListener('input', () => {
-        const appsImages = document.querySelectorAll('.appImage');
-        appsImages.forEach(image => {
-          image.classList.add('no-animation');
-        });
-
-        const searchQuery = newInput.value
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9]/g, '-');
-
-        const appLinks = document.querySelectorAll('.appsContainer a');
-        appLinks.forEach(link => {
-          if (link.className.includes(searchQuery)) {
-            link.style.display = '';
-          } else {
-            link.style.display = 'none';
-          }
-        });
-      });
-    }
-
-    // Set up scroll to top button
-    setupScrollToTop();
-  } catch (error) {
-    console.error('Error loading apps:', error);
-  }
-}
-
+// Function to setup the category selector
 function setupCategorySelector() {
   const categoryContainer = document.getElementById('category-container');
   if (!categoryContainer || categoryContainer.querySelector('.category-selector')) {
     return; // Already set up or container doesn't exist
   }
 
-  console.log('Setting up category selector...');
   const categorySelector = document.createElement('div');
   categorySelector.className = 'category-selector';
 
@@ -825,17 +386,13 @@ function setupCategorySelector() {
     button.className = 'category-button';
     button.dataset.category = category.id;
 
-    // Check if user is logged in
-    const isLoggedIn = window.isLoggedIn ? window.isLoggedIn() : false;
-    console.log(`User login status: ${isLoggedIn ? 'logged in' : 'not logged in'}`);
-
-    // Add lock for categories that require authentication only if not logged in
+    // Add lock for categories that require authentication
     let buttonContent = `
           <span class="material-symbols-outlined category-icon">${category.icon}</span>
           <span class="category-text">${category.name}</span>
         `;
 
-    if (category.requiresAuth && !isLoggedIn) {
+    if (category.requiresAuth) {
       buttonContent += `<span class="material-symbols-outlined lock-icon">lock</span>`;
     }
 
@@ -844,8 +401,7 @@ function setupCategorySelector() {
     button.addEventListener('click', () => {
       // For auth-required categories, show login if not authenticated
       if (category.requiresAuth && window.isLoggedIn && !window.isLoggedIn()) {
-        console.log('Login required, showing login popup');
-        window.showLoginPopup ? window.showLoginPopup() : showBasicLoginPopup();
+        window.showLoginPopup();
         return;
       }
 
@@ -853,6 +409,19 @@ function setupCategorySelector() {
       const url = new URL(window.location);
       url.searchParams.set('category', category.id);
       url.searchParams.set('page', '1');
+
+      // Keep any search params
+      const searchQuery = url.searchParams.get('search');
+      if (!searchQuery) {
+        url.searchParams.delete('search');
+      }
+
+      // Keep any sort params
+      const sortType = url.searchParams.get('sort');
+      if (!sortType) {
+        url.searchParams.delete('sort');
+      }
+
       window.location.href = url.toString();
     });
 
@@ -871,10 +440,9 @@ function setupCategorySelector() {
         }
     `;
   document.head.appendChild(style);
-
-  console.log('Category selector setup complete');
 }
 
+// Update active category in the selector
 function updateActiveCategoryButton(currentCategory) {
   const categoryButtons = document.querySelectorAll('.category-button');
   categoryButtons.forEach(button => {
@@ -882,6 +450,7 @@ function updateActiveCategoryButton(currentCategory) {
   });
 }
 
+// Filter games by category
 function filterGamesByCategory(games, category) {
   return games.filter(game => (game.category || 'browser') === category);
 }
@@ -891,18 +460,12 @@ const sortGames = (() => {
   const cache = {};
 
   return (games) => {
-    // Create a cache key based on games array - use first and last few IDs for efficiency
-    const sampleSize = Math.min(5, games.length);
-    const firstFew = games.slice(0, sampleSize).map(g => g.id || g.slug);
-    const lastFew = games.slice(-sampleSize).map(g => g.id || g.slug);
-    const cacheKey = [...firstFew, ...lastFew].join('-') + '-' + games.length;
+    const cacheKey = games.map(g => g.id || g.slug).join('-');
 
     if (cache[cacheKey]) {
-      console.log('Using cached sorted games');
       return cache[cacheKey];
     }
 
-    console.log('Sorting games...');
     const sorted = [...games].sort((a, b) => a.name.localeCompare(b.name));
     cache[cacheKey] = sorted;
 
@@ -910,7 +473,8 @@ const sortGames = (() => {
   };
 })();
 
-function createPaginationControls(currentPage, totalPages, category) {
+// Create pagination controls
+function createPaginationControls(currentPage, totalPages, category, searchQuery, sortType) {
   const containers = [
     document.getElementById('pagination-top'),
     document.getElementById('pagination-bottom')
@@ -985,6 +549,7 @@ function createPaginationControls(currentPage, totalPages, category) {
   });
 }
 
+// Render games in the container
 function renderGames(games, currentCategory, allGamesInCategory) {
   const gameContainer = document.querySelector('.gameContain');
   if (!gameContainer) return;
@@ -1229,7 +794,7 @@ function showBasicLoginPopup() {
   });
 }
 
-// Implement the missing setupGameSearch function
+// Setup game search functionality
 function setupGameSearchFunction(games) {
   const searchInput = document.getElementById('gameSearch');
   if (!searchInput) return;
@@ -1310,19 +875,8 @@ function setupRandomGameButton() {
     const currentCategory = urlParams.get('category') || 'cloud';
 
     try {
-      // Use cached category games if available
-      let categoryGames;
-
-      if (cache.gamesByCategory && cache.gamesByCategory[currentCategory] && cache.gamesByCategory[currentCategory].length > 0) {
-        categoryGames = cache.gamesByCategory[currentCategory];
-      } else if (cache.games) {
-        // Filter from all games if category cache not available
-        categoryGames = cache.games.filter(g => (g.category || 'browser') === currentCategory);
-      } else {
-        // Fetch if not in cache
-        const allGames = await fetchWithCache('/json/g.json', 'games', STORES.GAMES);
-        categoryGames = allGames.filter(g => (g.category || 'browser') === currentCategory);
-      }
+      // Get games for the current category
+      const categoryGames = await getGamesByCategory(currentCategory);
 
       // Select random game
       if (categoryGames.length > 0) {
