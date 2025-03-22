@@ -164,9 +164,9 @@ async function loadGamesPage() {
 
 		// Sort games alphabetically ONLY for non-cloud categories
 		// Cloud games remain in their original order as provided by the API
-		if (currentCategory !== 'cloud') {
-			filteredGames = sortGames(filteredGames);
-		}
+		// if (currentCategory !== 'cloud') {
+		// 	filteredGames = sortGames(filteredGames);
+		// }
 
 		// Calculate pagination
 		const gamesPerPage = 50;
@@ -293,12 +293,6 @@ function setupCategorySelector() {
 		button.innerHTML = buttonContent;
 
 		button.addEventListener('click', () => {
-			// For auth-required categories, show login if not authenticated
-			if (category.requiresAuth && window.isLoggedIn && !window.isLoggedIn()) {
-				window.showLoginPopup();
-				return;
-			}
-
 			// Update URL with new category and reset to page 1
 			const url = new URL(window.location);
 			url.searchParams.set('category', category.id);
