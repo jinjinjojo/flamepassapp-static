@@ -1092,8 +1092,7 @@ ul.navbar hr {
 }
 
 /* CSS for search modal and auth modal */
-.search-modal,
-.auth-modal {
+.search-modal, .auth-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -1111,14 +1110,12 @@ ul.navbar hr {
     transition: all 0.3s ease;
 }
 
-.search-modal.active,
-.auth-modal.active {
+.search-modal.active, .auth-modal.active {
     opacity: 1;
     visibility: visible;
 }
 
-.search-modal-content,
-.auth-container {
+.search-modal-content, .auth-container {
     width: 700px;
     max-width: 90%;
     background: linear-gradient(135deg, rgba(30, 34, 45, 0.95) 0%, rgba(20, 22, 30, 0.95) 100%);
@@ -1129,7 +1126,7 @@ ul.navbar hr {
     transition: all 0.3s ease;
 }
 
-.search-modal.active .search-modal-content,
+.search-modal.active .search-modal-content, 
 .auth-modal.active .auth-container {
     transform: translateY(0);
 }
@@ -1440,13 +1437,8 @@ kbd {
 }
 
 @keyframes blob-float {
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    100% {
-        transform: translate(50px, 50px) scale(1.1);
-    }
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 50px) scale(1.1); }
 }
 
 /* Loading container improved styling */
@@ -1481,28 +1473,15 @@ kbd {
 }
 
 @keyframes loader {
-    0% {
-        stroke-dashoffset: 150;
-    }
-
-    50% {
-        stroke-dashoffset: 0;
-    }
-
-    100% {
-        stroke-dashoffset: -150;
-    }
+    0% { stroke-dashoffset: 150; }
+    50% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -150; }
 }
 
 /* Animations */
 @keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slide-up {
@@ -1510,7 +1489,6 @@ kbd {
         opacity: 0;
         transform: translateY(30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1522,7 +1500,6 @@ kbd {
         opacity: 0;
         transform: translateY(20px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1534,30 +1511,30 @@ kbd {
     .main-content {
         padding: 20px;
     }
-
+    
     .games-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
-
+    
     .unblock-tips {
         grid-template-columns: 1fr;
     }
-
+    
     .game-metadata {
         flex-direction: column;
         gap: 15px;
     }
-
+    
     .footer-content {
         flex-direction: column;
         gap: 20px;
         text-align: center;
     }
-
+    
     .footer-logo {
         justify-content: center;
     }
-
+    
     .footer-links {
         justify-content: center;
         flex-wrap: wrap;
@@ -1568,31 +1545,31 @@ kbd {
     .game-info {
         padding: 20px;
     }
-
+    
     .game-info h1 {
         font-size: 1.8rem;
     }
-
+    
     .games-grid {
         grid-template-columns: 1fr;
     }
-
+    
     .section-header-container {
         flex-direction: column;
         gap: 10px;
         align-items: flex-start;
     }
-
+    
     .view-all-link {
         margin-top: 10px;
     }
-
+    
     .search-trigger {
         top: 10px;
         right: 10px;
         padding: 8px 12px;
     }
-
+    
     .search-text {
         display: none;
     }
@@ -1619,7 +1596,6 @@ kbd {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {
