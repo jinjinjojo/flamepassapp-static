@@ -232,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Tab Cloaking
 	const cloaks = {
 		'None (Default)': {
-			title: 'Flamepass',
 			favicon: '/assets/favicon.ico'
 		},
 		'Google Classroom': {
@@ -266,8 +265,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	function setCloak(cloak) {
 		if (cloaks[cloak]) {
-			document.title = cloaks[cloak].title;
-			window.parent.document.title = cloaks[cloak].title;
+			if (cloaks[cloak].title) {
+				document.title = cloaks[cloak].title;
+				window.parent.document.title = cloaks[cloak].title;
+			}
 
 			let link =
 				document.querySelector("link[rel*='icon']") ||
