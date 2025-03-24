@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     }
 
     // Read your HTML template
-    let htmlTemplate = fs.readFileSync(path.join(process.cwd(), 'public/game-template.html'), 'utf8');
+    let htmlTemplate = fs.readFileSync(path.join(process.cwd(), '/game-template.html'), 'utf8');
 
     // Generate game tags HTML
     let tagsHtml = '';
