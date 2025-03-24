@@ -1,3 +1,32 @@
+<!-- Cloud Gaming Providers Section (only for cloud games) -->
+<div id="cloud-providers-container" class="cloud-providers-container"
+    style="display: ${game.category === 'cloud' ? 'block' : 'none'};">
+    <div class="section-header-container cloud-providers-header">
+        <h2>Play on Cloud Services</h2>
+        <span class="provider-info">Access directly through these providers</span>
+    </div>
+    <div class="providers-grid" id="providers-grid">
+        ${game.serviceProviders ? Object.entries(game.serviceProviders).map(([provider, info]) => `
+        <div class="provider-card">
+            <div class="provider-logo">
+                <img src="/assets/providers/${provider.toLowerCase()}.webp" alt="${provider}"
+                    onerror="this.src='/assets/logo.webp'">
+            </div>
+            <h3 class="provider-name">${provider}</h3>
+            <div class="provider-buttons">
+                <a href="${info.url}" target="_blank" class="provider-direct-button">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                    Direct
+                </a>
+                <a href="#" class="provider-proxy-button" data-provider-url="${info.url}">
+                    <i class="fa-solid fa-shield-alt"></i>
+                    Proxy
+                </a>
+            </div>
+        </div>
+        `).join('') : ''}
+    </div>
+</div>
 <!doctype html>
 <html lang="en">
 
@@ -143,7 +172,8 @@
                 <h1>${game.name}</h1>
 
                 <div class="game-tags">
-                    ${game.tags}
+                    ${game.tags && Array.isArray(game.tags) ? game.tags.map(tag => `<span
+                        class="game-tag">${tag}</span>`).join('') : ''}
                 </div>
 
                 <div class="game-metadata">
@@ -303,40 +333,6 @@
                                 <h4>Browser Extension Cache</h4>
                                 <p>Install extensions that cache games locally, allowing you to play offline when
                                     restrictions tighten.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="emergency-unblock">
-                    <h3>Emergency Unblocking</h3>
-                    <p>If all else fails, try these last-resort methods:</p>
-
-                    <div class="emergency-methods">
-                        <div class="emergency-method">
-                            <span class="method-number">01</span>
-                            <div class="method-content">
-                                <h4>Domain Rotation</h4>
-                                <p>Flamepass maintains multiple mirror domains. Check our Discord for the latest
-                                    unblocked domains.</p>
-                            </div>
-                        </div>
-
-                        <div class="emergency-method">
-                            <span class="method-number">02</span>
-                            <div class="method-content">
-                                <h4>Offline Download</h4>
-                                <p>For HTML5 games, you can download them for offline play using our downloader
-                                    extension.</p>
-                            </div>
-                        </div>
-
-                        <div class="emergency-method">
-                            <span class="method-number">03</span>
-                            <div class="method-content">
-                                <h4>Mobile Hotspot</h4>
-                                <p>If possible, use your phone's hotspot temporarily to access games without school
-                                    filters.</p>
                             </div>
                         </div>
                     </div>
