@@ -1,6 +1,15 @@
 {
-    "rewrites": [
-      { "source": "/game/:slug", "destination": "/game-page.html" }
-    ],
-    "trailingSlash": false
-  }
+  "rewrites": [
+    {
+      "source": "/game/:slug",
+      "destination": "/api/game/:slug"
+    }
+  ],
+  "functions": {
+    "api/game/[slug].js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "trailingSlash": false
+}
