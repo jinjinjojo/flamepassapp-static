@@ -4,4 +4,4 @@ Allow: /game/
 Allow: /g.html
 Allow: /a.html
 
-Sitemap: https://app.flamepass.com/api/sitemap
+Sitemap: https://app.flamepass.com/sitemap.xml
