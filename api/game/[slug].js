@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   try {
     // Read from your games JSON file
-    const gamesData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'public/json/g.json'), 'utf8'));
+    const gamesData = JSON.parse(fs.readFileSync(path.join(process.cwd(), '/json/g.json'), 'utf8'));
 
     // Find the specific game
     const game = gamesData.find(game => game.slug === slug);
