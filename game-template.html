@@ -1,32 +1,3 @@
-<!-- Cloud Gaming Providers Section (only for cloud games) -->
-<div id="cloud-providers-container" class="cloud-providers-container"
-    style="display: ${game.category === 'cloud' ? 'block' : 'none'};">
-    <div class="section-header-container cloud-providers-header">
-        <h2>Play on Cloud Services</h2>
-        <span class="provider-info">Access directly through these providers</span>
-    </div>
-    <div class="providers-grid" id="providers-grid">
-        ${game.serviceProviders ? Object.entries(game.serviceProviders).map(([provider, info]) => `
-        <div class="provider-card">
-            <div class="provider-logo">
-                <img src="/assets/providers/${provider.toLowerCase()}.webp" alt="${provider}"
-                    onerror="this.src='/assets/logo.webp'">
-            </div>
-            <h3 class="provider-name">${provider}</h3>
-            <div class="provider-buttons">
-                <a href="${info.url}" target="_blank" class="provider-direct-button">
-                    <i class="fa-solid fa-external-link-alt"></i>
-                    Direct
-                </a>
-                <a href="#" class="provider-proxy-button" data-provider-url="${info.url}">
-                    <i class="fa-solid fa-shield-alt"></i>
-                    Proxy
-                </a>
-            </div>
-        </div>
-        `).join('') : ''}
-    </div>
-</div>
 <!doctype html>
 <html lang="en">
 
@@ -244,6 +215,36 @@
                 </div>
             </div>
 
+            <!-- Cloud Gaming Providers Section (only for cloud games) -->
+            <div id="cloud-providers-container" class="cloud-providers-container"
+                style="display: ${game.category === 'cloud' ? 'block' : 'none'};">
+                <div class="section-header-container cloud-providers-header">
+                    <h2>Play on Cloud Services</h2>
+                    <span class="provider-info">Access directly through these providers</span>
+                </div>
+                <div class="providers-grid" id="providers-grid">
+                    ${game.serviceProviders ? Object.entries(game.serviceProviders).map(([provider, info]) => `
+                    <div class="provider-card">
+                        <div class="provider-logo">
+                            <img src="/assets/providers/${provider.toLowerCase()}.webp" alt="${provider}"
+                                onerror="this.src='/assets/logo.webp'">
+                        </div>
+                        <h3 class="provider-name">${provider}</h3>
+                        <div class="provider-buttons">
+                            <a href="${info.url}" target="_blank" class="provider-direct-button">
+                                <i class="fa-solid fa-external-link-alt"></i>
+                                Direct
+                            </a>
+                            <a href="#" class="provider-proxy-button" data-provider-url="${info.url}">
+                                <i class="fa-solid fa-shield-alt"></i>
+                                Proxy
+                            </a>
+                        </div>
+                    </div>
+                    `).join('') : ''}
+                </div>
+            </div>
+
             <!-- Unblocking Info Section -->
             <div class="unblock-info-section">
                 <h2>How to Play ${game.name} Unblocked at School</h2>
@@ -284,8 +285,7 @@
                         </div>
                         <h3 class="tip-title">VPN Alternatives</h3>
                         <p class="tip-description">If proxy isn't working, try using a browser-based VPN extension or
-                            Flamepass's built-in
-                            tunneling system.</p>
+                            Flamepass's built-in tunneling system.</p>
                     </div>
                 </div>
 
