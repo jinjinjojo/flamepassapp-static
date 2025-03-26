@@ -131,212 +131,33 @@
 
         <!-- Game Container -->
         <div id="game-container" class="game-container">
-            <!-- Game Info Section - Pre-rendered with game data -->
+            <!-- Game Info Section - Data will be filled by JavaScript -->
             <div class="game-info">
-                <div class="game-parallax-container">
-                    <div class="game-parallax-background" style="background-image: url('${game.img}')"></div>
-                    <div class="game-image-container">
-                        <img src="${game.img}" alt="${game.name}" class="game-detail-image">
-                    </div>
-                </div>
-
-                <h1>${game.name}</h1>
-
-                <div class="game-tags">
-                    ${game.tags && Array.isArray(game.tags) ? game.tags.map(tag => `<span
-                        class="game-tag">${tag}</span>`).join('') : ''}
-                </div>
-
-                <div class="game-metadata">
-                    <div class="metadata-item">
-                        <div class="metadata-icon">
-                            <i class="fa-solid fa-gamepad"></i>
-                        </div>
-                        <div>
-                            <span class="metadata-label">Category</span>
-                            <div class="metadata-value">${game.category ? game.category.charAt(0).toUpperCase() +
-                                game.category.slice(1) : 'Browser'} Game</div>
-                        </div>
-                    </div>
-                    ${game.genre ? `
-                    <div class="metadata-item">
-                        <div class="metadata-icon">
-                            <i class="fa-solid fa-tag"></i>
-                        </div>
-                        <div>
-                            <span class="metadata-label">Genre</span>
-                            <div class="metadata-value">${game.genre}</div>
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${game.publisher ? `
-                    <div class="metadata-item">
-                        <div class="metadata-icon">
-                            <i class="fa-solid fa-building"></i>
-                        </div>
-                        <div>
-                            <span class="metadata-label">Publisher</span>
-                            <div class="metadata-value">${game.publisher}</div>
-                        </div>
-                    </div>
-                    ` : ''}
-                    ${game.releaseDate ? `
-                    <div class="metadata-item">
-                        <div class="metadata-icon">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                        <div>
-                            <span class="metadata-label">Release Date</span>
-                            <div class="metadata-value">${game.releaseDate}</div>
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>
-
-                <div class="game-description">
-                    <h3>About ${game.name}</h3>
-                    <p>${game.description}</p>
-                    <p>Choose between directly opening the game in a new tab or using our secure Flamepass Proxy which
-                        can help bypass additional restrictions. The proxy option requires a free Flamepass account and
-                        adds an extra layer of protection.</p>
-                    <p>For the best experience, we recommend using the Flamepass Proxy option which helps evade content
-                        filtering systems and keeps your gaming activities private.</p>
-                </div>
-
-                <div class="game-buttons">
-                    <a href="#" class="play-button" id="openGameBtn" data-game-url="${game.url || '#'}">
-                        <i class="fa-solid fa-play"></i>
-                        Play Now
-                    </a>
-                    <a href="#" class="proxy-button" id="proxyGameBtn" data-game-url="${game.url || '#'}">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Play with Flamepass Proxy
-                    </a>
-                </div>
+                <!-- Loading state will appear here initially -->
             </div>
 
             <!-- Cloud Gaming Providers Section (only for cloud games) -->
-            <div id="cloud-providers-container" class="cloud-providers-container"
-                style="display: ${game.category === 'cloud' ? 'block' : 'none'};">
+            <div id="cloud-providers-container" class="cloud-providers-container" style="display: none;">
                 <div class="section-header-container cloud-providers-header">
                     <h2>Play on Cloud Services</h2>
                     <span class="provider-info">Access directly through these providers</span>
                 </div>
                 <div class="providers-grid" id="providers-grid">
-                    ${game.serviceProviders ? Object.entries(game.serviceProviders).map(([provider, info]) => `
-                    <div class="provider-card">
-                        <div class="provider-logo">
-                            <img src="/assets/providers/${provider.toLowerCase()}.webp" alt="${provider}"
-                                onerror="this.src='/assets/logo.webp'">
-                        </div>
-                        <h3 class="provider-name">${provider}</h3>
-                        <div class="provider-buttons">
-                            <a href="${info.url}" target="_blank" class="provider-direct-button">
-                                <i class="fa-solid fa-external-link-alt"></i>
-                                Direct
-                            </a>
-                            <a href="#" class="provider-proxy-button" data-provider-url="${info.url}">
-                                <i class="fa-solid fa-shield-alt"></i>
-                                Proxy
-                            </a>
-                        </div>
-                    </div>
-                    `).join('') : ''}
+                    <!-- Cloud providers will be added here by JavaScript -->
                 </div>
             </div>
 
             <!-- Unblocking Info Section -->
             <div class="unblock-info-section">
-                <h2>How to Play ${game.name} Unblocked at School</h2>
+                <h2>How to Play Games Unblocked at School</h2>
                 <p>Flamepass provides multiple ways to access blocked content at school or work. Here are some tips to
                     enhance your experience:</p>
 
                 <div class="unblock-tips">
-                    <div class="tip-card">
-                        <div class="tip-icon">
-                            <i class="fa-solid fa-shield"></i>
-                        </div>
-                        <h3 class="tip-title">Use Flamepass Proxy</h3>
-                        <p class="tip-description">Our secure proxy can bypass most school filters and keeps your gaming
-                            activity hidden from monitoring systems.</p>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-icon">
-                            <i class="fa-solid fa-clock"></i>
-                        </div>
-                        <h3 class="tip-title">Private Browsing</h3>
-                        <p class="tip-description">Use incognito or private browsing mode to prevent browsing history
-                            from being stored on school computers.</p>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-icon">
-                            <i class="fa-solid fa-bolt"></i>
-                        </div>
-                        <h3 class="tip-title">Alternative Links</h3>
-                        <p class="tip-description">Check our Discord for alternative domain links if the main Flamepass
-                            site gets blocked at your school.</p>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-icon">
-                            <i class="fa-solid fa-wifi"></i>
-                        </div>
-                        <h3 class="tip-title">VPN Alternatives</h3>
-                        <p class="tip-description">If proxy isn't working, try using a browser-based VPN extension or
-                            Flamepass's built-in tunneling system.</p>
-                    </div>
+                    <!-- Unblocking tips will be added here by JavaScript -->
                 </div>
 
-                <div class="advanced-tips">
-                    <h3>Advanced Unblocking Methods</h3>
-                    <div class="advanced-tips-grid">
-                        <div class="advanced-tip">
-                            <div class="advanced-tip-icon">
-                                <i class="fa-solid fa-user-secret"></i>
-                            </div>
-                            <div class="advanced-tip-content">
-                                <h4>User Agent Switching</h4>
-                                <p>Some school filters rely on browser identification. Try changing your user agent to
-                                    appear as a different device.</p>
-                            </div>
-                        </div>
-
-                        <div class="advanced-tip">
-                            <div class="advanced-tip-icon">
-                                <i class="fa-solid fa-server"></i>
-                            </div>
-                            <div class="advanced-tip-content">
-                                <h4>DNS Changing</h4>
-                                <p>Change your DNS settings to bypass basic network restrictions (works best on personal
-                                    devices).</p>
-                            </div>
-                        </div>
-
-                        <div class="advanced-tip">
-                            <div class="advanced-tip-icon">
-                                <i class="fa-solid fa-window-restore"></i>
-                            </div>
-                            <div class="advanced-tip-content">
-                                <h4>About:blank Cloaking</h4>
-                                <p>Launch games through an about:blank page to hide the actual URL from basic monitoring
-                                    systems.</p>
-                            </div>
-                        </div>
-
-                        <div class="advanced-tip">
-                            <div class="advanced-tip-icon">
-                                <i class="fa-solid fa-key"></i>
-                            </div>
-                            <div class="advanced-tip-content">
-                                <h4>Browser Extension Cache</h4>
-                                <p>Install extensions that cache games locally, allowing you to play offline when
-                                    restrictions tighten.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Advanced tips will be added here by JavaScript -->
             </div>
 
             <!-- Empty containers for JavaScript to populate -->
@@ -459,15 +280,6 @@
         </div>
     </div>
 
-    <!-- Background elements -->
-    <div class="background-elements">
-        <div class="blob"></div>
-        <div class="blobbig"></div>
-        <div class="blobsmall"></div>
-        <div class="blobtop"></div>
-        <div id="particles-js"></div>
-    </div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="/js/localforage.min.js"></script>
@@ -476,44 +288,35 @@
     <script src="/js/c.js"></script>
     <script src="/js/auth-controller.min.js"></script>
     <script>
-        // Store current game in window object for client-side JS
-        window.currentGame = {
-            name: "${game.name}",
-            slug: "${game.slug}",
-            img: "${game.img}",
-            url: "${game.url || ''}",
-            category: "${game.category || 'browser'}"
-        };
-
         // Initialize particles.js
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: '#ffffff' },
-                shape: { type: 'circle' },
-                opacity: { value: 0.5, random: true },
-                size: { value: 3, random: true },
-                line_linked: { enable: false },
-                move: {
-                    enable: true,
-                    speed: 0.3,
-                    direction: 'top',
-                    random: true,
-                    straight: false,
-                    out_mode: 'out'
-                }
-            }
-        });
-
-        // Handle ads based on user preferences
         document.addEventListener('DOMContentLoaded', function () {
-            let hideAds = localStorage.getItem('hideAds');
+            if (window.particlesJS && document.getElementById('particles-js')) {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 80, density: { enable: true, value_area: 800 } },
+                        color: { value: '#ffffff' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.5, random: true },
+                        size: { value: 3, random: true },
+                        line_linked: { enable: false },
+                        move: {
+                            enable: true,
+                            speed: 0.3,
+                            direction: 'top',
+                            random: true,
+                            straight: false,
+                            out_mode: 'out'
+                        }
+                    }
+                });
+            }
 
+            // Handle ads based on user preferences
+            let hideAds = localStorage.getItem('hideAds');
             if (hideAds === null || hideAds === 'false') {
                 let script = document.createElement('script');
                 script.type = 'text/javascript';
-                script.src =
-                    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+                script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
                 document.body.appendChild(script);
             }
         });
