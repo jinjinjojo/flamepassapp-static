@@ -32,7 +32,7 @@
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="/js/auth-controller.min.js"></script>
+	<script src="/js/auth-controller.min.js"></script>
 	<link rel="stylesheet" href="/css/common.css" />
 	<style>
 		/* Page-specific styles that extend common.css */
@@ -45,7 +45,7 @@
 		}
 
 		.generate-btn {
-			background-color: #de5c34;
+			background: linear-gradient(135deg, #de5c34 0%, #ff7f50 100%);
 			color: white;
 			border: none;
 			border-radius: 30px;
@@ -55,13 +55,49 @@
 			cursor: pointer;
 			margin-top: 20px;
 			transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
-			box-shadow: 0 4px 20px rgba(222, 92, 52, 0.4);
+			box-shadow: 0 8px 20px rgba(222, 92, 52, 0.3);
+			position: relative;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+		}
+
+		.generate-btn::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: rgba(255, 255, 255, 0.1);
+			transform: rotate(45deg);
+			transition: transform 0.6s;
+			z-index: 1;
+			opacity: 0;
 		}
 
 		.generate-btn:hover {
-			background-color: #ea6e47;
+			background: linear-gradient(135deg, #ea6e47 0%, #ff9770 100%);
 			transform: translateY(-5px);
-			box-shadow: 0 8px 25px rgba(222, 92, 52, 0.5);
+			box-shadow: 0 12px 30px rgba(222, 92, 52, 0.5);
+		}
+
+		.generate-btn:hover::after {
+			transform: rotate(45deg) translateX(50%);
+			opacity: 1;
+		}
+
+		.generate-btn .material-symbols-outlined {
+			font-size: 1.3rem;
+			position: relative;
+			z-index: 2;
+		}
+
+		.generate-btn span {
+			position: relative;
+			z-index: 2;
 		}
 
 		.generator-title {
@@ -79,6 +115,7 @@
 			margin-bottom: 20px;
 		}
 
+		/* Enhanced Modal Styles */
 		.modal {
 			display: none;
 			position: fixed;
@@ -86,52 +123,169 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background-color: rgba(0, 0, 0, 0.7);
+			background-color: rgba(0, 0, 0, 0.8);
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
 			z-index: 9999;
 			justify-content: center;
 			align-items: center;
+			opacity: 0;
+			transition: opacity 0.3s ease-in-out;
+		}
+
+		.modal.active {
+			display: flex;
+			opacity: 1;
 		}
 
 		.modal-content {
-			background-color: #2a2a2a;
-			border-radius: 15px;
+			background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+			border-radius: 20px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
 			padding: 30px;
 			width: 90%;
 			max-width: 500px;
-			box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+			box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 			position: relative;
 			text-align: center;
+			transform: translateY(30px);
+			transition: transform 0.4s cubic-bezier(0.17, 0.84, 0.44, 1);
+		}
+
+		.modal.active .modal-content {
+			transform: translateY(0);
 		}
 
 		.close-btn {
 			position: absolute;
 			top: 15px;
-			right: 20px;
-			font-size: 1.5rem;
-			color: #aaa;
+			right: 15px;
+			width: 30px;
+			height: 30px;
+			background-color: rgba(255, 255, 255, 0.1);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.2rem;
+			color: rgba(255, 255, 255, 0.7);
 			cursor: pointer;
-			transition: color 0.3s;
+			transition: all 0.3s ease;
+			z-index: 10;
 		}
 
 		.close-btn:hover {
+			background-color: rgba(255, 255, 255, 0.2);
 			color: white;
+			transform: rotate(90deg);
+		}
+
+		.modal-header {
+			position: relative;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.modal-title {
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: white;
+			margin: 0;
+			position: relative;
+			display: inline-block;
+		}
+
+		.modal-title::after {
+			content: '';
+			position: absolute;
+			bottom: -15px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 50px;
+			height: 3px;
+			background: linear-gradient(to right, #de5c34, #ff7f50);
+			border-radius: 3px;
+		}
+
+		.modal-icon {
+			font-size: 50px;
+			color: #de5c34;
+			margin-bottom: 15px;
+			display: inline-block;
+		}
+
+		.proxy-link-container {
+			background-color: rgba(0, 0, 0, 0.2);
+			border-radius: 15px;
+			padding: 15px;
+			margin: 20px 0;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid rgba(255, 255, 255, 0.05);
+			transition: all 0.3s ease;
+		}
+
+		.proxy-link-container::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+			transform: translateX(-100%);
+			transition: transform 0.6s;
+		}
+
+		.proxy-link-container:hover::before {
+			transform: translateX(100%);
+		}
+
+		.proxy-link-container:hover {
+			background-color: rgba(30, 30, 30, 0.8);
+			transform: scale(1.02);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 		}
 
 		.proxy-link {
-			background-color: #1e1e1e;
-			border-radius: 10px;
-			padding: 15px;
-			margin: 20px 0;
-			color: #de5c34;
-			font-size: 1rem;
+			color: #ff7f50;
+			font-size: 1.1rem;
 			word-break: break-all;
 			cursor: pointer;
-			border: 1px solid #333;
-			transition: background-color 0.3s;
+			font-family: monospace;
+			font-weight: 500;
+			position: relative;
 		}
 
-		.proxy-link:hover {
-			background-color: #252525;
+		.link-label {
+			display: block;
+			font-size: 0.8rem;
+			color: rgba(255, 255, 255, 0.5);
+			margin-bottom: 8px;
+			text-align: left;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+
+		.copy-btn {
+			position: absolute;
+			top: 50%;
+			right: 15px;
+			transform: translateY(-50%);
+			background-color: rgba(255, 255, 255, 0.1);
+			color: rgba(255, 255, 255, 0.7);
+			border: none;
+			border-radius: 5px;
+			padding: 5px 10px;
+			font-size: 0.8rem;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.copy-btn:hover {
+			background-color: rgba(255, 255, 255, 0.2);
+			color: white;
 		}
 
 		.copy-msg {
@@ -139,34 +293,199 @@
 			margin-top: 10px;
 			font-size: 0.9rem;
 			display: none;
+			padding: 5px 10px;
+			background-color: rgba(76, 175, 80, 0.1);
+			border-radius: 5px;
+			animation: fadeInOut 2s ease-in-out;
+		}
+
+		@keyframes fadeInOut {
+			0% {
+				opacity: 0;
+			}
+
+			20% {
+				opacity: 1;
+			}
+
+			80% {
+				opacity: 1;
+			}
+
+			100% {
+				opacity: 0;
+			}
+		}
+
+		.limit-info {
+			margin-top: 20px;
+			padding: 15px;
+			background-color: rgba(0, 0, 0, 0.2);
+			border-radius: 10px;
+			border: 1px solid rgba(255, 255, 255, 0.05);
 		}
 
 		.limit-msg {
-			margin-top: 20px;
-			color: rgba(255, 255, 255, 0.7);
-			font-size: 0.9rem;
+			color: rgba(255, 255, 255, 0.8);
+			font-size: 0.95rem;
+			margin-bottom: 5px;
 		}
 
-		.modal-title {
-			font-size: 1.5rem;
-			color: white;
-			margin-bottom: 20px;
+		.remaining {
+			display: inline-block;
+			color: #4CAF50;
+			font-weight: 600;
+			background-color: rgba(76, 175, 80, 0.1);
+			padding: 2px 8px;
+			border-radius: 10px;
+			margin: 0 3px;
 		}
 
 		.limit-reached {
 			color: #ff6b6b;
-			font-size: 1.2rem;
-			margin-bottom: 15px;
+			font-size: 1.1rem;
+			margin-bottom: 20px;
+			background-color: rgba(255, 107, 107, 0.1);
+			padding: 10px 15px;
+			border-radius: 10px;
+			border-left: 3px solid #ff6b6b;
 		}
 
 		.reset-time {
 			color: rgba(255, 255, 255, 0.7);
 			margin-top: 15px;
+			background-color: rgba(255, 255, 255, 0.05);
+			padding: 10px;
+			border-radius: 8px;
+			display: inline-block;
 		}
 
-		.remaining {
-			color: #4CAF50;
+		.modal-actions {
+			margin-top: 25px;
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+		}
+
+		.modal-btn {
+			background: linear-gradient(135deg, #333333, #222222);
+			color: white;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 8px;
+			padding: 10px 20px;
+			font-size: 0.9rem;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.modal-btn:hover {
+			background: linear-gradient(135deg, #444444, #333333);
+			transform: translateY(-2px);
+		}
+
+		.modal-btn.primary {
+			background: linear-gradient(135deg, #de5c34, #ff7f50);
+			border: none;
+		}
+
+		.modal-btn.primary:hover {
+			background: linear-gradient(135deg, #ea6e47, #ff9770);
+		}
+
+		.open-link-btn {
+			width: 100%;
+			background: linear-gradient(135deg, #de5c34, #ff7f50);
+			color: white;
+			border: none;
+			border-radius: 8px;
+			padding: 12px 20px;
+			font-size: 0.95rem;
 			font-weight: 600;
+			cursor: pointer;
+			margin-top: 15px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			transition: all 0.3s ease;
+		}
+
+		.open-link-btn:hover {
+			background: linear-gradient(135deg, #ea6e47, #ff9770);
+			transform: translateY(-2px);
+			box-shadow: 0 5px 15px rgba(222, 92, 52, 0.3);
+		}
+
+		.link-preview {
+			margin-top: 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.link-preview-icon {
+			font-size: 24px;
+			color: #de5c34;
+		}
+
+		.link-details {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-top: 15px;
+		}
+
+		.link-detail {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			color: rgba(255, 255, 255, 0.6);
+			font-size: 0.85rem;
+		}
+
+		/* Wave animation for limit reached */
+		.wave-container {
+			height: 50px;
+			overflow: hidden;
+			position: relative;
+			margin: 20px 0;
+		}
+
+		.wave {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 350 150" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path fill="rgba(222, 92, 52, 0.2)" d="M0,50 C150,150 200,0 350,50 L350,150 L0,150 Z"></path></svg>');
+			background-repeat: repeat-x;
+			background-size: 350px 100px;
+			animation: wave 8s linear infinite;
+		}
+
+		.wave:nth-child(2) {
+			animation: wave2 10s linear infinite;
+			opacity: 0.6;
+		}
+
+		@keyframes wave {
+			0% {
+				background-position: 0 0;
+			}
+
+			100% {
+				background-position: 350px 0;
+			}
+		}
+
+		@keyframes wave2 {
+			0% {
+				background-position: 350px 0;
+			}
+
+			100% {
+				background-position: 0 0;
+			}
 		}
 
 		.main-container {
@@ -176,6 +495,27 @@
 		.content-section {
 			background-color: transparent;
 			box-shadow: none;
+		}
+
+		.loader {
+			display: inline-block;
+			width: 16px;
+			height: 16px;
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			border-radius: 50%;
+			border-top-color: white;
+			animation: spin 1s linear infinite;
+			margin-right: 8px;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
 		}
 	</style>
 </head>
@@ -265,29 +605,110 @@
 					Link Dispenser++
 				</h1>
 				<p class="page-description">Get new high-quality unblocked links daily. Limited to 3 links per day.</p>
-				<button class="generate-btn">Generate Link</button>
+				<button class="generate-btn">
+					<span>Generate Link</span>
+					<span class="material-symbols-outlined">link</span>
+				</button>
 			</div>
 		</div>
 	</div>
 
-	<!-- Modal for showing links -->
+	<!-- Enhanced Modal for showing links -->
 	<div class="modal" id="linkModal">
 		<div class="modal-content">
 			<span class="close-btn">&times;</span>
-			<h2 class="modal-title">Your Unblocked Link</h2>
-			<div class="proxy-link" id="proxyLink">Loading...</div>
-			<p class="copy-msg">Copied to clipboard!</p>
-			<p class="limit-msg">You have <span class="remaining" id="remaining">0</span> links remaining today.</p>
+
+			<div class="modal-header">
+				<span class="modal-icon material-symbols-outlined">link</span>
+				<h2 class="modal-title">Your Unblocked Link</h2>
+			</div>
+
+			<div class="proxy-link-container">
+				<span class="link-label">Copy and use this to access blocked sites</span>
+				<div class="proxy-link" id="proxyLink">Loading...</div>
+				<button class="copy-btn" id="copyBtn">
+					<span class="material-symbols-outlined">content_copy</span>
+				</button>
+			</div>
+
+			<div class="copy-msg">Link copied to clipboard!</div>
+
+			<button class="open-link-btn" id="openLinkBtn">
+				<span class="material-symbols-outlined">open_in_new</span>
+				Open Link in New Tab
+			</button>
+
+			<div class="link-details">
+				<div class="link-detail">
+					<span class="material-symbols-outlined">verified</span>
+					<span>Verified</span>
+				</div>
+				<div class="link-detail">
+					<span class="material-symbols-outlined">speed</span>
+					<span>Fast Loading</span>
+				</div>
+				<div class="link-detail">
+					<span class="material-symbols-outlined">shield</span>
+					<span>Secure</span>
+				</div>
+			</div>
+
+			<div class="limit-info">
+				<p class="limit-msg">You have <span class="remaining" id="remaining">0</span> links remaining today.</p>
+			</div>
+
+			<div class="modal-actions">
+				<button class="modal-btn" id="closeModalBtn">Close</button>
+				<button class="modal-btn primary" id="generateAnotherBtn">Generate Another</button>
+			</div>
 		</div>
 	</div>
 
-	<!-- Modal for limit reached -->
+	<!-- Enhanced Modal for limit reached -->
 	<div class="modal" id="limitModal">
 		<div class="modal-content">
 			<span class="close-btn">&times;</span>
-			<h2 class="modal-title">Daily Limit Reached</h2>
-			<p class="limit-reached">You've reached your daily limit of 3 generated links.</p>
-			<p class="reset-time">New links will be available on: <br><strong id="resetTime">Loading...</strong></p>
+
+			<div class="modal-header">
+				<span class="modal-icon material-symbols-outlined">timer_off</span>
+				<h2 class="modal-title">Daily Limit Reached</h2>
+			</div>
+
+			<p class="limit-reached">
+				<span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 5px;">info</span>
+				You've reached your daily limit of 3 generated links.
+			</p>
+
+			<div class="wave-container">
+				<div class="wave"></div>
+				<div class="wave"></div>
+			</div>
+
+			<p>New links will be available at:</p>
+			<p class="reset-time"><strong id="resetTime">Loading...</strong></p>
+
+			<div class="modal-actions">
+				<button class="modal-btn" id="closeResetBtn">Close</button>
+				<button class="modal-btn primary" id="viewLinksBtn">View Saved Links</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for displaying saved links -->
+	<div class="modal" id="savedLinksModal">
+		<div class="modal-content">
+			<span class="close-btn">&times;</span>
+
+			<div class="modal-header">
+				<span class="modal-icon material-symbols-outlined">list</span>
+				<h2 class="modal-title">Your Saved Links</h2>
+			</div>
+
+			<div id="savedLinksList"></div>
+
+			<div class="modal-actions">
+				<button class="modal-btn" id="closeSavedLinksBtn">Close</button>
+			</div>
 		</div>
 	</div>
 
@@ -416,7 +837,7 @@
 			// Load links from JSON database file
 			async function loadLinksFromDatabase() {
 				try {
-					const response = await fetch('/data/links-database.json');
+					const response = await fetch('/json/links.json');
 					if (!response.ok) {
 						throw new Error('Failed to load links database');
 					}
@@ -443,48 +864,36 @@
 
 			// Fallback links if database can't be loaded
 			const fallbackLinks = [
-				// Interstellar links
 				"https://gointerstellar.app",
 				"https://nomorefemboyfriday.unibutton.com/",
 				"https://matheiuslikesmen.bouncers4rent.com/",
-				"https://dipakarmani.blinklab.com/",
-				"https://alumulakakro.unibutton.com/",
-				"https://hamburgerxtreme.unibutton.com/",
-				"https://mayalu.unibutton.com/",
-				"https://sitarabhajangi.unibutton.com/",
-				"https://learningmath.pages.dev/",
-
-				// Shadow Browser links
-				"https://dental.danielrcrawford.com/",
-				"https://you.lostbytes.me/",
-				"https://free.imdb.gq/",
-				"https://learningtiles.root.sx/",
-				"https://erase.uhane.mx/",
-				"https://bank.quarternotez.sg/",
-				"https://zxyp.02.garmanage.com/",
-				"https://zxyp.03.digitalforest.my/",
-				"https://zxyp.04.open-window.de/",
-				"https://crec.abatek.com/",
-
-				// And more links from other categories...
-				"https://computer-lesson.shirokuriwaki.com/",
-				"https://mainsteetbathroomsarestinky.eduinnova.cl/",
-				"https://auroraborealisdates.twilightparadox.com/",
-				"https://orchestratingzz.iii.cl/",
-				"https://spongey-bob-your-late.soon.it/"
+				"https://hithereguys.saltfoodphoto.com/",
+				"https://orchestratingzz.iii.cl/"
 			];
 
+			// Get DOM elements
 			const generateBtn = document.querySelector('.generate-btn');
 			const linkModal = document.getElementById('linkModal');
 			const limitModal = document.getElementById('limitModal');
+			const savedLinksModal = document.getElementById('savedLinksModal');
 			const closeButtons = document.querySelectorAll('.close-btn');
 			const proxyLink = document.getElementById('proxyLink');
 			const copyMsg = document.querySelector('.copy-msg');
 			const remainingSpan = document.getElementById('remaining');
 			const resetTimeSpan = document.getElementById('resetTime');
+			const copyBtn = document.getElementById('copyBtn');
+			const openLinkBtn = document.getElementById('openLinkBtn');
+			const closeModalBtn = document.getElementById('closeModalBtn');
+			const generateAnotherBtn = document.getElementById('generateAnotherBtn');
+			const closeResetBtn = document.getElementById('closeResetBtn');
+			const viewLinksBtn = document.getElementById('viewLinksBtn');
+			const closeSavedLinksBtn = document.getElementById('closeSavedLinksBtn');
+			const savedLinksList = document.getElementById('savedLinksList');
 
 			// Load all available links
 			let allLinks = [];
+			// Store generated links for this session
+			let sessionLinks = [];
 
 			// Load links from database first
 			async function initializeLinks() {
@@ -492,8 +901,8 @@
 
 				// Enable the generate button once links are loaded
 				generateBtn.disabled = false;
-				if (generateBtn.textContent === 'Loading...') {
-					generateBtn.textContent = 'Generate Link';
+				if (generateBtn.innerHTML.includes('Loading')) {
+					generateBtn.innerHTML = '<span>Generate Link</span><span class="material-symbols-outlined">link</span>';
 				}
 			}
 
@@ -532,6 +941,7 @@
 
 			// Get random link that hasn't been generated today
 			function getRandomLink(data) {
+				// First filter out links already generated today
 				let availableLinks = allLinks.filter(link => !data.generatedLinks.includes(link));
 
 				// If all links have been used, reset from the full pool
@@ -560,11 +970,134 @@
 				return tomorrow.toLocaleString();
 			}
 
+			// Function to show the link modal
+			function showLinkModal(link, remainingCount) {
+				proxyLink.textContent = link;
+				remainingSpan.textContent = remainingCount;
+
+				// Add this link to session links
+				if (!sessionLinks.includes(link)) {
+					sessionLinks.push(link);
+				}
+
+				// Update remaining count display
+				if (remainingCount === 0) {
+					document.querySelector('.limit-info').innerHTML = '<p class="limit-msg">You have used all your links for today.</p>';
+					generateAnotherBtn.disabled = true;
+					generateAnotherBtn.style.opacity = '0.5';
+				} else {
+					document.querySelector('.limit-info').innerHTML = `<p class="limit-msg">You have <span class="remaining" id="remaining">${remainingCount}</span> links remaining today.</p>`;
+				}
+
+				// Set up open link button
+				openLinkBtn.onclick = () => {
+					window.open(link, '_blank');
+				};
+
+				// Show the modal with animation
+				linkModal.style.display = 'flex';
+				setTimeout(() => {
+					linkModal.classList.add('active');
+				}, 10);
+			}
+
+			// Function to show the limit reached modal
+			function showLimitModal() {
+				resetTimeSpan.textContent = getTomorrowDateString();
+
+				// Show the modal with animation
+				limitModal.style.display = 'flex';
+				setTimeout(() => {
+					limitModal.classList.add('active');
+				}, 10);
+			}
+
+			// Function to show the saved links modal
+			function showSavedLinksModal() {
+				const data = getLinkData();
+				savedLinksList.innerHTML = '';
+
+				if (data.generatedLinks && data.generatedLinks.length > 0) {
+					data.generatedLinks.forEach((link, index) => {
+						const linkElement = document.createElement('div');
+						linkElement.className = 'proxy-link-container';
+						linkElement.innerHTML = `
+							<span class="link-label">Link ${index + 1}</span>
+							<div class="proxy-link" data-link="${link}">${link}</div>
+							<button class="copy-btn" data-link="${link}">
+								<span class="material-symbols-outlined">content_copy</span>
+							</button>
+						`;
+						savedLinksList.appendChild(linkElement);
+					});
+
+					// Add event listeners to copy buttons
+					const copyButtons = savedLinksList.querySelectorAll('.copy-btn');
+					copyButtons.forEach(button => {
+						button.addEventListener('click', (e) => {
+							const link = e.currentTarget.getAttribute('data-link');
+							copyToClipboard(link);
+						});
+					});
+
+					// Add event listeners to link text
+					const linkTexts = savedLinksList.querySelectorAll('.proxy-link');
+					linkTexts.forEach(text => {
+						text.addEventListener('click', (e) => {
+							const link = e.currentTarget.getAttribute('data-link');
+							copyToClipboard(link);
+						});
+					});
+				} else {
+					savedLinksList.innerHTML = `
+						<div style="margin: 20px 0; color: rgba(255, 255, 255, 0.7);">
+							<span class="material-symbols-outlined" style="font-size: 40px; display: block; margin-bottom: 10px;">sentiment_dissatisfied</span>
+							<p>You don't have any saved links yet.</p>
+						</div>
+					`;
+				}
+
+				// Show the modal with animation
+				savedLinksModal.style.display = 'flex';
+				setTimeout(() => {
+					savedLinksModal.classList.add('active');
+				}, 10);
+			}
+
+			// Function to copy text to clipboard
+			function copyToClipboard(text) {
+				navigator.clipboard.writeText(text)
+					.then(() => {
+						copyMsg.style.display = 'block';
+						setTimeout(() => {
+							copyMsg.style.display = 'none';
+						}, 2000);
+					})
+					.catch(err => {
+						console.error('Failed to copy: ', err);
+					});
+			}
+
+			// Function to hide modals
+			function hideModals() {
+				// Remove active class first for animation
+				linkModal.classList.remove('active');
+				limitModal.classList.remove('active');
+				savedLinksModal.classList.remove('active');
+
+				// After animation completes, hide the modal
+				setTimeout(() => {
+					linkModal.style.display = 'none';
+					limitModal.style.display = 'none';
+					savedLinksModal.style.display = 'none';
+				}, 300);
+			}
+
 			// Set up click handlers
 			generateBtn.addEventListener('click', () => {
 				// Show loading state if links aren't loaded yet
 				if (allLinks.length === 0) {
-					generateBtn.textContent = 'Loading...';
+					generateBtn.innerHTML = '<span class="loader"></span> <span>Loading...</span>';
 					generateBtn.disabled = true;
 
 					// Initialize links and then try again
@@ -578,57 +1111,68 @@
 
 				if (data.count >= 3) {
 					// Show limit reached modal
-					resetTimeSpan.textContent = getTomorrowDateString();
-					limitModal.style.display = 'flex';
+					showLimitModal();
 				} else {
 					// Generate new link
 					const link = getRandomLink(data);
 					const updatedData = updateLinkData(link);
 
 					// Show link in modal
-					proxyLink.textContent = link;
-					remainingSpan.textContent = 3 - updatedData.count;
-					linkModal.style.display = 'flex';
+					showLinkModal(link, 3 - updatedData.count);
 				}
 			});
 
 			// Set up copy functionality
-			proxyLink.addEventListener('click', () => {
+			copyBtn.addEventListener('click', () => {
 				const link = proxyLink.textContent;
-				navigator.clipboard.writeText(link)
-					.then(() => {
-						copyMsg.style.display = 'block';
-						setTimeout(() => {
-							copyMsg.style.display = 'none';
-						}, 2000);
-					})
-					.catch(err => {
-						console.error('Failed to copy: ', err);
-					});
+				copyToClipboard(link);
 			});
 
-			// Close modals when clicking the close button
+			// Also allow clicking on the link text itself to copy
+			proxyLink.addEventListener('click', () => {
+				copyBtn.click();
+			});
+
+			// Close modals when clicking the close button or dedicated close buttons
 			closeButtons.forEach(button => {
-				button.addEventListener('click', () => {
-					linkModal.style.display = 'none';
-					limitModal.style.display = 'none';
-				});
+				button.addEventListener('click', hideModals);
+			});
+
+			closeModalBtn.addEventListener('click', hideModals);
+			closeResetBtn.addEventListener('click', hideModals);
+			closeSavedLinksBtn.addEventListener('click', hideModals);
+
+			// Generate another link button
+			generateAnotherBtn.addEventListener('click', () => {
+				hideModals();
+				setTimeout(() => {
+					generateBtn.click();
+				}, 300);
+			});
+
+			// View saved links button
+			viewLinksBtn.addEventListener('click', () => {
+				hideModals();
+				setTimeout(() => {
+					showSavedLinksModal();
+				}, 300);
 			});
 
 			// Close modals when clicking outside the content
 			window.addEventListener('click', (event) => {
-				if (event.target === linkModal) {
-					linkModal.style.display = 'none';
-				}
-				if (event.target === limitModal) {
-					limitModal.style.display = 'none';
+				if (event.target === linkModal || event.target === limitModal || event.target === savedLinksModal) {
+					hideModals();
 				}
 			});
 
 			// Initialize links from database
 			initializeLinks();
+
+			// Update display based on current link status
+			const data = checkDailyReset();
+			remainingSpan.textContent = 3 - data.count;
 		});
-	</script>
+				</script>
 	<script src="/js/localforage.min.js"></script>
 	<script src="/js/json-loader.js"></script>
 	<script src="/js/c.js"></script>
@@ -645,6 +1189,6 @@
 			}
 		});
 	</script>
-</body>
-
-</html>
+	</body>
+	
+	</html>
