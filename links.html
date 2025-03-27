@@ -44,77 +44,6 @@
 			width: 100%;
 		}
 
-		.generate-btn {
-			background: linear-gradient(135deg, #de5c34 0%, #ff7f50 100%);
-			color: white;
-			border: none;
-			border-radius: 30px;
-			padding: 15px 40px;
-			font-size: 1.2rem;
-			font-weight: 600;
-			cursor: pointer;
-			margin-top: 20px;
-			transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
-			box-shadow: 0 8px 20px rgba(222, 92, 52, 0.3);
-			position: relative;
-			overflow: hidden;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 10px;
-		}
-
-		.generate-btn::after {
-			content: '';
-			position: absolute;
-			top: -50%;
-			left: -50%;
-			width: 200%;
-			height: 200%;
-			background: rgba(255, 255, 255, 0.1);
-			transform: rotate(45deg);
-			transition: transform 0.6s;
-			z-index: 1;
-			opacity: 0;
-		}
-
-		.generate-btn:hover {
-			background: linear-gradient(135deg, #ea6e47 0%, #ff9770 100%);
-			transform: translateY(-5px);
-			box-shadow: 0 12px 30px rgba(222, 92, 52, 0.5);
-		}
-
-		.generate-btn:hover::after {
-			transform: rotate(45deg) translateX(50%);
-			opacity: 1;
-		}
-
-		.generate-btn .material-symbols-outlined {
-			font-size: 1.3rem;
-			position: relative;
-			z-index: 2;
-		}
-
-		.generate-btn span {
-			position: relative;
-			z-index: 2;
-		}
-
-		.generator-title {
-			color: white;
-			font-size: 2.5rem;
-			font-weight: 700;
-			margin-bottom: 15px;
-			text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-		}
-
-		.generator-description {
-			color: rgba(255, 255, 255, 0.8);
-			font-size: 1.1rem;
-			max-width: 400px;
-			margin-bottom: 20px;
-		}
-
 		/* Enhanced Modal Styles */
 		.modal {
 			display: none;
@@ -517,6 +446,117 @@
 				transform: rotate(360deg);
 			}
 		}
+
+		/* Enhanced Generate Button Styles */
+		.generate-btn-container {
+		display: flex;
+		justify-content: center;
+		margin-top: 30px;
+		position: relative;
+		}
+
+		.generate-btn {
+		background: linear-gradient(135deg, #de5c34 0%, #ff7f50 100%);
+		color: white;
+		border: none;
+		border-radius: 30px;
+		padding: 16px 48px;
+		font-size: 1.1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		transform-style: preserve-3d;
+		letter-spacing: 0.5px;
+		}
+
+		.generate-btn::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(255, 255, 255, 0.15);
+		border-radius: inherit;
+		transform: translateZ(-1px);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		}
+
+		.generate-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 20px rgba(222, 92, 52, 0.3), 0 6px 6px rgba(0, 0, 0, 0.23);
+		}
+
+		.generate-btn:hover::before {
+		opacity: 1;
+		}
+
+		.generate-btn:active {
+		transform: translateY(1px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 1px 4px rgba(0, 0, 0, 0.23);
+		}
+
+		.generate-btn .material-symbols-outlined {
+		font-size: 20px;
+		margin-left: 5px;
+		}
+
+		.btn-ripple {
+		position: absolute;
+		background: rgba(255, 255, 255, 0.5);
+		border-radius: 50%;
+		transform: scale(0);
+		animation: ripple 0.6s linear;
+		pointer-events: none;
+		}
+
+		@keyframes ripple {
+		to {
+			transform: scale(2.5);
+			opacity: 0;
+		}
+		}
+
+		/* Enhanced page styles */
+		.content-section {
+		background-color: rgba(20, 20, 20, 0.4);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-radius: 20px;
+		padding: 40px;
+		max-width: 600px;
+		margin: 0 auto;
+		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.page-title {
+		background: linear-gradient(135deg, #ffffff 0%, #ff7f50 100%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		font-size: 2.4rem;
+		font-weight: 700;
+		margin-bottom: 15px;
+		text-align: center;
+		}
+
+		.page-description {
+		color: rgba(255, 255, 255, 0.8);
+		font-size: 1.1rem;
+		margin: 0 auto 20px;
+		text-align: center;
+		max-width: 400px;
+		line-height: 1.6;
+		}
 	</style>
 </head>
 
@@ -605,10 +645,12 @@
 					Link Dispenser++
 				</h1>
 				<p class="page-description">Get new high-quality unblocked links daily. Limited to 3 links per day.</p>
-				<button class="generate-btn">
-					<span>Generate Link</span>
-					<span class="material-symbols-outlined">link</span>
-				</button>
+				<div class="generate-btn-container">
+					<button class="generate-btn" id="generateBtn">
+						<span>Generate Link</span>
+						<span class="material-symbols-outlined">link</span>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -1171,7 +1213,25 @@
 			// Update display based on current link status
 			const data = checkDailyReset();
 			remainingSpan.textContent = 3 - data.count;
+
+			// Add ripple effect to button
+			generateBtn.addEventListener('mousedown', function (e) {
+				const x = e.clientX - e.target.getBoundingClientRect().left;
+				const y = e.clientY - e.target.getBoundingClientRect().top;
+
+				const ripple = document.createElement('span');
+				ripple.classList.add('btn-ripple');
+				ripple.style.left = `${x}px`;
+				ripple.style.top = `${y}px`;
+
+				this.appendChild(ripple);
+
+				setTimeout(() => {
+					ripple.remove();
+				}, 600);
+			});
 		});
+		
 				</script>
 	<script src="/js/localforage.min.js"></script>
 	<script src="/js/json-loader.js"></script>
