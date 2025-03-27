@@ -1,0 +1,2247 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Welcome to Flamepass - Your Ultimate School Hub</title>
+    <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=6.0, user-scalable=yes" />
+    <meta name="description"
+        content="Welcome to Flamepass: The Ultimate School Dashboard with games, website proxies, tools, AI chat & more. Your all-in-one student resource hub." />
+    <meta name="keywords" content="Proxy, Unblocker, Flamepass Unblocker, Flamepass" />
+    <meta property="og:image" content="/assets/logo.webp" />
+    <!-- Google Analytics DO NOT REMOVE -->
+    <meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SPVQHBL4J1');
+    </script>
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/themes.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="/js/auth-controller.min.js"></script>
+    <!-- Shepherd.js for advanced tours -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+    <!-- GSAP for premium animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Toastify for notifications -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Lottie for animated icons -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+        /* Enhanced Welcome page styles */
+        :root {
+            --primary-color: #ff6600;
+            --primary-hover: #ff8033;
+            --primary-transparent: rgba(255, 102, 0, 0.3);
+            --primary-glow: rgba(255, 102, 0, 0.7);
+            --background-dark: #111111;
+            --card-bg: rgba(30, 30, 30, 0.8);
+            --card-bg-hover: rgba(40, 40, 40, 0.9);
+            --text-light: #ffffff;
+            --text-muted: #aaaaaa;
+            --border-radius-sm: 6px;
+            --border-radius: 10px;
+            --border-radius-lg: 16px;
+            --transition-fast: all 0.2s ease;
+            --transition: all 0.3s ease;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --box-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Background enhancement */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -999;
+            background: linear-gradient(135deg, var(--background-dark) 0%, #1a1a1a 100%);
+        }
+
+        .blob {
+            animation: blob-motion 18s infinite ease-in-out;
+        }
+
+        .blobbig {
+            animation: blob-motion-reverse 25s infinite ease-in-out;
+        }
+
+        .blobsmall {
+            animation: blob-motion 15s infinite ease-in-out;
+        }
+
+        @keyframes glow-pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        .key-container {
+            position: relative;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-transparent);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .key-container:hover {
+            box-shadow: 0 10px 25px rgba(255, 102, 0, 0.15);
+            border-color: rgba(255, 102, 0, 0.5);
+        }
+
+        .key-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.1) 0%, rgba(255, 102, 0, 0) 60%);
+            animation: glow-pulse 3s infinite ease-in-out;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .key-badge {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: var(--border-radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .key-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-icon {
+            color: var(--primary-color);
+            background: rgba(255, 102, 0, 0.15);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .key-value {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            color: var(--text-light);
+            font-family: 'DM Mono', monospace;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .key-value code {
+            flex-grow: 1;
+            overflow-x: auto;
+            padding-right: 10px;
+            font-weight: 500;
+        }
+
+        .key-value::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+            right: 60px;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .key-info {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .key-info strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .welcome-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .welcome-logo {
+            height: 120px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+            transition: var(--transition);
+        }
+
+        .welcome-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4));
+        }
+
+        .welcome-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background-image: linear-gradient(135deg, #ffffff 0%, #ffccaa 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .welcome-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 700px;
+            line-height: 1.6;
+            margin: 25px auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .button-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .button-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-icon {
+            filter: brightness(1.1);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px auto 60px;
+            padding: 0 20px;
+            max-width: 1400px;
+        }
+
+        .feature-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-transparent);
+            border-radius: var(--border-radius-lg);
+            padding: 30px 25px;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            background: var(--card-bg-hover);
+            box-shadow: var(--box-shadow-hover);
+            border-color: rgba(255, 102, 0, 0.5);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 102, 0, 0.15);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon-container {
+            background: rgba(255, 102, 0, 0.25);
+            transform: scale(1.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-description {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            z-index: 2;
+        }
+
+        /* Enhanced Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: #1e1e1e;
+            background-image: radial-gradient(circle at top right, rgba(255, 102, 0, 0.1), transparent 70%);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            padding: 35px;
+            width: 95%;
+            max-width: 700px;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #333;
+        }
+
+        .modal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal::-webkit-scrollbar-track {
+            background: #333;
+            border-radius: 10px;
+        }
+
+        .modal::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .modal-logo-container {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 102, 0, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .modal-logo {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .modal-title {
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+            background-image: linear-gradient(135deg, #ffffff 30%, #ffccaa 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .modal-subtitle {
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-size: 16px;
+        }
+
+        .modal-content {
+            color: #e0e0e0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section-title {
+            color: var(--primary-color);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-section-title i {
+            font-size: 1rem;
+        }
+
+        .modal-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .modal-content li::before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        .modal-content .highlight {
+            background-color: rgba(255, 102, 0, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 35px;
+        }
+
+        .modal-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.05);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            color: var(--text-light);
+            background-color: rgba(255, 102, 0, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Shepherd tour customization */
+        .shepherd-element {
+            border-radius: var(--border-radius);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
+            background: #1e1e1e !important;
+            border: 1px solid rgba(255, 102, 0, 0.3) !important;
+            max-width: 400px;
+        }
+
+        .shepherd-header {
+            background: transparent !important;
+            padding: 15px 20px 0 !important;
+        }
+
+        .shepherd-title {
+            font-size: 18px !important;
+            color: var(--text-light) !important;
+            font-weight: 600 !important;
+        }
+
+        .shepherd-text {
+            color: var(--text-muted) !important;
+            padding: 15px 20px !important;
+            line-height: 1.6 !important;
+        }
+
+        .shepherd-footer {
+            padding: 0 20px 15px !important;
+        }
+
+        .shepherd-button {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border-radius: var(--border-radius-sm) !important;
+            padding: 8px 15px !important;
+            font-weight: 600 !important;
+            transition: var(--transition-fast) !important;
+            margin-right: 5px !important;
+        }
+
+        .shepherd-button:hover {
+            background: var(--primary-hover) !important;
+            transform: translateY(-2px);
+        }
+
+        .shepherd-button-secondary {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+
+        .shepherd-button-secondary:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .shepherd-arrow:before {
+            background: #1e1e1e !important;
+        }
+
+        .shepherd-element[data-popper-placement^='top'] .shepherd-arrow:before {
+            bottom: -1px !important;
+        }
+
+        .shepherd-element[data-popper-placement^='bottom'] .shepherd-arrow:before {
+            top: -1px !important;
+        }
+
+        .shepherd-element[data-popper-placement^='left'] .shepherd-arrow:before {
+            right: -1px !important;
+        }
+
+        .shepherd-element[data-popper-placement^='right'] .shepherd-arrow:before {
+            left: -1px !important;
+        }
+
+    .error-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 0 20px;
+      background-color: #111111;
+    }
+    
+    .error-logo {
+      width: 120px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+    
+    .error-title {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .error-message {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .error-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .error-btn:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      opacity: 0.8; /* Increased from 0 */
+      background-color: #f2f2f2;
+      transform: translateY(0) rotate(0);
+      pointer-events: none;
+      animation: confetti-fall 3s ease-in-out forwards;
+      z-index: 1000;
+    }
+    
+    @keyframes confetti-fall {
+      0% {
+        opacity: 0;
+        transform: translateY(-20vh) rotate(0);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+    
+    .design-credit {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #ffffff;
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .design-credit:hover {
+      background-color: rgba(30, 30, 30, 0.9);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .design-credit img {
+      height: 20px;
+      width: 20px;
+      margin-right: 8px;
+      border-radius: 4px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .welcome-title {
+        font-size: 2.3rem;
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .modal {
+        padding: 25px 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .welcome-title {
+        font-size: 2rem;
+      }
+      
+      .welcome-logo {
+        height: 100px;
+      }
+      
+      .key-container {
+        padding: 20px 15px;
+      }
+    }
+</style>
+</head>
+
+<body>
+
+    <ul class="navbar">
+        <li style="margin-left: -1px; margin-top: 2px">
+            <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
+        </li>
+        <hr style="margin-top: 5px" />
+        <li>
+            <a href="/" title="Home" id="nav-home">
+                <span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" title="Search" id="nav-search">
+                <span class="material-symbols-outlined">public</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="#" title="Apps" id="nav-apps">
+                <span class="material-symbols-outlined">apps</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" title="Games" id="nav-games">
+                <span class="material-symbols-outlined">joystick</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" title="Downloadable Games" id="nav-downloads">
+                <span class="material-symbols-outlined">download</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="#" title="Ultimate Link List" id="nav-links">
+                <span class="material-symbols-outlined">list</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" title="Link Generator" id="nav-generator">
+                <span class="material-symbols-outlined">link</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="#" title="Guides and Methods" id="nav-guides">
+                <span class="material-symbols-outlined">help_outline</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" title="Unblocker YouTube Channels" id="nav-youtube">
+                <span class="material-symbols-outlined">play_circle</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="#" title="AI Chat" id="nav-ai">
+                <span class="material-symbols-outlined">smart_toy</span>
+            </a>
+        </li>
+        <hr />
+        <li>
+            <a href="#" title="Settings" id="nav-settings">
+                <span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+            </a>
+        </li>
+        <li>
+            <a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server" id="nav-discord">
+                <div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+                    <i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Error message if token not found -->
+    <div id="tokenErrorContainer" class="error-container" style="display: none;">
+        <img src="/assets/logo.png" alt="Flamepass Logo" class="error-logo">
+        <h1 class="error-title">Oops! Access Key Not Found</h1>
+        <p class="error-message">We couldn't find your access key in the URL. Please make sure you're using the correct
+            link provided after your purchase, or contact support if you continue to have issues.</p>
+        <a href="/" class="error-btn">
+            <span>Return Home</span>
+            <i data-lucide="home"></i>
+        </a>
+    </div>
+
+    <!-- Main welcome content - only shown if token exists -->
+    <div id="welcomeContent" class="main-container" style="display: none;">
+        <div class="welcome-header">
+            <img src="/assets/logo.png" class="welcome-logo" alt="Flamepass Logo" id="welcome-logo">
+
+            <h1 class="welcome-title" id="welcomeTitle">
+                Welcome to Flamepass!
+            </h1>
+
+            <!-- Key container -->
+            <div class="key-container">
+                <div class="key-badge">IMPORTANT</div>
+                <div class="key-header">
+                    <div class="key-icon">
+                        <i data-lucide="key" size="18"></i>
+                    </div>
+                    <span>Your Access Key</span>
+                </div>
+                <div class="key-value">
+                    <code id="tokenValue">Loading...</code>
+                    <button class="copy-btn" id="copyTokenBtn">
+                        <i data-lucide="copy" size="16"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <div class="key-info">
+                    <p><strong>Save this key immediately!</strong> You'll need it along with your email to log in to
+                        Flamepass.</p>
+                    <p>Your key can also be found in <strong>Settings &gt; Account</strong> after logging in.</p>
+                </div>
+            </div>
+
+            <p class="welcome-subtitle">
+                Thanks for joining Flamepass - your all-in-one hub for games, apps, unblocker links, and more. We've
+                evolved beyond just a website unblocker to become the ultimate resource for students everywhere.
+            </p>
+
+            <div class="action-buttons">
+                <button class="button button-secondary" id="quickStartBtn">
+                    <span>Quick Start Guide</span>
+                    <i data-lucide="zap" class="button-icon"></i>
+                </button>
+                <button class="button button-primary" id="startTourBtn">
+                    <span>Interactive Tour</span>
+                    <i data-lucide="map" class="button-icon"></i>
+                </button>
+                <a href="/login.html" target="_blank">
+                    <button class="button button-secondary" id="loginbtn">
+                        <span>Login To Flamepass</span>
+                        <i data-lucide="external-link" class="button-icon"></i>
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" id="card-unblocker">
+                <div class="feature-icon-container">
+                    <i class="fa-solid fa-unlock feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Unblocker Hub</h3>
+                <p class="feature-description">Access hundreds of working unblocker links that bypass school filters.
+                    Save these links for when you need them most.</p>
+            </div>
+
+            <div class="feature-card" id="card-games">
+                <div class="feature-icon-container">
+                    <i class="fa-solid fa-gamepad feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Game Central</h3>
+                <p class="feature-description">Play thousands of online games instantly, plus access to downloadable
+                    games that work even on restricted networks.</p>
+            </div>
+
+            <div class="feature-card" id="card-apps">
+                <div class="feature-icon-container">
+                    <i class="fa-solid fa-rocket feature-icon"></i>
+                </div>
+                <h3 class="feature-title">App Library</h3>
+                <p class="feature-description">Browse and use hundreds of web applications directly through Flamepass,
+                    from productivity tools to entertainment.</p>
+            </div>
+
+            <div class="feature-card" id="card-methods">
+                <div class="feature-icon-container">
+                    <i class="fa-solid fa-book feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Expert Guides</h3>
+                <p class="feature-description">Learn advanced techniques and methods for bypassing restrictions with our
+                    regularly updated guides.</p>
+            </div>
+
+            <div class="feature-card" id="card-access">
+                <div class="feature-icon-container">
+                    <i class="fa-solid fa-wifi feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Always Accessible</h3>
+                <p class="feature-description">Even if flamepass.com gets blocked, use one of our many alternate links
+                    to always maintain access to all features.</p>
+            </div>
+
+            <div class="feature-card" id="card-premium">
+                <div class="feature-icon-container">
+                    <i class="fa-solid fa-crown feature-icon"></i>
+                </div>
+                <h3 class="feature-title">Premium Features</h3>
+                <p class="feature-description">Unlock even more capabilities with Flamepass Premium, including priority
+                    access and exclusive content.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Modal -->
+    <div class="modal-overlay" id="quickStartModal">
+        <div class="modal">
+            <div class="modal-close" id="closeQuickStart">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="modal-header">
+                <div class="modal-logo-container">
+                    <i class="fa-solid fa-bolt modal-logo"></i>
+                </div>
+                <h2 class="modal-title">Quick Start Guide</h2>
+                <p class="modal-subtitle">Get up and running with Flamepass in minutes</p>
+            </div>
+            <div class="modal-content">
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-key"></i>
+                        Save Your Access Key
+                    </h3>
+                    <p>The key you see on this page is crucial - save it somewhere safe! You'll need it along with your
+                        email to log in to Flamepass.</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-link"></i>
+                        Find Working Unblocker Links
+                    </h3>
+                    <p>Visit our <span class="highlight">Ultimate Links</span> page to find working unblocker links.
+                        <strong>Important:</strong> Save several links while at home so you can access Flamepass at
+                        school even if the main domain gets blocked!</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-school"></i>
+                        Access Flamepass at School
+                    </h3>
+                    <p>If flamepass.com is blocked:</p>
+                    <ul>
+                        <li>Use one of the saved unblocker links you found on the Ultimate Links page</li>
+                        <li>Enter <span class="highlight">https://app.flamepass.com/</span> in the unblocker</li>
+                        <li>Log in with your email and the key we provided</li>
+                        <li>Enjoy full access to all Flamepass features!</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-compass"></i>
+                        Explore Flamepass Features
+                    </h3>
+                    <ul>
+                        <li><strong>Search:</strong> Use our proxy search engine to access any website</li>
+                        <li><strong>Games:</strong> Thousands of online and downloadable games</li>
+                        <li><strong>Apps:</strong> Hundreds of useful web applications</li>
+                        <li><strong>Guides:</strong> Expert methods for bypassing restrictions</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-brands fa-discord"></i>
+                        Join Our Discord Community
+                    </h3>
+                    <p>Stay updated with the latest links and methods by joining our <a
+                            href="https://discord.com/invite/gVaXCTqJDq" target="_blank" style="color: #ff6600;">Discord
+                            server</a>.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" id="gotItBtn">
+                    <span>Got It!</span>
+                    <i data-lucide="check" size="18"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unblocker Modal -->
+    <div class="modal-overlay" id="unblockerModal">
+        <div class="modal">
+            <div class="modal-close" id="closeUnblockerModal">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="modal-header">
+                <div class="modal-logo-container">
+                    <i class="fa-solid fa-unlock modal-logo"></i>
+                </div>
+                <h2 class="modal-title">Always Stay Unblocked</h2>
+                <p class="modal-subtitle">How to access Flamepass even when blocked</p>
+            </div>
+            <div class="modal-content">
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        The Pre-Block Strategy
+                    </h3>
+                    <p>The key to never losing access is preparation:</p>
+                    <ol>
+                        <li>While at home or on an unblocked network, visit <span
+                                class="highlight">https://app.flamepass.com/ultimate-links.html</span></li>
+                        <li>Save multiple unblocker links (bookmark them, email them to yourself, or write them down)
+                        </li>
+                        <li>These links will be your backdoor to Flamepass if the main domain gets blocked</li>
+                    </ol>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-door-open"></i>
+                        When Flamepass Gets Blocked
+                    </h3>
+                    <p>Follow these steps to regain access:</p>
+                    <ol>
+                        <li>Visit one of your saved unblocker links</li>
+                        <li>Enter <span class="highlight">https://app.flamepass.com/</span> in the unblocker's search
+                            bar</li>
+                        <li>Flamepass will load inside the unblocker proxy</li>
+                        <li>Log in with your email and access key</li>
+                        <li>You now have complete access to all Flamepass features!</li>
+                    </ol>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        Staying Ahead of Blocks
+                    </h3>
+                    <p>We regularly update our unblocker links to ensure you always have access:</p>
+                    <ul>
+                        <li>Join our <a href="https://discord.com/invite/gVaXCTqJDq" target="_blank"
+                                style="color: #ff6600;">Discord server</a> for immediate updates on new links</li>
+                        <li>Check the Ultimate Links page weekly for fresh links</li>
+                        <li>Always keep multiple backup links saved</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" id="closeUnblockerBtn">
+                    <span>Understood</span>
+                    <i data-lucide="thumbs-up" size="18"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games Modal -->
+    <div class="modal-overlay" id="gamesModal">
+        <div class="modal">
+            <div class="modal-close" id="closeGamesModal">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="modal-header">
+                <div class="modal-logo-container">
+                    <i class="fa-solid fa-gamepad modal-logo"></i>
+                </div>
+                <h2 class="modal-title">Game Center Guide</h2>
+                <p class="modal-subtitle">Everything you need to know about Flamepass gaming</p>
+            </div>
+            <div class="modal-content">
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-globe"></i>
+                        Online Games
+                    </h3>
+                    <p>Access thousands of browser-based games directly through Flamepass:</p>
+                    <ul>
+                        <li>Navigate to the <span class="highlight">Games</span> section using the navbar</li>
+                        <li>Browse by category or search for specific titles</li>
+                        <li>Games load instantly and are optimized to work on school networks</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-download"></i>
+                        Downloadable Games
+                    </h3>
+                    <p>For a premium gaming experience, check out our downloadable games:</p>
+                    <ul>
+                        <li>Visit the <span class="highlight">Downloadable Games</span> section</li>
+                        <li>These games can be downloaded and installed even on restricted networks</li>
+                        <li>Full instructions for bypassing installation restrictions are included</li>
+                    </ul>
+                </div>
+
+                <div class="modal-section">
+                    <h3 class="modal-section-title">
+                        <i class="fa-solid fa-cloud"></i>
+                        Cloud Gaming
+                    </h3>
+                    <p>Take your gaming to the next level with cloud gaming services:</p>
+                    <ul>
+                        <li>Use Flamepass to access cloud gaming platforms like GeForce Now or Boosteroid</li>
+                        <li>Play AAA titles directly in your browser without installing anything</li>
+                        <li>For best performance, we recommend Boosteroid ($10/month) which works perfectly with Flamepass</li>
+                    </ul>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-button" id="closeGamesBtn">
+                            <span>Let's Play</span>
+                            <i data-lucide="play" size="18"></i>
+                        </button>
+                    </div>
+                    </div>
+                    </div>
+                    
+                    <!-- Apps Modal -->
+                    <div class="modal-overlay" id="appsModal">
+                        <div class="modal">
+                            <div class="modal-close" id="closeAppsModal">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <div class="modal-header">
+                                <div class="modal-logo-container">
+                                    <i class="fa-solid fa-rocket modal-logo"></i>
+                                </div>
+                                <h2 class="modal-title">App Library Guide</h2>
+                                <p class="modal-subtitle">Discover the power of Flamepass applications</p>
+                            </div>
+                            <div class="modal-content">
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-browser"></i>
+                                        Web Applications
+                                    </h3>
+                                    <p>Access hundreds of useful applications directly through your browser:</p>
+                                    <ul>
+                                        <li>Navigate to the <span class="highlight">Apps</span> section using the navbar</li>
+                                        <li>Browse by category or search for specific applications</li>
+                                        <li>All apps are optimized to work through Flamepass's proxy system</li>
+                                    </ul>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                        Productivity Tools
+                                    </h3>
+                                    <p>Get work done even on restricted networks:</p>
+                                    <ul>
+                                        <li>Access document editors, spreadsheets, and presentation tools</li>
+                                        <li>Use coding environments and development tools</li>
+                                        <li>Access AI assistants and research tools</li>
+                                    </ul>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-headphones"></i>
+                                        Entertainment Apps
+                                    </h3>
+                                    <p>Enjoy your favorite content anywhere:</p>
+                                    <ul>
+                                        <li>Stream music and videos through our proxy</li>
+                                        <li>Access social media platforms securely</li>
+                                        <li>Use communication tools to stay connected</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-button" id="closeAppsBtn">
+                                    <span>Explore Apps</span>
+                                    <i data-lucide="external-link" size="18"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Methods Modal -->
+                    <div class="modal-overlay" id="methodsModal">
+                        <div class="modal">
+                            <div class="modal-close" id="closeMethodsModal">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <div class="modal-header">
+                                <div class="modal-logo-container">
+                                    <i class="fa-solid fa-book modal-logo"></i>
+                                </div>
+                                <h2 class="modal-title">Expert Methods & Guides</h2>
+                                <p class="modal-subtitle">Master the art of bypassing restrictions</p>
+                            </div>
+                            <div class="modal-content">
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-compass"></i>
+                                        Comprehensive Guides
+                                    </h3>
+                                    <p>Our detailed guides cover every aspect of bypassing school restrictions:</p>
+                                    <ul>
+                                        <li>Navigate to the <span class="highlight">Guides</span> section using the navbar</li>
+                                        <li>Find step-by-step instructions for various unblocking methods</li>
+                                        <li>Regularly updated with the latest techniques</li>
+                                    </ul>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-network-wired"></i>
+                                        Network Bypass Methods
+                                    </h3>
+                                    <p>Learn advanced techniques for getting around network restrictions:</p>
+                                    <ul>
+                                        <li>DNS modification methods</li>
+                                        <li>VPN setup guides</li>
+                                        <li>Proxy configuration tutorials</li>
+                                    </ul>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-laptop"></i>
+                                        Device Restriction Bypasses
+                                    </h3>
+                                    <p>Overcome limitations on school-issued devices:</p>
+                                    <ul>
+                                        <li>Chromebook restriction workarounds</li>
+                                        <li>iPad and tablet unlock methods</li>
+                                        <li>Windows and Mac device restriction bypasses</li>
+                                    </ul>
+                                </div>
+                    
+                                <p style="margin-top: 15px;"><strong>Note:</strong> Flamepass guides are provided for educational purposes.
+                                    Always follow your school's acceptable use policies.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-button" id="closeMethodsBtn">
+                                    <span>Got It</span>
+                                    <i data-lucide="check" size="18"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Access Modal -->
+                    <div class="modal-overlay" id="accessModal">
+                        <div class="modal">
+                            <div class="modal-close" id="closeAccessModal">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <div class="modal-header">
+                                <div class="modal-logo-container">
+                                    <i class="fa-solid fa-wifi modal-logo"></i>
+                                </div>
+                                <h2 class="modal-title">Always Accessible</h2>
+                                <p class="modal-subtitle">Never lose access to Flamepass</p>
+                            </div>
+                            <div class="modal-content">
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-door-open"></i>
+                                        Alternate Access Methods
+                                    </h3>
+                                    <p>Even if flamepass.com gets blocked, you can still access all features:</p>
+                                    <ul>
+                                        <li>Use our <span class="highlight">Ultimate Links</span> page to find working alternate links</li>
+                                        <li>Bookmark multiple working links before you need them</li>
+                                        <li>Once inside Flamepass through an alternate link, you'll have full access to all features</li>
+                                    </ul>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-stairs"></i>
+                                        Two-Step Access Strategy
+                                    </h3>
+                                    <p>The foolproof method to access Flamepass anywhere:</p>
+                                    <ol>
+                                        <li>Visit any working unblocker link (save several in advance)</li>
+                                        <li>Enter <span class="highlight">https://app.flamepass.com/</span> in the unblocker</li>
+                                        <li>Log in with your email and the access key we provided</li>
+                                        <li>Enjoy full Flamepass functionality even on heavily restricted networks</li>
+                                    </ol>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-brands fa-discord"></i>
+                                        Discord Updates
+                                    </h3>
+                                    <p>Join our <a href="https://discord.com/invite/gVaXCTqJDq" target="_blank"
+                                            style="color: #ff6600;">Discord server</a> for:</p>
+                                    <ul>
+                                        <li>Immediate notifications of new working links</li>
+                                        <li>Emergency access methods if your school implements new blocks</li>
+                                        <li>Community support and troubleshooting</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-button" id="closeAccessBtn">
+                                    <span>Understood</span>
+                                    <i data-lucide="thumbs-up" size="18"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Modal -->
+                    <div class="modal-overlay" id="premiumModal">
+                        <div class="modal">
+                            <div class="modal-close" id="closePremiumModal">
+                                <i class="fa-solid fa-xmark"></i>
+                            </div>
+                            <div class="modal-header">
+                                <div class="modal-logo-container">
+                                    <i class="fa-solid fa-crown modal-logo"></i>
+                                </div>
+                                <h2 class="modal-title">Premium Features</h2>
+                                <p class="modal-subtitle">Unlock the full potential of Flamepass</p>
+                            </div>
+                            <div class="modal-content">
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-gem"></i>
+                                        Premium Benefits
+                                    </h3>
+                                    <p>Upgrade to Flamepass Premium to enjoy these exclusive features:</p>
+                                    <ul>
+                                        <li><strong>Ad-Free Experience:</strong> Browse without interruptions</li>
+                                        <li><strong>Priority Access:</strong> No waiting times for games and apps</li>
+                                        <li><strong>Exclusive Content:</strong> Access premium games and applications</li>
+                                        <li><strong>Advanced Unblockers:</strong> Get access to our most reliable proxies</li>
+                                        <li><strong>Cloud Saves:</strong> Save your game progress across devices</li>
+                                        <li><strong>Early Access:</strong> Be the first to try new features</li>
+                                    </ul>
+                                </div>
+                    
+                                <div class="modal-section">
+                                    <h3 class="modal-section-title">
+                                        <i class="fa-solid fa-gear"></i>
+                                        Manage Your Subscription
+                                    </h3>
+                                    <p>Control your premium membership:</p>
+                                    <ul>
+                                        <li>Visit Settings > Account to manage your subscription</li>
+                                        <li>Update payment methods or billing information anytime</li>
+                                        <li>Cancel or pause your subscription when needed</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-button" id="closePremiumBtn">
+                                    <span>Explore Premium</span>
+                                    <i data-lucide="star" size="18"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="animated-background">
+                        <div class="blob"></div>
+                        <div class="blobbig"></div>
+                        <div class="blobsmall"></div>
+                        <div class="blobtop"></div>
+                        <div style="z-index: -999; position: fixed" id="particles-js"></div>
+                    </div>
+             
+                    <script>
+                        // Get token from URL parameter and display content accordingly
+                        function getUrlParameter(name) {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            return urlParams.get(name);
+                        }
+
+                        // Create confetti effect
+                        function createConfetti() {
+                            console.log("Creating confetti"); // Add this line for debugging
+                            const confettiColors = ['#ff6600', '#ffcc00', '#ffffff', '#ff9966', '#ff3300'];
+                            const confettiCount = 150; // Increase count for more visibility
+
+                            for (let i = 0; i < confettiCount; i++) {
+                                const confetti = document.createElement('div');
+                                confetti.className = 'confetti';
+                                confetti.style.left = Math.random() * 100 + 'vw';
+                                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                                confetti.style.width = Math.random() * 12 + 5 + 'px';
+                                confetti.style.height = Math.random() * 12 + 5 + 'px';
+                                confetti.style.opacity = Math.random() + 0.5;
+                                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                                confetti.style.zIndex = "9999"; // Ensure high z-index
+                                document.body.appendChild(confetti);
+
+                                // Remove confetti after animation
+                                setTimeout(() => {
+                                    confetti.remove();
+                                }, 5000);
+                            }
+                        }
+
+
+                        // Initialize tour using Shepherd.js
+                        function initializeTour() {
+                            const tour = new Shepherd.Tour({
+                                useModalOverlay: true,
+                                defaultStepOptions: {
+                                    cancelIcon: {
+                                        enabled: true
+                                    },
+                                    classes: 'shepherd-theme-custom',
+                                    scrollTo: { behavior: 'smooth', block: 'center' },
+                                    when: {
+                                        show() {
+                                            const currentStepElement = this.getElement();
+                                            const target = this.getTarget();
+                                            if (target) {
+                                                gsap.to(target, {
+                                                    duration: 0.3,
+                                                    scale: 1.05,
+                                                    boxShadow: '0 0 0 3px rgba(255, 102, 0, 0.5)',
+                                                    ease: 'power2.out'
+                                                });
+                                            }
+                                        },
+                                        hide() {
+                                            const target = this.getTarget();
+                                            if (target) {
+                                                gsap.to(target, {
+                                                    duration: 0.3,
+                                                    scale: 1,
+                                                    boxShadow: 'none',
+                                                    ease: 'power2.in'
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            tour.addStep({
+                                id: 'welcome',
+                                title: 'Welcome to Flamepass!',
+                                text: 'Thanks for subscribing! Let\'s take a quick tour to help you get the most out of your new Flamepass account.',
+                                buttons: [
+                                    {
+                                        text: 'Skip Tour',
+                                        action: tour.complete
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'key',
+                                title: 'Your Access Key',
+                                text: 'This is your personal access key. Make sure to save it somewhere safe - you\'ll need it to log in to Flamepass.',
+                                attachTo: {
+                                    element: '.key-container',
+                                    on: 'bottom'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'navbar',
+                                title: 'Navigation',
+                                text: 'Flamepass has everything you need in one place. The sidebar provides quick access to all features.',
+                                attachTo: {
+                                    element: '.navbar',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'search',
+                                title: 'Proxy Search',
+                                text: 'Use our powerful proxy search to access any website, even when blocked by your school\'s filters.',
+                                attachTo: {
+                                    element: '#nav-search',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'games',
+                                title: 'Games',
+                                text: 'Thousands of games at your fingertips! Play instantly in your browser with no installation required.',
+                                attachTo: {
+                                    element: '#nav-games',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'downloads',
+                                title: 'Downloadable Games',
+                                text: 'Need more gaming power? Access our collection of downloadable games that work even on restricted networks.',
+                                attachTo: {
+                                    element: '#nav-downloads',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'links',
+                                title: 'Ultimate Links',
+                                text: 'This is crucial! Save multiple unblocker links from this page so you can always access Flamepass, even if the main site gets blocked.',
+                                attachTo: {
+                                    element: '#nav-links',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'guides',
+                                title: 'Expert Guides',
+                                text: 'Learn pro techniques for bypassing restrictions with our detailed guides and methods section.',
+                                attachTo: {
+                                    element: '#nav-guides',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'settings',
+                                title: 'Settings',
+                                text: 'Customize your experience and manage your account. You can always find your access key in Settings > Account.',
+                                attachTo: {
+                                    element: '#nav-settings',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'discord',
+                                title: 'Join our Discord',
+                                text: 'For the latest updates, working links, and community support, make sure to join our Discord server!',
+                                attachTo: {
+                                    element: '#nav-discord',
+                                    on: 'right'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'cards',
+                                title: 'Everything else you may need...',
+                                text: 'Click on any of these cards to learn more about specific Flamepass features and capabilities.',
+                                attachTo: {
+                                    element: '.features-grid',
+                                    on: 'top'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Next',
+                                        action: tour.next
+                                    }
+                                ]
+                            });
+
+                            tour.addStep({
+                                id: 'login',
+                                title: 'Finally, login here.',
+                                text: 'Click here to log into Flamepass using your email from checkout & key.',
+                                attachTo: {
+                                    element: '#loginbtn',
+                                    on: 'top'
+                                },
+                                buttons: [
+                                    {
+                                        text: 'Back',
+                                        action: tour.back
+                                    },
+                                    {
+                                        text: 'Finish',
+                                        action: tour.complete
+                                    }
+                                ]
+                            });
+
+                            return tour;
+                        }
+
+                        // Initialize GSAP animations
+                        function initializeAnimations() {
+                            // Welcome section animations
+                            gsap.from('.welcome-logo', {
+                                y: -50,
+                                opacity: 1,
+                                duration: 1,
+                                ease: 'power3.out'
+                            });
+
+                            gsap.from('.welcome-title', {
+                                y: 30,
+                                opacity: 1,
+                                duration: 1,
+                                delay: 0.3,
+                                ease: 'power3.out'
+                            });
+
+                            gsap.from('.key-container', {
+                                y: 30,
+                                opacity: 1,
+                                duration: 1,
+                                delay: 0.6,
+                                ease: 'power3.out'
+                            });
+
+                            gsap.from('.welcome-subtitle', {
+                                y: 30,
+                                opacity: 0,
+                                duration: 1,
+                                delay: 0.9,
+                                ease: 'power3.out'
+                            });
+
+                            gsap.from('.action-buttons', {
+                                y: 30,
+                                opacity: 1,
+                                duration: 1,
+                                delay: 1.2,
+                                ease: 'power3.out'
+                            });
+
+                            // Feature cards staggered animation
+                            gsap.from('.feature-card', {
+                                y: 50,
+                                opacity: 1,
+                                duration: 0.8,
+                                stagger: 0.1,
+                                delay: 1.5,
+                                ease: 'power3.out'
+                            });
+
+                        }
+
+                        // Initialize all modals
+                        function initializeModals() {
+                            // Quick Start Modal
+                            const quickStartBtn = document.getElementById('quickStartBtn');
+                            const quickStartModal = document.getElementById('quickStartModal');
+                            const closeQuickStart = document.getElementById('closeQuickStart');
+                            const gotItBtn = document.getElementById('gotItBtn');
+
+                            quickStartBtn.addEventListener('click', function () {
+                                quickStartModal.classList.add('active');
+                            });
+
+                            closeQuickStart.addEventListener('click', function () {
+                                quickStartModal.classList.remove('active');
+                            });
+
+                            gotItBtn.addEventListener('click', function () {
+                                quickStartModal.classList.remove('active');
+                                Toastify({
+                                    text: "Quick Start Guide closed - you're ready to go!",
+                                    duration: 3000,
+                                    gravity: "bottom",
+                                    position: "center",
+                                    backgroundColor: "linear-gradient(to right, #ff6600, #ff8033)",
+                                    stopOnFocus: true
+                                }).showToast();
+                            });
+
+                            // Feature card modals
+                            const cardUnblocker = document.getElementById('card-unblocker');
+                            const unblockerModal = document.getElementById('unblockerModal');
+                            const closeUnblockerModal = document.getElementById('closeUnblockerModal');
+                            const closeUnblockerBtn = document.getElementById('closeUnblockerBtn');
+
+                            cardUnblocker.addEventListener('click', function () {
+                                unblockerModal.classList.add('active');
+                            });
+
+                            closeUnblockerModal.addEventListener('click', function () {
+                                unblockerModal.classList.remove('active');
+                            });
+
+                            closeUnblockerBtn.addEventListener('click', function () {
+                                unblockerModal.classList.remove('active');
+                            });
+
+                            // Games Modal
+                            const cardGames = document.getElementById('card-games');
+                            const gamesModal = document.getElementById('gamesModal');
+                            const closeGamesModal = document.getElementById('closeGamesModal');
+                            const closeGamesBtn = document.getElementById('closeGamesBtn');
+
+                            cardGames.addEventListener('click', function () {
+                                gamesModal.classList.add('active');
+                            });
+
+                            closeGamesModal.addEventListener('click', function () {
+                                gamesModal.classList.remove('active');
+                            });
+
+                            closeGamesBtn.addEventListener('click', function () {
+                                gamesModal.classList.remove('active');
+                            });
+
+                            // Apps Modal
+                            const cardApps = document.getElementById('card-apps');
+                            const appsModal = document.getElementById('appsModal');
+                            const closeAppsModal = document.getElementById('closeAppsModal');
+                            const closeAppsBtn = document.getElementById('closeAppsBtn');
+
+                            cardApps.addEventListener('click', function () {
+                                appsModal.classList.add('active');
+                            });
+
+                            closeAppsModal.addEventListener('click', function () {
+                                appsModal.classList.remove('active');
+                            });
+
+                            closeAppsBtn.addEventListener('click', function () {
+                                appsModal.classList.remove('active');
+                            });
+
+                            // Methods Modal
+                            const cardMethods = document.getElementById('card-methods');
+                            const methodsModal = document.getElementById('methodsModal');
+                            const closeMethodsModal = document.getElementById('closeMethodsModal');
+                            const closeMethodsBtn = document.getElementById('closeMethodsBtn');
+
+                            cardMethods.addEventListener('click', function () {
+                                methodsModal.classList.add('active');
+                            });
+
+                            closeMethodsModal.addEventListener('click', function () {
+                                methodsModal.classList.remove('active');
+                            });
+
+                            closeMethodsBtn.addEventListener('click', function () {
+                                methodsModal.classList.remove('active');
+                            });
+
+                            // Access Modal
+                            const cardAccess = document.getElementById('card-access');
+                            const accessModal = document.getElementById('accessModal');
+                            const closeAccessModal = document.getElementById('closeAccessModal');
+                            const closeAccessBtn = document.getElementById('closeAccessBtn');
+
+                            cardAccess.addEventListener('click', function () {
+                                accessModal.classList.add('active');
+                            });
+
+                            closeAccessModal.addEventListener('click', function () {
+                                accessModal.classList.remove('active');
+                            });
+
+                            closeAccessBtn.addEventListener('click', function () {
+                                accessModal.classList.remove('active');
+                            });
+
+                            // Premium Modal
+                            const cardPremium = document.getElementById('card-premium');
+                            const premiumModal = document.getElementById('premiumModal');
+                            const closePremiumModal = document.getElementById('closePremiumModal');
+                            const closePremiumBtn = document.getElementById('closePremiumBtn');
+
+                            cardPremium.addEventListener('click', function () {
+                                premiumModal.classList.add('active');
+                            });
+
+                            closePremiumModal.addEventListener('click', function () {
+                                premiumModal.classList.remove('active');
+                            });
+
+                            closePremiumBtn.addEventListener('click', function () {
+                                premiumModal.classList.remove('active');
+                            });
+
+                            // Close modal if clicked outside
+                            const allModals = document.querySelectorAll('.modal-overlay');
+                            allModals.forEach(modal => {
+                                modal.addEventListener('click', function (e) {
+                                    if (e.target === modal) {
+                                        modal.classList.remove('active');
+                                    }
+                                });
+                            });
+
+                            // ESC key to close modals
+                            document.addEventListener('keydown', function (e) {
+                                if (e.key === 'Escape') {
+                                    allModals.forEach(modal => {
+                                        modal.classList.remove('active');
+                                    });
+                                }
+                            });
+                        }
+
+                        // Initialize Particles.js
+                        function initializeParticles() {
+                            particlesJS('particles-js', {
+                                particles: {
+                                    number: {
+                                        value: 80,
+                                        density: {
+                                            enable: true,
+                                            value_area: 800
+                                        }
+                                    },
+                                    color: {
+                                        value: "#ffffff"
+                                    },
+                                    shape: {
+                                        type: "circle",
+                                        stroke: {
+                                            width: 0,
+                                            color: "#000000"
+                                        },
+                                        polygon: {
+                                            nb_sides: 5
+                                        }
+                                    },
+                                    opacity: {
+                                        value: 0.5,
+                                        random: true,
+                                        anim: {
+                                            enable: true,
+                                            speed: 1,
+                                            opacity_min: 0.1,
+                                            sync: false
+                                        }
+                                    },
+                                    size: {
+                                        value: 3,
+                                        random: true,
+                                        anim: {
+                                            enable: false,
+                                            speed: 40,
+                                            size_min: 0.1,
+                                            sync: false
+                                        }
+                                    },
+                                    line_linked: {
+                                        enable: false,
+                                        distance: 150,
+                                        color: "#ffffff",
+                                        opacity: 0.4,
+                                        width: 1
+                                    },
+                                    move: {
+                                        enable: true,
+                                        speed: 0.6,
+                                        direction: "top",
+                                        random: true,
+                                        straight: false,
+                                        out_mode: "out",
+                                        bounce: false,
+                                        attract: {
+                                            enable: false,
+                                            rotateX: 600,
+                                            rotateY: 1200
+                                        }
+                                    }
+                                },
+                                interactivity: {
+                                    detect_on: "canvas",
+                                    events: {
+                                        onhover: {
+                                            enable: true,
+                                            mode: "bubble"
+                                        },
+                                        onclick: {
+                                            enable: true,
+                                            mode: "push"
+                                        },
+                                        resize: true
+                                    },
+                                    modes: {
+                                        grab: {
+                                            distance: 400,
+                                            line_linked: {
+                                                opacity: 1
+                                            }
+                                        },
+                                        bubble: {
+                                            distance: 200,
+                                            size: 4,
+                                            duration: 2,
+                                            opacity: 0.8,
+                                            speed: 3
+                                        },
+                                        repulse: {
+                                            distance: 200,
+                                            duration: 0.4
+                                        },
+                                        push: {
+                                            particles_nb: 4
+                                        },
+                                        remove: {
+                                            particles_nb: 2
+                                        }
+                                    }
+                                },
+                                retina_detect: true
+                            });
+                        }
+
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const token = getUrlParameter('token');
+
+                            // Check if token exists
+                            if (!token) {
+                        // Show error message
+                                document.getElementById('tokenErrorContainer').style.display = 'flex';
+                                document.getElementById('welcomeContent').style.display = 'none';
+                            } else {
+                                // Show welcome content
+                                document.getElementById('tokenErrorContainer').style.display = 'none';
+                                document.getElementById('welcomeContent').style.display = 'block';
+
+                                // Set token value
+                                document.getElementById('tokenValue').textContent = token;
+
+                                // Initialize interactive features
+                                initializeAnimations();
+                                initializeModals();
+
+                                // Initialize tour
+                                const tour = initializeTour();
+
+                                // Start tour button
+                                document.getElementById('startTourBtn').addEventListener('click', function () {
+                                    tour.start();
+                                });
+
+
+                                // Auto-start the tour immediately after DOM is loaded
+                                tour.start();
+
+                                // Copy token functionality
+                                const copyTokenBtn = document.getElementById('copyTokenBtn');
+                                copyTokenBtn.addEventListener('click', function () {
+                                    const tokenText = document.getElementById('tokenValue').textContent;
+                                    navigator.clipboard.writeText(tokenText).then(function () {
+                                        // Animate the button on copy
+                                        gsap.to(copyTokenBtn, {
+                                            backgroundColor: '#4CAF50',
+                                            duration: 0.3
+                                        });
+
+                                        copyTokenBtn.innerHTML = '<i data-lucide="check" size="16"></i><span>Copied!</span>';
+                                        lucide.createIcons();
+
+                                        // Show toast notification
+                                        Toastify({
+                                            text: "Access key copied to clipboard! Keep it somewhere safe.",
+                                            duration: 3000,
+                                            gravity: "bottom",
+                                            position: "center",
+                                            backgroundColor: "linear-gradient(to right, #4CAF50, #66bb6a)",
+                                            stopOnFocus: true
+                                        }).showToast();
+
+                                        // Reset button after 2 seconds
+                                        setTimeout(function () {
+                                            gsap.to(copyTokenBtn, {
+                                                backgroundColor: '#ff6600',
+                                                duration: 0.3
+                                            });
+                                            copyTokenBtn.innerHTML = '<i data-lucide="copy" size="16"></i><span>Copy</span>';
+                                            lucide.createIcons();
+                                        }, 2000);
+                                    });
+                                });
+
+                                // Create celebratory confetti effect
+                                setTimeout(createConfetti, 1500);                                
+                            }
+
+                            // Initialize Lucide icons
+                            lucide.createIcons();
+                        });
+
+                          
+                      </script>
+
+<script src="/js/localforage.min.js"></script>
+<script src="/js/index.js"></script>
+<script src="/js/themes.js"></script>
+<script src="/js/c.js"></script>
+</body>
+
+</html>
