@@ -32,9 +32,10 @@
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
 	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="/js/auth-controller.min.js"></script>
+	<script src="/js/auth-controller.min.js"></script>
 	<link rel="stylesheet" href="/css/common.css" />
 	<style>
+		/* Base Styles - Keeping container, title, description untouched */
 		.links-container {
 			max-width: 1000px;
 			margin: 0 auto;
@@ -57,9 +58,16 @@
 			font-size: 1.1rem;
 		}
 
+		/* Enhanced Search with Animation */
 		.search-container {
 			max-width: 600px;
 			margin: 0 auto 40px;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		.search-container:focus-within {
+			transform: scale(1.03);
 		}
 
 		.search-input {
@@ -67,72 +75,258 @@
 			background-color: rgba(46, 46, 46, 0.7);
 			border: 1px solid #3a3a3a;
 			color: white;
-			padding: 12px 20px;
+			padding: 12px 20px 12px 45px;
 			border-radius: 30px;
 			font-size: 1rem;
 			outline: none;
-			transition: border-color 0.3s, box-shadow 0.3s;
+			transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 		}
 
 		.search-input:focus {
 			border-color: #de5c34;
-			box-shadow: 0 0 0 2px rgba(222, 92, 52, 0.2);
+			box-shadow: 0 0 0 3px rgba(222, 92, 52, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15);
+			background-color: rgba(56, 56, 56, 0.9);
 		}
 
+		.search-icon {
+			position: absolute;
+			left: 15px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #de5c34;
+			font-size: 1.2rem;
+			pointer-events: none;
+			transition: all 0.3s ease;
+		}
+
+		.search-container:focus-within .search-icon {
+			color: #ff8033;
+		}
+
+		.search-clear {
+			position: absolute;
+			right: 15px;
+			top: 50%;
+			transform: translateY(-50%) scale(0);
+			color: rgba(255, 255, 255, 0.7);
+			font-size: 1rem;
+			cursor: pointer;
+			background: none;
+			border: none;
+			padding: 5px;
+			border-radius: 50%;
+			transition: all 0.3s ease;
+			opacity: 0;
+		}
+
+		.search-input:not(:placeholder-shown)~.search-clear {
+			transform: translateY(-50%) scale(1);
+			opacity: 1;
+		}
+
+		.search-clear:hover {
+			color: white;
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+
+		/* Completely Redesigned Tag Filters */
+		.filter-container {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 30px;
+			flex-wrap: wrap;
+			gap: 10px;
+			padding: 0 10px;
+		}
+
+		.filter-btn {
+			background-color: rgba(46, 46, 46, 0.7);
+			border: 1px solid #3a3a3a;
+			color: white;
+			padding: 10px 18px;
+			border-radius: 30px;
+			cursor: pointer;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			font-size: 0.9rem;
+			font-weight: 500;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		}
+
+		.filter-btn.active {
+			background-color: #de5c34;
+			border-color: #de5c34;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(222, 92, 52, 0.3);
+		}
+
+		.filter-btn:hover:not(.active) {
+			background-color: rgba(56, 56, 56, 0.8);
+			border-color: #ff6600;
+			transform: translateY(-1px);
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+		}
+
+		.filter-btn .filter-count {
+			background-color: rgba(255, 255, 255, 0.2);
+			padding: 2px 8px;
+			border-radius: 12px;
+			font-size: 0.8rem;
+			transition: all 0.3s ease;
+		}
+
+		.filter-btn.active .filter-count {
+			background-color: rgba(255, 255, 255, 0.3);
+		}
+
+		/* Category Redesign with Collapsible Sections */
 		.category {
-			margin-bottom: 40px;
+			margin-bottom: 25px;
+			background-color: rgba(30, 30, 30, 0.6);
+			border-radius: 12px;
+			padding: 5px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			transition: all 0.3s ease;
+			border: 1px solid rgba(60, 60, 60, 0.3);
+			overflow: hidden;
+		}
+
+		.category:hover {
+			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+			background-color: rgba(35, 35, 35, 0.7);
+		}
+
+		.category-header {
+			padding: 18px 22px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-radius: 10px;
+			transition: all 0.3s ease;
+		}
+
+		.category-header:hover {
+			background-color: rgba(50, 50, 50, 0.5);
+		}
+
+		.category-title-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+			flex: 1;
 		}
 
 		.category-title {
 			color: white;
-			margin-bottom: 15px;
 			font-size: 1.5rem;
 			font-weight: 600;
-			position: relative;
+			margin: 0;
 			display: flex;
 			align-items: center;
-		}
-
-		.category-title::after {
-			content: '';
-			position: absolute;
-			left: 0;
-			bottom: -5px;
-			width: 40px;
-			height: 3px;
-			background-color: #de5c34;
+			gap: 12px;
+			position: relative;
 		}
 
 		.category-icon {
 			font-size: 1.4rem;
-			margin-right: 10px;
 			color: #de5c34;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			background-color: rgba(222, 92, 52, 0.15);
+			border-radius: 50%;
+			transition: all 0.3s ease;
 		}
 
-		.status-icon {
-			font-size: 0.8rem;
-			margin-left: 10px;
-			vertical-align: middle;
+		.collapsed .category-icon {
+			transform: scale(0.9);
+		}
+
+		.category-meta {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.category-description {
+			color: rgba(255, 255, 255, 0.7);
+			font-size: 0.95rem;
+			margin: 0;
+		}
+
+		.status-badge {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			padding: 6px 12px;
+			border-radius: 30px;
+			font-size: 0.85rem;
+			font-weight: 500;
+			color: white;
+			transition: all 0.3s ease;
 		}
 
 		.status-flourishing {
-			color: #4CAF50;
+			background-color: rgba(76, 175, 80, 0.2);
+			border: 1px solid rgba(76, 175, 80, 0.4);
 		}
 
 		.status-stable {
-			color: #2196F3;
+			background-color: rgba(33, 150, 243, 0.2);
+			border: 1px solid rgba(33, 150, 243, 0.4);
 		}
 
 		.status-unstable {
-			color: #FFC107;
-		}
-
-		.status-ghosted {
-			color: #F44336;
+			background-color: rgba(255, 193, 7, 0.2);
+			border: 1px solid rgba(255, 193, 7, 0.4);
 		}
 
 		.status-fresh {
-			color: #9C27B0;
+			background-color: rgba(156, 39, 176, 0.2);
+			border: 1px solid rgba(156, 39, 176, 0.4);
+		}
+
+		.category-toggle {
+			color: rgba(255, 255, 255, 0.7);
+			font-size: 1.5rem;
+			transition: all 0.3s ease;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+		}
+
+		.category.collapsed .category-toggle {
+			transform: rotate(-90deg);
+		}
+
+		.category-toggle:hover {
+			background-color: rgba(255, 255, 255, 0.1);
+			color: white;
+		}
+
+		.category-content {
+			max-height: 2000px;
+			transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, padding 0.3s ease;
+			opacity: 1;
+			overflow: hidden;
+			padding: 15px 20px 20px;
+		}
+
+		.category.collapsed .category-content {
+			max-height: 0;
+			opacity: 0;
+			padding-top: 0;
+			padding-bottom: 0;
+			pointer-events: none;
 		}
 
 		.links-grid {
@@ -141,119 +335,236 @@
 			gap: 15px;
 		}
 
+		/* Link Item Redesign */
 		.link-item {
 			background-color: rgba(46, 46, 46, 0.7);
-			border-radius: 8px;
-			padding: 12px 15px;
+			border-radius: 10px;
+			padding: 14px 16px;
 			color: white;
 			text-decoration: none;
-			transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 			display: flex;
 			align-items: center;
 			word-break: break-all;
 			border: 1px solid #3a3a3a;
 			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		}
 
 		.link-item:hover {
 			background-color: rgba(56, 56, 56, 0.8);
-			transform: translateY(-3px);
+			transform: translateY(-3px) scale(1.01);
 			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 			border-color: #de5c34;
 		}
 
+		.link-item::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 70%);
+			transform: translateX(-100%);
+			transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+		}
+
+		.link-item:hover::after {
+			transform: translateX(100%);
+		}
+
 		.link-icon {
-			margin-right: 10px;
+			margin-right: 12px;
 			color: #de5c34;
 			font-size: 1.2rem;
 			flex-shrink: 0;
+			transition: all 0.3s ease;
 		}
 
-		.no-results {
-			text-align: center;
-			padding: 30px;
-			color: rgba(255, 255, 255, 0.7);
-			font-size: 1.1rem;
-			grid-column: 1 / -1;
+		.link-item:hover .link-icon {
+			transform: scale(1.1);
 		}
 
-		.copy-btn {
+		.link-text-wrapper {
+			flex: 1;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.link-text {
+			transition: all 0.3s ease;
+		}
+
+		.link-action-buttons {
+			display: flex;
+			align-items: center;
+			margin-left: auto;
+			gap: 8px;
+		}
+
+		.action-btn {
 			background-color: transparent;
 			border: none;
-			color: #de5c34;
+			color: rgba(255, 255, 255, 0.6);
 			cursor: pointer;
-			margin-left: auto;
 			padding: 5px;
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			transition: background-color 0.3s;
+			transition: all 0.3s ease;
+			font-size: 1rem;
 		}
 
-		.copy-btn:hover {
-			background-color: rgba(222, 92, 52, 0.1);
-		}
-
-
-		.filter-container {
-			display: flex;
-			justify-content: center;
-			margin-bottom: 30px;
-			flex-wrap: wrap;
-			gap: 10px;
-		}
-
-		.filter-btn {
-			background-color: rgba(46, 46, 46, 0.7);
-			border: 1px solid #3a3a3a;
+		.action-btn:hover {
+			background-color: rgba(255, 255, 255, 0.1);
 			color: white;
-			padding: 8px 15px;
-			border-radius: 20px;
-			cursor: pointer;
-			transition: background-color 0.3s, border-color 0.3s;
-			font-size: 0.9rem;
 		}
 
-		.filter-btn.active {
-			background-color: #de5c34;
-			border-color: #de5c34;
+		.copy-btn {
+			color: #de5c34;
 		}
 
-		.filter-btn:hover:not(.active) {
-			background-color: rgba(56, 56, 56, 0.8);
-			border-color: #de5c34;
+		.save-btn.saved {
+			color: #de5c34;
 		}
 
-		/* Link submission button and form styles */
-		.submit-link-btn {
-			display: block;
-			width: 100%;
-			max-width: 300px;
-			margin: 20px auto 30px;
-			background-color: #de5c34;
+		.button-tooltip {
+			position: absolute;
+			background-color: rgba(0, 0, 0, 0.8);
 			color: white;
-			border: none;
-			border-radius: 30px;
-			padding: 12px 20px;
-			font-size: 1.1rem;
-			font-weight: 600;
+			padding: 5px 10px;
+			border-radius: 5px;
+			font-size: 0.8rem;
+			bottom: 100%;
+			left: 50%;
+			transform: translateX(-50%) translateY(10px);
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.3s ease;
+			white-space: nowrap;
+			pointer-events: none;
+			z-index: 10;
+		}
+
+		.action-btn:hover .button-tooltip {
+			opacity: 1;
+			visibility: visible;
+			transform: translateX(-50%) translateY(0);
+		}
+
+		/* Enhanced No Results */
+		.no-results {
 			text-align: center;
+			padding: 40px 30px;
+			color: rgba(255, 255, 255, 0.7);
+			font-size: 1.1rem;
+			grid-column: 1 / -1;
+			background-color: rgba(46, 46, 46, 0.3);
+			border-radius: 10px;
+			border: 1px dashed rgba(255, 255, 255, 0.2);
+			margin: 20px 0;
+			animation: fadeIn 0.5s ease;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.no-results i {
+			font-size: 2.5rem;
+			color: rgba(255, 255, 255, 0.5);
+			margin-bottom: 15px;
+			display: block;
+		}
+
+		/* Lock system redesign */
+		.locked-link-container {
+			position: relative;
+			border-radius: 10px;
+			overflow: hidden;
 			cursor: pointer;
-			transition: background-color 0.3s, transform 0.2s;
+			width: 100%;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		}
 
-		.submit-link-btn:hover {
-			background-color: #e76b45;
-			transform: translateY(-2px);
+		.locked-link-container:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 		}
 
-		.submit-link-btn i {
-			padding-right: 10px;
+		.locked-preview {
+			background-color: rgba(46, 46, 46, 0.7);
+			padding: 14px 16px;
+			color: white;
+			border: 1px solid #3a3a3a;
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			filter: blur(5px);
+			pointer-events: none;
+			user-select: none;
 		}
 
-		/* Modal styles */
-		.modal-overlay {
+		.locked-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.5);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			z-index: 5;
+			transition: all 0.3s ease;
+		}
+
+		.locked-link-container:hover .locked-overlay {
+			background-color: rgba(0, 0, 0, 0.6);
+		}
+
+		.lock-icon {
+			color: white;
+			font-size: 1.8rem;
+			margin-bottom: 10px;
+			background-color: rgba(222, 92, 52, 0.8);
+			width: 50px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			transition: all 0.3s ease;
+		}
+
+		.locked-link-container:hover .lock-icon {
+			transform: scale(1.1);
+		}
+
+		.unlock-text {
+			color: white;
+			font-size: 0.9rem;
+			text-align: center;
+			max-width: 80%;
+		}
+
+		/* Unlock Options Modal */
+		.unlock-options-modal {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -264,190 +575,1172 @@
 			align-items: center;
 			justify-content: center;
 			z-index: 1000;
-			opacity: 1!important;
-			visibility: visible!important;
 		}
 
-		.modal {
+		.unlock-modal-content {
 			background-color: #1e1e1e;
-			border-radius: 10px;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+			border-radius: 15px;
 			padding: 30px;
 			width: 90%;
-			max-width: 450px;
-			position: absolute;
-			border: 1px solid rgba(255, 102, 0, 0.3);
+			max-width: 500px;
+			position: relative;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+			border: 1px solid rgba(222, 92, 52, 0.3);
+			animation: modalFadeIn 0.3s ease;
 		}
 
-		.modal-close {
+		@keyframes modalFadeIn {
+			from {
+				opacity: 0;
+				transform: scale(0.95) translateY(10px);
+			}
+
+			to {
+				opacity: 1;
+				transform: scale(1) translateY(0);
+			}
+		}
+
+		.unlock-modal-close {
 			position: absolute;
 			top: 15px;
 			right: 15px;
-			color: #aaaaaa;
-			font-size: 20px;
+			color: rgba(255, 255, 255, 0.7);
+			font-size: 1.5rem;
 			cursor: pointer;
-			transition: color 0.3s ease;
+			transition: all 0.3s ease;
+			width: 30px;
+			height: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
 		}
 
-		.modal-close:hover {
-			color: #ff6600;
+		.unlock-modal-close:hover {
+			color: white;
+			background-color: rgba(255, 255, 255, 0.1);
 		}
 
-		.modal-header {
+		.unlock-modal-header {
 			text-align: center;
 			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 		}
 
-		.modal-header h2 {
-			color: #ffffff;
-			margin-bottom: 10px;
-			font-size: 24px;
-			font-weight: 700;
+		.unlock-modal-header h2 {
+			color: white;
 			margin: 0;
+			font-size: 1.8rem;
+			font-weight: 700;
 		}
 
-		.modal-header p {
-			color: #aaaaaa;
-			margin-top: 4px;
-			font-size: 16px;
+		.unlock-modal-header p {
+			color: rgba(255, 255, 255, 0.7);
+			margin-top: 10px;
+			font-size: 1rem;
 		}
 
-		.form-group {
-			display: flex;
-			flex-direction: column;
-			gap: 5px;
-			text-align: left;
+		.unlock-options {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 15px;
+			margin-bottom: 20px;
+		}
+
+		.unlock-option {
+			background-color: rgba(50, 50, 50, 0.5);
+			border-radius: 10px;
+			padding: 20px;
+			text-align: center;
+			transition: all 0.3s ease;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			cursor: pointer;
+		}
+
+		.unlock-option:hover {
+			background-color: rgba(70, 70, 70, 0.5);
+			transform: translateY(-3px);
+			border-color: #de5c34;
+		}
+
+		.unlock-option-icon {
+			font-size: 2rem;
+			color: #de5c34;
 			margin-bottom: 15px;
 		}
 
-		.form-group label {
+		.unlock-option h3 {
 			color: white;
-			font-size: 1rem;
-			margin-bottom: 5px;
+			margin: 0 0 10px;
+			font-size: 1.2rem;
 		}
 
-		.form-group input,
-		.form-group select,
-		.form-group textarea {
-			background-color: rgba(30, 30, 30, 0.7);
-			border: 1px solid #3a3a3a;
-			border-radius: 5px;
-			padding: 10px 12px;
-			color: white;
-			font-size: 1rem;
-			outline: none;
-			transition: border-color 0.3s, box-shadow 0.3s;
+		.unlock-option p {
+			color: rgba(255, 255, 255, 0.7);
+			margin: 0;
+			font-size: 0.9rem;
 		}
 
-		.form-group input:focus,
-		.form-group select:focus,
-		.form-group textarea:focus {
-			border-color: #ff6600;
-			box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+		.unlock-progress {
+			background-color: rgba(40, 40, 40, 0.5);
+			border-radius: 10px;
+			padding: 15px 20px;
+			margin-top: 20px;
 		}
 
-		.form-group textarea {
-			min-height: 80px;
-			resize: vertical;
-		}
-
-		.form-hint {
-			color: rgba(255, 255, 255, 0.5);
-			font-size: 0.8rem;
-			margin-top: 2px;
-		}
-
-		.submit-link-form {
+		.unlock-progress-header {
 			display: flex;
-			flex-direction: column;
-			gap: 15px;
+			justify-content: space-between;
+			margin-bottom: 10px;
 		}
 
-		.submit-btn {
-			background-color: #ff6600;
+		.unlock-progress-title {
+			color: white;
+			font-weight: 500;
+		}
+
+		.unlock-progress-count {
+			color: rgba(255, 255, 255, 0.7);
+		}
+
+		.progress-bar-container {
+			width: 100%;
+			height: 8px;
+			background-color: rgba(255, 255, 255, 0.1);
+			border-radius: 4px;
+			overflow: hidden;
+		}
+
+		.progress-bar {
+			height: 100%;
+			background-color: #de5c34;
+			border-radius: 4px;
+			transition: width 0.5s ease;
+		}
+
+		/* Submit Link Button and Modal Improvements */
+		.action-buttons-container {
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+			margin-bottom: 30px;
+		}
+
+		.primary-action-btn {
+			background-color: #de5c34;
 			color: white;
 			border: none;
-			border-radius: 5px;
-			padding: 12px;
-			font-size: 1rem;
+			border-radius: 30px;
+			padding: 12px 25px;
+			font-size: 1.1rem;
 			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 10px;
 			cursor: pointer;
-			transition: background-color 0.3s, transform 0.2s;
-			margin-top: 10px;
-			width: 100%;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 		}
 
-		.submit-btn:hover {
-			background-color: #ff8033;
+		.primary-action-btn:hover {
+			background-color: #e76b45;
 			transform: translateY(-2px);
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 		}
 
-		.login-alert {
-			background-color: rgba(244, 67, 54, 0.2);
-			color: #F44336;
-			border: 1px solid rgba(244, 67, 54, 0.3);
-			padding: 15px;
-			border-radius: 5px;
-			text-align: center;
-			margin-top: 15px;
-		}
-
-		.success-message,
-		.error-message {
-			padding: 15px;
-			border-radius: 5px;
-			text-align: center;
-			margin-top: 15px;
-		}
-
-		.success-message {
-			background-color: rgba(76, 175, 80, 0.2);
-			color: #4CAF50;
-			border: 1px solid rgba(76, 175, 80, 0.3);
-		}
-
-		.error-message {
-			background-color: rgba(244, 67, 54, 0.2);
-			color: #F44336;
-			border: 1px solid rgba(244, 67, 54, 0.3);
-		}
-
-		.lock-icon {
-			position: absolute;
-			right: 50%;
+		.secondary-action-btn {
+			background-color: rgba(46, 46, 46, 0.7);
 			color: white;
-			font-size: 1.5rem;
-			z-index: 10;
-			/* Ensure lock appears above blur */
+			border: 1px solid #3a3a3a;
+			border-radius: 30px;
+			padding: 12px 25px;
+			font-size: 1.1rem;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			cursor: pointer;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 		}
 
-		.blurred-link {
-			filter: blur(5px);
-			pointer-events: none;
+		.secondary-action-btn:hover {
+			background-color: rgba(56, 56, 56, 0.8);
+			border-color: #de5c34;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+		}
+
+		.submit-link-btn {
+			flex: 0 1 auto;
+		}
+
+		.saved-links-btn {
+			flex: 0 1 auto;
+		}
+
+		/* Saved Links Modal */
+		.saved-links-modal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.7);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			z-index: 1000;
+		}
+
+		.saved-links-content {
+			background-color: #1e1e1e;
+			border-radius: 15px;
+			padding: 30px;
+			width: 90%;
+			max-width: 700px;
 			position: relative;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+			border: 1px solid rgba(222, 92, 52, 0.3);
+			animation: modalFadeIn 0.3s ease;
+			max-height: 80vh;
+			overflow-y: auto;
 		}
 
-		@media (max-width: 768px) {
-			.links-grid {
-				grid-template-columns: 1fr;
-			}
-
-			.category-title {
-				margin-left: 20px;
-			}
-
-			.links-container {
-				padding: 100px 15px 50px 60px;
-			}
-
-			.filter-container {
-				justify-content: flex-start;
-				padding-left: 20px;
-				overflow-x: auto;
-				padding-bottom: 10px;
-			}
+		.saved-links-content::-webkit-scrollbar {
+			width: 8px;
 		}
-	</style>
+
+		.saved-links-content::-webkit-scrollbar-track {
+			background: rgba(0, 0, 0, 0.1);
+			border-radius: 10px;
+		}
+
+		.saved-links-content::-webkit-scrollbar-thumb {
+			background: rgba(222, 92, 52, 0.5);
+			border-radius: 10px;
+		}
+
+		.saved-links-content::-webkit-scrollbar-thumb:hover {
+			background: rgba(222, 92, 52, 0.7);
+		}
+
+		.saved-links-header {
+			text-align: center;
+			margin-bottom: 25px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.saved-links-title {
+			color: white;
+			font-size: 1.8rem;
+			font-weight: 700;
+			margin: 0;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.saved-links-description {
+			color: rgba(255, 255, 255, 0.7);
+			margin-top: 10px;
+			font-size: 1rem;
+		}
+
+		.no-saved-links {
+			text-align: center;
+			padding: 30px;
+			color: rgba(255, 255, 255, 0.7);
+			font-size: 1.1rem;
+		}
+
+		.no-saved-links i {
+			font-size: 3rem;
+			color: rgba(255, 255, 255, 0.3);
+			margin-bottom: 15px;
+			display: block;
+		}
+
+		.saved-links-list {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.saved-link-item {
+			background-color: rgba(46, 46, 46, 0.7);
+			border-radius: 10px;
+			padding: 14px 16px;
+			color: white;
+			display: flex;
+			align-items: center;
+			border: 1px solid #3a3a3a;
+			transition: all 0.3s ease;
+		}
+
+		.saved-link-item:hover {
+      background-color: rgba(56, 56, 56, 0.8);
+      border-color: #de5c34;
+      transform: translateY(-2px);
+    }
+
+    .saved-link-icon {
+      color: #de5c34;
+      font-size: 1.2rem;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .saved-link-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .saved-link-category {
+      background-color: rgba(222, 92, 52, 0.2);
+      color: #de5c34;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-right: 10px;
+    }
+
+    .saved-link-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .saved-link-action {
+      background-color: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      position: relative;
+    }
+
+    .saved-link-action:hover {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .saved-link-action.remove {
+      color: #f44336;
+    }
+
+    /* Updated Submit Link Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .modal {
+      background-color: #1e1e1e;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      border: 1px solid rgba(222, 92, 52, 0.3);
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .modal-close:hover {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-header h2 {
+      color: white;
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .modal-header h2 i {
+      color: #de5c34;
+    }
+
+    .modal-header p {
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group label i {
+      color: #de5c34;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background-color: rgba(30, 30, 30, 0.7);
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      padding: 12px 15px;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #de5c34;
+      box-shadow: 0 0 0 2px rgba(222, 92, 52, 0.2);
+      background-color: rgba(40, 40, 40, 0.7);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-hint {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+
+    .submit-link-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .submit-btn {
+      background-color: #de5c34;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background-color: #e76b45;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .submit-btn:disabled {
+      background-color: rgba(222, 92, 52, 0.5);
+      cursor: not-allowed;
+    }
+
+    .login-alert {
+      background-color: rgba(33, 150, 243, 0.15);
+      color: #90caf9;
+      border: 1px solid rgba(33, 150, 243, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .login-alert a {
+      color: #de5c34;
+      text-decoration: underline;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .login-alert a:hover {
+      color: #e76b45;
+    }
+
+    .message-container {
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .success-message {
+      background-color: rgba(76, 175, 80, 0.15);
+      color: #81c784;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .error-message {
+      background-color: rgba(244, 67, 54, 0.15);
+      color: #e57373;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+
+    /* Category status styling */
+    .status-icon {
+      font-size: 0.8rem;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    .status-flourishing {
+      color: #4CAF50;
+    }
+
+    .status-stable {
+      color: #2196F3;
+    }
+
+    .status-unstable {
+      color: #FFC107;
+    }
+
+    .status-fresh {
+      color: #9C27B0;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      background-color: rgba(30, 30, 30, 0.6);
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 15px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .stat-icon {
+      color: #de5c34;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+
+    /* Flamepass category styling */
+    .flamepass-category .category-header {
+      background: linear-gradient(135deg, rgba(222, 92, 52, 0.2) 0%, rgba(46, 46, 46, 0) 70%);
+    }
+
+    .flamepass-category .category-icon {
+      color: #de5c34;
+      background-color: rgba(222, 92, 52, 0.2);
+    }
+
+    .flamepass-notice {
+      background-color: rgba(222, 92, 52, 0.15);
+      border: 1px solid rgba(222, 92, 52, 0.3);
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .flamepass-notice-icon {
+      color: #de5c34;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .flamepass-notice-text {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95rem;
+    }
+
+    /* Login rewards & points system */
+    .points-display {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: rgba(222, 92, 52, 0.15);
+      border-radius: 30px;
+      padding: 8px 15px;
+      margin-left: auto;
+      margin-right: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .points-display:hover {
+      background-color: rgba(222, 92, 52, 0.25);
+    }
+
+    .points-icon {
+      color: #de5c34;
+      font-size: 1.2rem;
+    }
+
+    .points-value {
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .reward-banner {
+      background: linear-gradient(135deg, rgba(222, 92, 52, 0.2) 0%, rgba(156, 39, 176, 0.1) 100%);
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(222, 92, 52, 0.3);
+    }
+
+    .reward-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+      animation: shimmer 2s infinite;
+      z-index: 1;
+    }
+
+    .reward-icon {
+      font-size: 2.5rem;
+      color: #de5c34;
+      margin-right: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .reward-content {
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .reward-title {
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0 0 5px;
+    }
+
+    .reward-description {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .reward-action {
+      background-color: #de5c34;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 20px;
+      white-space: nowrap;
+    }
+
+    .reward-action:hover {
+      background-color: #e76b45;
+      transform: translateY(-2px);
+    }
+
+    /* Mobile responsiveness improvements */
+    @media (max-width: 768px) {
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-header {
+        padding: 15px;
+      }
+
+      .category-title {
+        font-size: 1.3rem;
+      }
+
+      .category-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+      }
+
+      .category-content {
+        padding: 12px 15px 15px;
+      }
+
+      .links-container {
+        padding: 100px 15px 50px 25px;
+      }
+
+      .stats-bar {
+        gap: 15px;
+        padding: 12px;
+      }
+
+      .stat-item {
+        padding: 0 10px;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+      }
+
+      .unlock-options {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons-container {
+        flex-direction: column;
+      }
+
+      .primary-action-btn, 
+      .secondary-action-btn {
+        width: 100%;
+      }
+
+      .category-description {
+        display: none;
+      }
+
+      .status-badge {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+      }
+
+      .filter-container {
+        justify-content: flex-start;
+        padding-left: 0;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+
+      .points-display {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    /* Toasts for notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 10px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background-color: #1e1e1e;
+      color: white;
+      border-radius: 8px;
+      padding: 15px;
+      min-width: 280px;
+      max-width: 350px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transform: translateX(120%);
+      transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      border-left: 4px solid #de5c34;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-icon {
+      flex-shrink: 0;
+      font-size: 1.5rem;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .toast-message {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .toast-success {
+      border-left-color: #4CAF50;
+    }
+
+    .toast-success .toast-icon {
+      color: #4CAF50;
+    }
+
+    .toast-error {
+      border-left-color: #F44336;
+    }
+
+    .toast-error .toast-icon {
+      color: #F44336;
+    }
+
+    .toast-info {
+      border-left-color: #2196F3;
+    }
+
+    .toast-info .toast-icon {
+      color: #2196F3;
+    }
+
+    .toast-warning {
+      border-left-color: #FFC107;
+    }
+
+    .toast-warning .toast-icon {
+      color: #FFC107;
+    }
+
+    /* Link tags */
+    .link-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .link-tag {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .link-tag:hover {
+      background-color: rgba(222, 92, 52, 0.2);
+      color: white;
+    }
+
+    /* Daily reward system */
+    .daily-reward-btn {
+      position: relative;
+    }
+
+    .reward-indicator {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 10px;
+      height: 10px;
+      background-color: #4CAF50;
+      border-radius: 50%;
+      border: 2px solid #1e1e1e;
+      animation: pulse 2s infinite;
+    }
+
+    /* Loading & skeleton states */
+    .skeleton-category {
+      margin-bottom: 25px;
+      background-color: rgba(30, 30, 30, 0.6);
+      border-radius: 12px;
+      padding: 5px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(60, 60, 60, 0.3);
+      overflow: hidden;
+    }
+
+    .skeleton-header {
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 10px;
+    }
+
+    .skeleton-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .skeleton-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-title {
+      width: 150px;
+      height: 20px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-badge {
+      width: 80px;
+      height: 26px;
+      border-radius: 30px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-content {
+      padding: 15px 20px 20px;
+    }
+
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+    }
+
+    .skeleton-link {
+      height: 50px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* Inline notification banners */
+    .notification-banner {
+      background-color: rgba(33, 150, 243, 0.15);
+      border: 1px solid rgba(33, 150, 243, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .notification-icon {
+      color: #2196F3;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-title {
+      color: white;
+      font-weight: 600;
+      margin: 0 0 5px;
+    }
+
+    .notification-message {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .notification-close {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .notification-close:hover {
+      color: white;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Welcome back banner for returning users */
+    .welcome-banner {
+      background: linear-gradient(135deg, rgba(222, 92, 52, 0.2) 0%, rgba(156, 39, 176, 0.1) 100%);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(222, 92, 52, 0.3);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .welcome-icon {
+      font-size: 2.5rem;
+      color: #de5c34;
+      margin-right: 20px;
+    }
+
+    .welcome-content {
+      flex: 1;
+    }
+
+    .welcome-title {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0 0 5px;
+    }
+
+    .welcome-message {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .welcome-close {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .welcome-close:hover {
+      color: white;
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+</style>
 </head>
 
 <body>
@@ -536,861 +1829,1696 @@
 		<p class="page-description">The #1 collection of proxy links for school. Use these links to
 			bypass filters and enjoy unrestricted internet access.</p>
 
-		<div class="search-container">
-			<input type="text" class="search-input" placeholder="Search for proxies, games, apps..." id="searchInput">
-		</div>
-
-		<!-- Submit Link Button (moved to top) -->
-		<button id="submitLinkButton" class="submit-link-btn">
-			<i class="fa-solid fa-plus"></i> Submit a Link
-		</button>
-
-		<div class="filter-container" id="filterButtons">
-			<!-- Filter buttons will be added by JavaScript -->
-		</div>
-
-		<div id="linksContent">
-			<!-- Categories and links will be added by JavaScript -->
-		</div>
-	</div>
-
-	<!-- Submit Link Modal -->
-	<div class="modal-overlay" id="submitLinkModal">
-		<div class="modal">
-			<div class="modal-close" id="closeSubmitModal">
+		<!-- Welcome back banner (conditionally displayed) -->
+		<div class="welcome-banner" id="welcomeBanner">
+			<div class="welcome-icon">
+				<i class="fa-solid fa-hand-wave"></i>
+			</div>
+			<div class="welcome-content">
+				<h3 class="welcome-title">Welcome back!</h3>
+				<p class="welcome-message">Your saved links and preferences have been restored. You have <span
+						class="text-highlight">6 free links</span> per category.</p>
+			</div>
+			<button class="welcome-close" id="closeWelcomeBanner">
 				<i class="fa-solid fa-xmark"></i>
-			</div>
-			<div class="modal-header">
-				<h2>Submit a Link</h2>
-				<p>Found a working proxy? Submit it for approval!</p>
-			</div>
-
-			<form id="submitLinkForm" class="submit-link-form">
-				<div class="form-group">
-					<label for="categorySelect">Category</label>
-					<select id="categorySelect" required>
-						<option value="" disabled selected>Select a category</option>
-						<!-- Categories will be populated via JavaScript -->
-					</select>
-				</div>
-
-				<div class="form-group">
-					<label for="linkInput">Link URL</label>
-					<input type="text" id="linkInput" placeholder="example.com" required>
-					<small class="form-hint">Full links (https://...) work too</small>
-				</div>
-
-				<div class="form-group">
-					<label for="notesInput">Additional Notes (optional)</label>
-					<textarea id="notesInput" placeholder="Any additional information about this link..."></textarea>
-				</div>
-
-				<button type="submit" class="submit-btn">Submit Link</button>
-			</form>
-
-			<div id="loginAlert" class="login-alert" style="display: none;">
-				<i class="fa-solid fa-triangle-exclamation"></i> You must be logged in to submit a link.
-				<a href="/login.html" style="color: #ff6600; text-decoration: underline;">Log in</a>
-			</div>
-
-			<div id="submitSuccessMessage" class="success-message" style="display: none;">
-				Thank you! Your link has been submitted for review.
-			</div>
-
-			<div id="submitErrorMessage" class="error-message" style="display: none;">
-				There was an error submitting your link. Please try again.
-			</div>
+			</button>
 		</div>
-	</div>
 
+		<!-- Stats Bar -->
+		<div class="stats-bar">
+			<div class="stat-item">
+				<i class="fa-solid fa-link stat-icon"></i>
+				<div class="stat-value" id="totalLinksCount">0</div>
+				<div class="stat-label">Total Links</div>
+			</div>
+			<div class="stat-item">
+				<i class="fa-solid fa-folder stat-icon"></i>
+				<div class="stat-value" id="categoriesCount">0</div>
+				<div class="stat-label">Categories</div>
+			</div>
+			<div class="stat-item">
+				<i class="fa-solid fa-check-circle stat-icon"></i>
+				<div class="stat-value" id="workingLinksCount">0</div>
+				<div class="stat-label">Working Links</div>
+			</div>
 
-	<div style="z-index: -998">
-		<div style="z-index: -998; position: fixed" class="blob"></div>
-		<div style="z-index: -998; position: fixed" class="blobbig"></div>
-		<div style="z-index: -998; position: fixed" class="blobsmall"></div>
-		<div style="z-index: -998; position: fixed" class="blobtop"></div>
-		<div style="z-index: -999; position: fixed" id="particles-js"></div>
-	</div>
+			<!-- Points display (only shown when logged in) -->
+			<div class="points-display" id="pointsDisplay" style="display: none;">
+				<i class="fa-solid fa-gem points-icon"></i>
+				<span class="points-value" id="userPoints">0</span>
+			</div>
+			</div>
+			
+			<!-- Enhanced Search with Icon and Clear Button -->
+			<div class="search-container">
+				<i class="fa-solid fa-search search-icon"></i>
+				<input type="text" class="search-input" placeholder="Search for proxies, games, apps..." id="searchInput">
+				<button class="search-clear" id="clearSearch">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+			
+			<!-- Action Buttons Container -->
+			<div class="action-buttons-container">
+				<button id="submitLinkButton" class="primary-action-btn submit-link-btn">
+					<i class="fa-solid fa-plus"></i> Submit a Link
+				</button>
+				<button id="savedLinksButton" class="secondary-action-btn saved-links-btn">
+					<i class="fa-solid fa-bookmark"></i> Saved Links
+					<span id="savedLinksCount" class="badge">0</span>
+				</button>
+				<button id="dailyRewardButton" class="secondary-action-btn daily-reward-btn">
+					<i class="fa-solid fa-gift"></i> Daily Reward
+					<span class="reward-indicator" id="rewardIndicator"></span>
+				</button>
+			</div>
+			
+			<!-- Enhanced Filter Buttons with Count Badges -->
+			<div class="filter-container" id="filterButtons">
+				<!-- Filter buttons will be added by JavaScript -->
+			</div>
+			
+			<!-- Links Content Area - Initial Loading State -->
+			<div id="linksContent">
+				<!-- Loading skeleton state -->
+				<div class="skeleton-category">
+					<div class="skeleton-header">
+						<div class="skeleton-title-wrapper">
+							<div class="skeleton-icon"></div>
+							<div class="skeleton-title"></div>
+						</div>
+						<div class="skeleton-badge"></div>
+					</div>
+					<div class="skeleton-content">
+						<div class="skeleton-grid">
+							<div class="skeleton-link"></div>
+							<div class="skeleton-link"></div>
+							<div class="skeleton-link"></div>
+						</div>
+					</div>
+				</div>
+				<div class="skeleton-category">
+					<div class="skeleton-header">
+						<div class="skeleton-title-wrapper">
+							<div class="skeleton-icon"></div>
+							<div class="skeleton-title"></div>
+						</div>
+						<div class="skeleton-badge"></div>
+					</div>
+					<div class="skeleton-content">
+						<div class="skeleton-grid">
+							<div class="skeleton-link"></div>
+							<div class="skeleton-link"></div>
+							<div class="skeleton-link"></div>
+						</div>
+					</div>
+				</div>
+				<!-- Categories and links will be added by JavaScript -->
+			</div>
+			</div>
+			
+			<!-- Submit Link Modal -->
+			<div class="modal-overlay" id="submitLinkModal">
+				<div class="modal">
+					<div class="modal-close" id="closeSubmitModal">
+						<i class="fa-solid fa-xmark"></i>
+					</div>
+					<div class="modal-header">
+						<h2><i class="fa-solid fa-plus-circle"></i> Submit a Link</h2>
+						<p>Found a working proxy? Submit it for approval!</p>
+					</div>
+			
+					<form id="submitLinkForm" class="submit-link-form">
+						<div class="form-group">
+							<label for="categorySelect"><i class="fa-solid fa-folder"></i> Category</label>
+							<select id="categorySelect" required>
+								<option value="" disabled selected>Select a category</option>
+								<!-- Categories will be populated via JavaScript -->
+							</select>
+						</div>
+			
+						<div class="form-group">
+							<label for="linkInput"><i class="fa-solid fa-link"></i> Link URL</label>
+							<input type="text" id="linkInput" placeholder="example.com" required>
+							<small class="form-hint">Full links (https://...) work too</small>
+						</div>
+			
+						<div class="form-group">
+							<label for="notesInput"><i class="fa-solid fa-note-sticky"></i> Additional Notes (optional)</label>
+							<textarea id="notesInput" placeholder="Any additional information about this link..."></textarea>
+						</div>
+			
+						<button type="submit" class="submit-btn">
+							<i class="fa-solid fa-paper-plane"></i> Submit Link
+						</button>
+					</form>
+			
+					<div id="loginAlert" class="login-alert" style="display: none;">
+						<i class="fa-solid fa-triangle-exclamation"></i> You must be logged in to submit a link.
+						<a href="/login.html">Log in to continue</a>
+					</div>
+			
+					<div id="submitSuccessMessage" class="message-container success-message" style="display: none;">
+						<i class="fa-solid fa-check-circle"></i> Thank you! Your link has been submitted for review.
+					</div>
+			
+					<div id="submitErrorMessage" class="message-container error-message" style="display: none;">
+						<i class="fa-solid fa-triangle-exclamation"></i> There was an error submitting your link. Please try again.
+					</div>
+				</div>
+			</div>
+			
+			<!-- Saved Links Modal -->
+			<div class="saved-links-modal" id="savedLinksModal">
+				<div class="saved-links-content">
+					<div class="modal-close" id="closeSavedLinksModal">
+						<i class="fa-solid fa-xmark"></i>
+					</div>
+					<div class="saved-links-header">
+						<h2 class="saved-links-title"><i class="fa-solid fa-bookmark"></i> Saved Links</h2>
+						<p class="saved-links-description">Quickly access your favorite links</p>
+					</div>
+			
+					<div id="savedLinksList" class="saved-links-list">
+						<!-- Saved links will be added here -->
+					</div>
+			
+					<div id="noSavedLinks" class="no-saved-links">
+						<i class="fa-solid fa-bookmark"></i>
+						<p>You don't have any saved links yet. Click the bookmark icon on any link to save it for quick access.</p>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Unlock Options Modal -->
+			<div class="unlock-options-modal" id="unlockOptionsModal">
+				<div class="unlock-modal-content">
+					<div class="unlock-modal-close" id="closeUnlockModal">
+						<i class="fa-solid fa-xmark"></i>
+					</div>
+					<div class="unlock-modal-header">
+						<h2>Unlock More Links</h2>
+						<p>Choose an option below to access more links</p>
+					</div>
+			
+					<div class="unlock-options">
+						<div class="unlock-option" id="loginOption">
+							<div class="unlock-option-icon">
+								<i class="fa-solid fa-user"></i>
+							</div>
+							<h3>Login</h3>
+							<p>Create an account or login to access all links</p>
+						</div>
+			
+						<div class="unlock-option" id="subscribeOption">
+							<div class="unlock-option-icon">
+								<i class="fa-brands fa-youtube"></i>
+							</div>
+							<h3>Subscribe</h3>
+							<p>Subscribe to our YouTube channel to unlock 5 more links</p>
+						</div>
+			
+						<div class="unlock-option" id="adOption">
+							<div class="unlock-option-icon">
+								<i class="fa-solid fa-rectangle-ad"></i>
+							</div>
+							<h3>Watch Ad</h3>
+							<p>Watch a short ad to unlock 2 more links for 24 hours</p>
+						</div>
+					</div>
+			
+					<div class="unlock-progress">
+						<div class="unlock-progress-header">
+							<span class="unlock-progress-title">Your unlocked links</span>
+							<span class="unlock-progress-count"><span id="unlockedLinksCount">6</span>/<span
+									id="totalLinksPerCategory">20</span></span>
+						</div>
+						<div class="progress-bar-container">
+							<div class="progress-bar" id="unlockedProgressBar" style="width: 30%;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Daily Reward Modal -->
+			<div class="modal-overlay" id="dailyRewardModal">
+				<div class="modal" style="max-width: 450px; text-align: center;">
+					<div class="modal-close" id="closeDailyRewardModal">
+						<i class="fa-solid fa-xmark"></i>
+					</div>
+					<div class="modal-header">
+						<h2><i class="fa-solid fa-gift" style="color: #de5c34;"></i> Daily Reward</h2>
+						<p>Claim your daily reward to unlock more features!</p>
+					</div>
+			
+					<div style="padding: 20px 0; display: flex; flex-direction: column; align-items: center;">
+						<div style="font-size: 4rem; margin-bottom: 20px; color: #de5c34; animation: pulse 2s infinite;">
+							<i class="fa-solid fa-gift"></i>
+						</div>
+						<h3 style="color: white; margin: 0 0 10px;">Your reward is ready!</h3>
+						<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 25px;">Click below to unlock 3 more links for 24
+							hours.</p>
+			
+						<button id="claimRewardButton" class="submit-btn" style="max-width: 200px;">
+							<i class="fa-solid fa-hand-point-up"></i> Claim Reward
+						</button>
+					</div>
+			
+					<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+						<p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin: 0;">Come back tomorrow for another
+							reward!</p>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Toast notifications container -->
+			<div class="toast-container" id="toastContainer">
+				<!-- Toasts will be added here -->
+			</div>
+			
+			<div style="z-index: -998">
+				<div style="z-index: -998; position: fixed" class="blob"></div>
+				<div style="z-index: -998; position: fixed" class="blobbig"></div>
+				<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+				<div style="z-index: -998; position: fixed" class="blobtop"></div>
+				<div style="z-index: -999; position: fixed" id="particles-js"></div>
+			</div>
+			
+			<script>
+				document.addEventListener('DOMContentLoaded', () => {
+					// Configuration
+					const CONFIG = {
+						FREE_LINKS_COUNT: 6, // Increased from 3 to 6
+						POINTS_PER_VISIT: 5,
+						POINTS_PER_LINK_CLICK: 2,
+						POINTS_PER_SUBMIT: 10,
+						LINKS_UNLOCKED_BY_AD: 2,
+						LINKS_UNLOCKED_BY_SUBSCRIBE: 5,
+						LINKS_UNLOCKED_BY_DAILY: 3,
+						AD_UNLOCK_DURATION: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+						DAILY_REWARD_COOLDOWN: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+					};
 
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-				// Load links from external JSON file
-				async function loadLinksData() {
-					try {
-						const response = await fetch('/json/links.json');
-						if (!response.ok) {
-							throw new Error('Failed to load links data');
+					// Elements
+					const linksContent = document.getElementById('linksContent');
+					const searchInput = document.getElementById('searchInput');
+					const clearSearchBtn = document.getElementById('clearSearch');
+					const filterButtons = document.getElementById('filterButtons');
+					const submitLinkButton = document.getElementById('submitLinkButton');
+					const submitLinkModal = document.getElementById('submitLinkModal');
+					const submitLinkForm = document.getElementById('submitLinkForm');
+					const categorySelect = document.getElementById('categorySelect');
+					const submitSuccessMessage = document.getElementById('submitSuccessMessage');
+					const submitErrorMessage = document.getElementById('submitErrorMessage');
+					const loginAlert = document.getElementById('loginAlert');
+					const submitBtn = submitLinkForm.querySelector('.submit-btn');
+					const savedLinksButton = document.getElementById('savedLinksButton');
+					const savedLinksModal = document.getElementById('savedLinksModal');
+					const savedLinksList = document.getElementById('savedLinksList');
+					const noSavedLinks = document.getElementById('noSavedLinks');
+					const unlockOptionsModal = document.getElementById('unlockOptionsModal');
+					const loginOption = document.getElementById('loginOption');
+					const subscribeOption = document.getElementById('subscribeOption');
+					const adOption = document.getElementById('adOption');
+					const unlockedLinksCount = document.getElementById('unlockedLinksCount');
+					const totalLinksPerCategory = document.getElementById('totalLinksPerCategory');
+					const unlockedProgressBar = document.getElementById('unlockedProgressBar');
+					const pointsDisplay = document.getElementById('pointsDisplay');
+					const userPoints = document.getElementById('userPoints');
+					const savedLinksCount = document.getElementById('savedLinksCount');
+					const toastContainer = document.getElementById('toastContainer');
+					const welcomeBanner = document.getElementById('welcomeBanner');
+					const closeWelcomeBanner = document.getElementById('closeWelcomeBanner');
+					const dailyRewardButton = document.getElementById('dailyRewardButton');
+					const dailyRewardModal = document.getElementById('dailyRewardModal');
+					const claimRewardButton = document.getElementById('claimRewardButton');
+					const closeDailyRewardModal = document.getElementById('closeDailyRewardModal');
+					const rewardIndicator = document.getElementById('rewardIndicator');
+
+					// Statistics elements
+					const totalLinksCountEl = document.getElementById('totalLinksCount');
+					const categoriesCountEl = document.getElementById('categoriesCount');
+					const workingLinksCountEl = document.getElementById('workingLinksCount');
+
+					// Submission cooldown tracking
+					let isSubmitting = false;
+					let lastSubmissionTime = 0;
+					const SUBMISSION_COOLDOWN = 60000; // 60 seconds cooldown
+
+					// Initialize the toast container
+					let activeSortOption = 'newest';
+
+					// User state management
+					const userState = {
+						points: 0,
+						savedLinks: [],
+						unlockedCategories: {},
+						adUnlockExpiry: 0,
+						dailyRewardClaimed: 0,
+						lastVisit: 0,
+						subscribedToYouTube: false,
+						unlockProgress: {
+							byLogin: false,
+							byAd: false,
+							bySubscribe: false,
+							byDaily: false
 						}
-						return await response.json();
-					} catch (error) {
-						console.error('Error loading links:', error);
-						// Fallback to hardcoded data if JSON file can't be loaded
-						return {
-							categories: proxyCategories
-						};
-					}
-				}
-
-				// This is the hardcoded data that will be used as fallback
-				const proxyCategories = [
-					{
-						name: "Interstellar",
-						icon: "fa-solid fa-rocket",
-						status: "flourishing",
-						description: "Games, Apps, and Proxy",
-						links: [
-							"https://gointerstellar.app",
-							"https://nomorefemboyfriday.unibutton.com/",
-							"https://matheiuslikesmen.bouncers4rent.com/",
-							"https://dipakarmani.blinklab.com/",
-							"https://nirmad23.blinklab.com/",
-							"https://reshamvip.blinklab.com/",
-							"https://alumulakakro.unibutton.com/",
-							"https://arraypush.unibutton.com/",
-							"https://hamburgerxtreme.unibutton.com/",
-							"https://mayalu.unibutton.com/",
-							"https://sitarabhajangi.unibutton.com/",
-							"https://learningmath.pages.dev/"
-						]
-					},
-					{
-						name: "Shadow Browser",
-						icon: "fa-solid fa-ghost",
-						status: "flourishing",
-						description: "Web Browser",
-						links: [
-							"https://saturnacademy.altgothic.com/",
-							"https://midashasgold.skibiditoi.lat/",
-							"https://sayless.series.3.suarakeadilan.org/",
-							"https://giggitygoogitygoo.crepito.ar/",
-							"https://bippityboppityboo.nerdinator.net/",
-							"https://grantisnotking.tuplantaforma.com/",
-							"https://geography.narayangiri.com.np/",
-							"https://erm.marztk.com/",
-							"https://oil.radicalnetworks.org/",
-							"https://jerimiahthe.nerdinator.net/",
-							"https://phoyesdumpling.evoluciondigitalia.cl/",
-							"https://joyridejerimiah.assenov.net/",
-							"https://lovedumplings.gitadhakal.com.np/",
-							"https://d-e-a-r-day.is.trash.amberwithcamera.com/",
-							"https://theoiscrashingout.gruponet.com.ar/"
-						]
-					}
-					// Other categories would be included here...
-				];
-
-				const linksContent = document.getElementById('linksContent');
-				const searchInput = document.getElementById('searchInput');
-				const filterButtons = document.getElementById('filterButtons');
-				const submitLinkButton = document.getElementById('submitLinkButton');
-				const submitLinkModal = document.getElementById('submitLinkModal');
-				const submitLinkForm = document.getElementById('submitLinkForm');
-				const categorySelect = document.getElementById('categorySelect');
-				const submitSuccessMessage = document.getElementById('submitSuccessMessage');
-				const submitErrorMessage = document.getElementById('submitErrorMessage');
-				const loginAlert = document.getElementById('loginAlert');
-				const submitBtn = submitLinkForm.querySelector('.submit-btn');
-
-				// Submission cooldown tracking
-				let isSubmitting = false;
-				let lastSubmissionTime = 0;
-				const SUBMISSION_COOLDOWN = 60000; // 60 seconds cooldown
-
-				submitLinkModal.style.display = "none";
-
-				// Add filter buttons
-				function addFilterButtons() {
-					// Add All button
-					const allButton = document.createElement('button');
-					allButton.className = 'filter-btn active';
-					allButton.textContent = 'All';
-					allButton.dataset.filter = 'all';
-					filterButtons.appendChild(allButton);
-
-					// Add status filter buttons
-					const statuses = [
-						{ name: 'Flourishing', icon: 'fa-solid fa-check-circle status-flourishing' },
-						{ name: 'Stable', icon: 'fa-solid fa-circle-check status-stable' },
-						{ name: 'Unstable', icon: 'fa-solid fa-triangle-exclamation status-unstable' },
-						{ name: 'Ghosted', icon: 'fa-solid fa-ghost status-ghosted' },
-						{ name: 'Fresh', icon: 'fa-solid fa-sparkles status-fresh' }
-					];
-
-					statuses.forEach(status => {
-						const button = document.createElement('button');
-						button.className = 'filter-btn';
-						button.innerHTML = `<i class="${status.icon}"></i> ${status.name}`;
-						button.dataset.filter = status.name.toLowerCase();
-						filterButtons.appendChild(button);
-					});
-
-					// Add event listeners
-					document.querySelectorAll('.filter-btn').forEach(btn => {
-						btn.addEventListener('click', () => {
-							document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-							btn.classList.add('active');
-							filterLinks(btn.dataset.filter);
-						});
-					});
-				}
-
-				// Create and display categories and links
-				async function displayLinks() {
-					// Load links data (from JSON file if possible, fallback to hardcoded)
-					const linksData = await loadLinksData();
-					const categories = linksData.categories || proxyCategories;
-
-					linksContent.innerHTML = '';
-
-					categories.forEach(category => {
-						const categoryEl = document.createElement('div');
-						categoryEl.className = 'category';
-						categoryEl.dataset.status = category.status;
-
-						// Get status icon and text
-						let statusIcon, statusClass, statusText;
-						switch (category.status) {
-							case 'flourishing':
-								statusIcon = 'fa-check-circle';
-								statusClass = 'status-flourishing';
-								statusText = 'Flourishing';
-								break;
-							case 'stable':
-								statusIcon = 'fa-circle-check';
-								statusClass = 'status-stable';
-								statusText = 'Stable';
-								break;
-							case 'unstable':
-								statusIcon = 'fa-triangle-exclamation';
-								statusClass = 'status-unstable';
-								statusText = 'Unstable';
-								break;
-							case 'ghosted':
-								statusIcon = 'fa-ghost';
-								statusClass = 'status-ghosted';
-								statusText = 'Ghosted';
-								break;
-							case 'fresh':
-								statusIcon = 'fa-sparkles';
-								statusClass = 'status-fresh';
-								statusText = 'Fresh';
-								break;
-							default:
-								statusIcon = 'fa-circle-info';
-								statusClass = '';
-								statusText = 'Unknown';
-						}
-
-						categoryEl.innerHTML = `
-                    <div class="category-title">
-                        <i class="${category.icon} category-icon"></i>
-                        ${category.name}
-                        <i class="fa-solid ${statusIcon} status-icon ${statusClass}" title="${statusText}"></i>
-                        <span style="font-size: 0.9rem; margin-left: 10px; opacity: 0.7;">${category.description}</span>
-                    </div>
-                    <div class="links-grid" id="${category.name.toLowerCase().replace(/\s+/g, '-')}-links"></div>
-                `;
-
-						linksContent.appendChild(categoryEl);
-
-						const linksGrid = document.getElementById(`${category.name.toLowerCase().replace(/\s+/g, '-')}-links`);
-
-						// Add links
-						category.links.forEach((link, index) => {
-							const linkItem = document.createElement('div');
-							linkItem.className = 'link-item';
-
-							// Only apply blur if user is not logged in and past first 3 links
-							if (!window.isLoggedIn && window.isLoggedIn() === false && index >= 3) {
-								linkItem.classList.add('blurred-link');
-							}
-
-							linkItem.innerHTML = `
-                        <i class="fa-solid fa-link link-icon"></i>
-                        <span class="link-text">${link}</span>
-                        <button class="copy-btn" data-link="${link}" title="Copy link">
-                            <i class="fa-regular fa-copy"></i>
-                        </button>
-                        ${(!window.isLoggedIn || window.isLoggedIn() === false) && index >= 3 ? '<i class="fa-solid fa-lock lock-icon"></i>' : ''}
-                    `;
-
-							linksGrid.appendChild(linkItem);
-
-							// Add copy functionality
-							const copyBtn = linkItem.querySelector('.copy-btn');
-							copyBtn.addEventListener('click', (e) => {
-								e.stopPropagation();
-								const linkToCopy = copyBtn.dataset.link;
-								navigator.clipboard.writeText(linkToCopy)
-									.then(() => {
-										console.log('Link copied to clipboard!');
-									})
-									.catch(err => {
-										console.error('Failed to copy: ', err);
-									});
-							});
-
-							// Make entire item clickable to open link (if not blurred)
-							if (!linkItem.classList.contains('blurred-link')) {
-								linkItem.addEventListener('click', (e) => {
-									if (!e.target.classList.contains('copy-btn') && !e.target.classList.contains('fa-copy')) {
-										window.open(link, '_blank');
-									}
-								});
-							}
-						});
-					});
-
-					// Populate the category select dropdown in the submission form
-					populateCategoryDropdown(categories);
-				}
-
-				// Populate category dropdown from existing categories
-				function populateCategoryDropdown(categories) {
-					// Clear existing options except the first one
-					while (categorySelect.options.length > 1) {
-						categorySelect.remove(1);
-					}
-
-					// Add options to select dropdown
-					categories.forEach(category => {
-						const option = document.createElement('option');
-						option.value = category.name;
-						option.textContent = category.name;
-						categorySelect.appendChild(option);
-					});
-
-					// Add "Game Sites" and "Other" options if they don't already exist
-					const existingCategories = Array.from(categorySelect.options).map(opt => opt.value);
-
-					if (!existingCategories.includes("Game Sites")) {
-						const gameOption = document.createElement('option');
-						gameOption.value = "Game Sites";
-						gameOption.textContent = "Game Sites";
-						categorySelect.appendChild(gameOption);
-					}
-
-					if (!existingCategories.includes("Other")) {
-						const otherOption = document.createElement('option');
-						otherOption.value = "Other";
-						otherOption.textContent = "Other";
-						categorySelect.appendChild(otherOption);
-					}
-
-					// Remember the selected category for approval process
-					categorySelect.addEventListener('change', function () {
-						localStorage.setItem('approvalCategory', this.value);
-					});
-				}
-
-				// Filter links based on search input
-				function searchLinks() {
-					const searchTerm = searchInput.value.toLowerCase();
-					let hasResults = false;
-
-					document.querySelectorAll('.category').forEach(category => {
-						let categoryHasResults = false;
-						const linksGrid = category.querySelector('.links-grid');
-						const links = linksGrid.querySelectorAll('.link-item');
-
-						links.forEach(link => {
-							const linkText = link.querySelector('.link-text').textContent.toLowerCase();
-							if (linkText.includes(searchTerm)) {
-								link.style.display = 'flex';
-								categoryHasResults = true;
-								hasResults = true;
-							} else {
-								link.style.display = 'none';
-							}
-						});
-
-						// Show/hide category based on results
-						category.style.display = categoryHasResults ? 'block' : 'none';
-					});
-
-					// Show no results message if needed
-					const noResultsMessage = document.querySelector('.no-results');
-					if (noResultsMessage) {
-						noResultsMessage.remove();
-					}
-
-					if (!hasResults && searchTerm !== '') {
-						const noResults = document.createElement('div');
-						noResults.className = 'no-results';
-						noResults.innerHTML = 'No matching links found. Try a different search term.';
-						linksContent.appendChild(noResults);
-					}
-				}
-
-				// Filter links based on status
-				function filterLinks(status) {
-					document.querySelectorAll('.category').forEach(category => {
-						if (status === 'all' || category.dataset.status === status) {
-							category.style.display = 'block';
-						} else {
-							category.style.display = 'none';
-						}
-					});
-				}
-
-				// Function to ensure links are displayed correctly based on login status
-				function fixBlurIssue() {
-					// Get user login status directly from auth-controller.min.js
-					const userLoggedIn = window.isLoggedIn ? window.isLoggedIn() : false;
-
-					// Loop through each category
-					document.querySelectorAll('.category').forEach(category => {
-						// Get all links in the category
-						const links = Array.from(category.querySelectorAll('.link-item'));
-
-						links.forEach((link, index) => {
-							// If user is logged in, remove blur from all links
-							if (userLoggedIn) {
-								link.classList.remove('blurred-link');
-
-								// Remove any lock icons
-								const lockIcon = link.querySelector('.lock-icon');
-								if (lockIcon) {
-									lockIcon.remove();
-								}
-
-								// Make links clickable
-								link.style.pointerEvents = 'auto';
-							}
-							// If user is not logged in, ensure first 3 are not blurred
-							else if (index < 3) {
-								link.classList.remove('blurred-link');
-
-								// Remove any lock icons
-								const lockIcon = link.querySelector('.lock-icon');
-								if (lockIcon) {
-									lockIcon.remove();
-								}
-
-								// Make first 3 links clickable
-								link.style.pointerEvents = 'auto';
-							}
-
-							// Make links clickable
-							if (!link.classList.contains('blurred-link')) {
-								link.addEventListener('click', (e) => {
-									if (!e.target.classList.contains('copy-btn') && !e.target.classList.contains('fa-copy')) {
-										const linkText = link.querySelector('.link-text').textContent;
-										window.open(linkText, '_blank');
-									}
-								});
-							}
-						});
-					});
-				}
-
-				// Function to validate URL
-				function isValidUrl(url) {
-					// Ensure URL has a protocol, add https:// if missing
-					let processedUrl = url.trim();
-					if (!processedUrl.match(/^https?:\/\//i)) {
-						processedUrl = 'https://' + processedUrl;
-					}
-
-					try {
-						new URL(processedUrl);
-						return processedUrl;
-					} catch (e) {
-						return false;
-					}
-				}
-
-				// Function to disable submit button during submission
-				function disableSubmitButton() {
-					if (submitBtn) {
-						submitBtn.disabled = true;
-						submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
-					}
-				}
-
-				// Function to re-enable submit button
-				function enableSubmitButton() {
-					if (submitBtn) {
-						submitBtn.disabled = false;
-						submitBtn.innerHTML = 'Submit Link';
-					}
-				}
-
-				// Check if submission is allowed based on cooldown
-				function canSubmit() {
-					const now = Date.now();
-					if (isSubmitting) {
-						return false;
-					}
-
-					if (now - lastSubmissionTime < SUBMISSION_COOLDOWN) {
-						const secondsLeft = Math.ceil((SUBMISSION_COOLDOWN - (now - lastSubmissionTime)) / 1000);
-						alert(`Please wait ${secondsLeft} seconds before submitting another link.`);
-						return false;
-					}
-
-					return true;
-				}
-
-				// Handle form submission
-				submitLinkForm.addEventListener('submit', async (e) => {
-					e.preventDefault();
-
-					// Check if submission is allowed
-					if (!canSubmit()) {
-						return;
-					}
-
-					// First check if user is logged in using auth-controller.min.js
-					if (!window.isLoggedIn || !window.isLoggedIn()) {
-						loginAlert.style.display = 'block';
-						submitSuccessMessage.style.display = 'none';
-						submitErrorMessage.style.display = 'none';
-						return;
-					}
-
-					const category = categorySelect.value;
-					const linkInput = document.getElementById('linkInput').value.trim();
-					const notes = document.getElementById('notesInput').value.trim();
-
-					// Validate inputs
-					if (!category) {
-						alert('Please select a category');
-						return;
-					}
-
-					// Process and validate URL
-					const validatedUrl = isValidUrl(linkInput);
-					if (!validatedUrl) {
-						alert('Please enter a valid URL');
-						return;
-					}
-
-					// Set submission status and disable button
-					isSubmitting = true;
-					disableSubmitButton();
-
-					try {
-						// Create JSON for updating links.json
-						const linksData = await loadLinksData();
-						const categories = linksData.categories || proxyCategories;
-
-						// Find the category
-						let categoryExists = false;
-						for (let cat of categories) {
-							if (cat.name === category) {
-								categoryExists = true;
-								// Add the new link if it doesn't already exist
-								if (!cat.links.includes(validatedUrl)) {
-									cat.links.unshift(validatedUrl);
-								} else {
-									// If link already exists, move it to the top
-									const linkIndex = cat.links.indexOf(validatedUrl);
-									if (linkIndex !== -1) {
-										cat.links.splice(linkIndex, 1);
-										cat.links.unshift(validatedUrl);
-									}
-								}
-								break;
-							}
-						}
-
-						// If category doesn't exist, create it (for Game Sites or Other)
-						if (!categoryExists) {
-							let icon = "fa-solid fa-gamepad";
-							let status = "fresh";
-							let description = "User submitted links";
-
-							if (category === "Other") {
-								icon = "fa-solid fa-link";
-							} else if (category === "Game Sites") {
-								icon = "fa-solid fa-gamepad";
-								description = "Gaming websites";
-							}
-
-							categories.push({
-								name: category,
-								icon: icon,
-								status: status,
-								description: description,
-								links: [validatedUrl]
-							});
-						}
-
-						// Generate updated JSON content
-						const updatedJsonData = JSON.stringify({ categories: categories }, null, 2);
-
-						// Set up data for Discord webhook
-						const webhookUrl = 'https://discord.com/api/webhooks/1350269659315835012/u3j0Txmtfb5dxaJYOoFQBW5fxbvyMS_OUffyBAekf1vtd_SfeQ_HdJJ37pvfiqGWwcp0';
-
-						// Create approval link that will take you back to the site with the approve parameter
-						const approveLink = `${window.location.origin}/ultimate-links.html?approvelink=${encodeURIComponent(validatedUrl)}`;
-
-						// Send to Discord webhook
-						const response = await fetch(webhookUrl, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json'
-							},
-							body: JSON.stringify({
-								content: `<@635187446232907852>\n\n🔔 **New Link Submission** 🔔\n\n📁 **Category:** ${category}\n🔗 **Link:** ${validatedUrl}\n📝 **Notes:** ${notes || 'No additional notes'}\n\n✅ **Approve:** ${approveLink}\n🔍 **Test Link:** ${validatedUrl}\n\n⏰ Submitted at: ${new Date().toLocaleString()}`
-							})
-						});
-
-						if (response.ok) {
-							// Hide form, login alert, and error message
-							loginAlert.style.display = 'none';
-							submitErrorMessage.style.display = 'none';
-
-							// Show success message
-							submitSuccessMessage.style.display = 'block';
-
-							// Update last submission time
-							lastSubmissionTime = Date.now();
-
-						} else {
-							throw new Error('Failed to send webhook');
-						}
-					} catch (error) {
-						console.error('Submission error:', error);
-						submitErrorMessage.style.display = 'block';
-						submitSuccessMessage.style.display = 'none';
-						loginAlert.style.display = 'none';
-					} finally {
-						// Re-enable submit button and reset submission status
-						enableSubmitButton();
-						isSubmitting = false;
-					}
-				});
-
-				// Show the submit link modal when the button is clicked
-				submitLinkButton.addEventListener('click', () => {
-					submitLinkModal.style.display = 'flex';
-					submitSuccessMessage.style.display = 'none';
-					submitErrorMessage.style.display = 'none';
-
-					// Show login alert if not logged in
-					if (!window.isLoggedIn || !window.isLoggedIn()) {
-						loginAlert.style.display = 'block';
-					} else {
-						loginAlert.style.display = 'none';
-					}
-
-					// Reset form
-					submitLinkForm.reset();
-
-					// Always enable the button when opening the modal
-					enableSubmitButton();
-				});
-
-				// Close modals when close button is clicked
-				document.getElementById('closeSubmitModal').addEventListener('click', () => {
-					submitLinkModal.style.display = 'none';
-				});
-
-				// Close modals when clicking outside
-				window.addEventListener('click', (event) => {
-					if (event.target === submitLinkModal) {
-						submitLinkModal.style.display = 'none';
-					}
-				});
-
-				// Function to check for approvelink parameter in URL
-				async function checkForApproveLink() {
-					const urlParams = new URLSearchParams(window.location.search);
-					const approveLink = urlParams.get('approvelink');
-
-					if (approveLink) {
+					};
+
+					// Initialize modals
+					submitLinkModal.style.display = "none";
+					savedLinksModal.style.display = "none";
+					unlockOptionsModal.style.display = "none";
+					dailyRewardModal.style.display = "none";
+
+					// Load user state from localStorage
+					function loadUserState() {
 						try {
-							// Load the current links data
+							const savedState = localStorage.getItem('flameFPUserState');
+							if (savedState) {
+								const parsedState = JSON.parse(savedState);
+								Object.assign(userState, parsedState);
+
+								// Check if it's a new day since last visit
+								const now = Date.now();
+								const lastVisit = userState.lastVisit || 0;
+								const isNewDay = new Date(now).setHours(0, 0, 0, 0) > new Date(lastVisit).setHours(0, 0, 0, 0);
+
+								if (isNewDay) {
+									// Reset daily reward if it's a new day
+									userState.dailyRewardClaimed = 0;
+									showToast('Welcome back!', 'Daily reward is available.', 'info');
+								}
+
+								// Show welcome banner for returning users
+								if (now - lastVisit > 1000 * 60 * 60) { // If last visit was more than an hour ago
+									welcomeBanner.style.display = 'flex';
+								} else {
+									welcomeBanner.style.display = 'none';
+								}
+
+								// Update last visit time
+								userState.lastVisit = now;
+								saveUserState();
+
+								// Award points for returning
+								addPoints(CONFIG.POINTS_PER_VISIT, 'Returning to the site');
+
+								// Update points display and saved links count
+								updatePointsDisplay();
+								updateSavedLinksCount();
+								updateDailyRewardButton();
+							} else {
+								// First time user
+								userState.lastVisit = Date.now();
+								saveUserState();
+								welcomeBanner.style.display = 'none';
+
+								// Show first time user notification
+								showToast('Welcome to FlamePass!', 'Explore our collection of proxy links.', 'info');
+							}
+						} catch (error) {
+							console.error('Error loading user state:', error);
+							welcomeBanner.style.display = 'none';
+						}
+					}
+
+					// Save user state to localStorage
+					function saveUserState() {
+						try {
+							localStorage.setItem('flameFPUserState', JSON.stringify(userState));
+						} catch (error) {
+							console.error('Error saving user state:', error);
+						}
+					}
+
+					// Add points to user account
+					function addPoints(amount, reason) {
+						userState.points += amount;
+						saveUserState();
+						updatePointsDisplay();
+
+						if (amount > 0) {
+							showToast('Points Added', `+${amount} points: ${reason}`, 'success');
+						}
+					}
+
+					// Update points display
+					function updatePointsDisplay() {
+						if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+							pointsDisplay.style.display = 'flex';
+							userPoints.textContent = userState.points;
+						} else {
+							pointsDisplay.style.display = 'none';
+						}
+					}
+
+					// Update saved links count badge
+					function updateSavedLinksCount() {
+						const count = userState.savedLinks.length;
+						savedLinksCount.textContent = count;
+
+						if (count > 0) {
+							savedLinksCount.style.display = 'inline-block';
+						} else {
+							savedLinksCount.style.display = 'none';
+						}
+					}
+
+					// Save a link
+					function saveLink(linkUrl, categoryName) {
+						// Check if already saved
+						const existingIndex = userState.savedLinks.findIndex(link => link.url === linkUrl);
+
+						if (existingIndex >= 0) {
+							// Remove if already saved (toggle functionality)
+							userState.savedLinks.splice(existingIndex, 1);
+							showToast('Link Removed', 'Link removed from saved links', 'info');
+						} else {
+							// Add to saved links
+							userState.savedLinks.push({
+								url: linkUrl,
+								category: categoryName,
+								savedAt: Date.now()
+							});
+							showToast('Link Saved', 'Link added to saved links', 'success');
+						}
+
+						saveUserState();
+						updateSavedLinksCount();
+						return existingIndex < 0; // Return true if link was saved, false if removed
+					}
+
+					// Check if a link is saved
+					function isLinkSaved(linkUrl) {
+						return userState.savedLinks.some(link => link.url === linkUrl);
+					}
+
+					// Update unlock progress display
+					function updateUnlockProgress() {
+						let unlockedCount = CONFIG.FREE_LINKS_COUNT;
+
+						// Add unlocks based on user status
+						if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+							unlockedCount = 1000; // Unlimited for logged in users
+							userState.unlockProgress.byLogin = true;
+						} else {
+							if (userState.unlockProgress.byAd && Date.now() < userState.adUnlockExpiry) {
+								unlockedCount += CONFIG.LINKS_UNLOCKED_BY_AD;
+							} else {
+								userState.unlockProgress.byAd = false;
+							}
+
+							if (userState.unlockProgress.bySubscribe) {
+								unlockedCount += CONFIG.LINKS_UNLOCKED_BY_SUBSCRIBE;
+							}
+
+							if (userState.unlockProgress.byDaily && userState.dailyRewardClaimed > 0 &&
+								Date.now() < userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN) {
+								unlockedCount += CONFIG.LINKS_UNLOCKED_BY_DAILY;
+							} else {
+								userState.unlockProgress.byDaily = false;
+							}
+						}
+
+						// Update the UI
+						unlockedLinksCount.textContent = unlockedCount;
+
+						// Assume 20 links total per category for progress bar
+						const progressPercent = Math.min(100, (unlockedCount / 20) * 100);
+						unlockedProgressBar.style.width = `${progressPercent}%`;
+
+						saveUserState();
+						return unlockedCount;
+					}
+
+					// Show unlock options modal
+					function showUnlockOptions() {
+						unlockOptionsModal.style.display = 'flex';
+						updateUnlockProgress();
+					}
+
+					// Update daily reward button status
+					function updateDailyRewardButton() {
+						const now = Date.now();
+						const rewardAvailable = userState.dailyRewardClaimed === 0 ||
+							now > userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+
+						if (rewardAvailable) {
+							rewardIndicator.style.display = 'block';
+						} else {
+							rewardIndicator.style.display = 'none';
+						}
+					}
+
+					// Show toast notification
+					function showToast(title, message, type = 'info') {
+						const toast = document.createElement('div');
+						toast.className = `toast toast-${type}`;
+						toast.innerHTML = `
+			          <div class="toast-icon">
+			            <i class="fa-solid ${type === 'success' ? 'fa-check-circle' :
+								type === 'error' ? 'fa-triangle-exclamation' :
+									type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+			          </div>
+			          <div class="toast-content">
+			            <div class="toast-title">${title}</div>
+			            <div class="toast-message">${message}</div>
+			          </div>
+			        `;
+
+						toastContainer.appendChild(toast);
+
+						// Trigger animation
+						setTimeout(() => {
+							toast.classList.add('show');
+						}, 10);
+
+						// Remove after 5 seconds
+						setTimeout(() => {
+							toast.classList.remove('show');
+							setTimeout(() => {
+								toastContainer.removeChild(toast);
+							}, 500);
+						}, 5000);
+					}
+
+					// Load links from external JSON file
+					async function loadLinksData() {
+						try {
 							const response = await fetch('/json/links.json');
 							if (!response.ok) {
 								throw new Error('Failed to load links data');
 							}
+							return await response.json();
+						} catch (error) {
+							console.error('Error loading links:', error);
+							showToast('Error', 'Failed to load links data. Please refresh the page.', 'error');
+							// Return a minimal structure to prevent errors
+							return {
+								categories: []
+							};
+						}
+					}
 
-							const linksData = await response.json();
-							const categories = linksData.categories;
+					// Add filter buttons
+					function addFilterButtons(categories) {
+						// Clear existing buttons
+						filterButtons.innerHTML = '';
 
-							// Get the currently selected category from local storage if available
-							// Otherwise use a default category (e.g., "Other")
-							const selectedCategory = localStorage.getItem('approvalCategory') || "Other";
+						// Add All button
+						const allButton = document.createElement('button');
+						allButton.className = 'filter-btn active';
+						allButton.innerHTML = 'All <span class="filter-count">0</span>';
+						allButton.dataset.filter = 'all';
+						filterButtons.appendChild(allButton);
 
-							// Find the selected category in the links data
-							let categoryFound = false;
-							for (const category of categories) {
-								if (category.name === selectedCategory) {
-									// Check if link already exists in this category
-									if (!category.links.includes(approveLink)) {
-										// Add link to the beginning of the array instead of the end
-										category.links.unshift(approveLink);
+						// Count total links
+						let totalLinks = 0;
+						categories.forEach(category => {
+							totalLinks += category.links.length;
+						});
+						allButton.querySelector('.filter-count').textContent = totalLinks;
+
+						// Add status filter buttons
+						const statuses = [
+							{ name: 'Flourishing', icon: 'fa-solid fa-check-circle status-flourishing' },
+							{ name: 'Stable', icon: 'fa-solid fa-circle-check status-stable' },
+							{ name: 'Unstable', icon: 'fa-solid fa-triangle-exclamation status-unstable' },
+							{ name: 'Fresh', icon: 'fa-solid fa-sparkles status-fresh' }
+						];
+
+						// Create status count map
+						const statusCounts = {};
+						categories.forEach(category => {
+							const status = category.status;
+							if (!statusCounts[status]) {
+								statusCounts[status] = 0;
+							}
+							statusCounts[status] += category.links.length;
+						});
+
+						statuses.forEach(status => {
+							const statusKey = status.name.toLowerCase();
+							const button = document.createElement('button');
+							button.className = 'filter-btn';
+							button.innerHTML = `<i class="${status.icon}"></i> ${status.name} <span class="filter-count">${statusCounts[statusKey] || 0}</span>`;
+							button.dataset.filter = statusKey;
+							filterButtons.appendChild(button);
+						});
+
+						// Add category filter buttons for 3 largest categories
+						const topCategories = [...categories]
+							.sort((a, b) => b.links.length - a.links.length)
+							.slice(0, 3);
+
+						topCategories.forEach(category => {
+							const button = document.createElement('button');
+							button.className = 'filter-btn';
+							button.innerHTML = `<i class="${category.icon}"></i> ${category.name} <span class="filter-count">${category.links.length}</span>`;
+							button.dataset.filter = `category-${category.name.toLowerCase().replace(/\s+/g, '-')}`;
+							filterButtons.appendChild(button);
+						});
+
+						// Add event listeners
+						document.querySelectorAll('.filter-btn').forEach(btn => {
+							btn.addEventListener('click', () => {
+								document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+								btn.classList.add('active');
+								filterLinks(btn.dataset.filter);
+							});
+						});
+					}
+
+					// Create and display categories and links
+					async function displayLinks() {
+						// Show loading state
+						linksContent.innerHTML = `
+			          <div class="skeleton-category">
+			            <div class="skeleton-header">
+			              <div class="skeleton-title-wrapper">
+			                <div class="skeleton-icon"></div>
+			                <div class="skeleton-title"></div>
+			              </div>
+			              <div class="skeleton-badge"></div>
+			            </div>
+			            <div class="skeleton-content">
+			              <div class="skeleton-grid">
+			                <div class="skeleton-link"></div>
+			                <div class="skeleton-link"></div>
+			                <div class="skeleton-link"></div>
+			              </div>
+			            </div>
+			          </div>
+			          <div class="skeleton-category">
+			            <div class="skeleton-header">
+			              <div class="skeleton-title-wrapper">
+			                <div class="skeleton-icon"></div>
+			                <div class="skeleton-title"></div>
+			              </div>
+			              <div class="skeleton-badge"></div>
+			            </div>
+			            <div class="skeleton-content">
+			              <div class="skeleton-grid">
+			                <div class="skeleton-link"></div>
+			                <div class="skeleton-link"></div>
+			                <div class="skeleton-link"></div>
+			              </div>
+			            </div>
+			          </div>
+			        `;
+
+						// Load links data
+						const linksData = await loadLinksData();
+						const categories = linksData.categories || [];
+
+						// Add Flamepass category at the top if it doesn't exist
+						if (!categories.find(cat => cat.name === "Flamepass")) {
+							categories.unshift({
+								name: "Flamepass",
+								icon: "fa-solid fa-fire",
+								status: "flourishing",
+								description: "FlamePass Exclusive Proxies",
+								links: [
+									"https://spiral-lyrical-sailboat.glitch.me/dashboard/",
+									"https://flamepass.github.io/",
+									"https://blp-kosher-fan-1.pages.dev/",
+									"https://api-regex-backend.pages.dev/",
+									"https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/jinjinjojo/home@6589b138299bc5b355e93ee19cb6fccc26dae4a6/page.xml&container=ig",
+									"https://youtube-study.vercel.app/",
+									"https://penis6000.vercel.app/"
+								]
+							});
+						}
+
+						// Remove 'ghosted' category if it exists
+						const filteredCategories = categories.filter(category => category.status !== 'ghosted');
+
+						// Clear content area
+						linksContent.innerHTML = '';
+
+						// Update statistics
+						let totalLinksCount = 0;
+						let workingLinksCount = 0;
+
+						filteredCategories.forEach(category => {
+							totalLinksCount += category.links.length;
+
+							// Estimate working links - assume all flourishing and stable links work
+							if (category.status === 'flourishing') {
+								workingLinksCount += category.links.length;
+							} else if (category.status === 'stable') {
+								workingLinksCount += Math.floor(category.links.length * 0.9); // 90% for stable
+							} else if (category.status === 'unstable') {
+								workingLinksCount += Math.floor(category.links.length * 0.7); // 70% for unstable
+							} else if (category.status === 'fresh') {
+								workingLinksCount += Math.floor(category.links.length * 0.8); // 80% for fresh
+							}
+						});
+
+						totalLinksCountEl.textContent = totalLinksCount;
+						categoriesCountEl.textContent = filteredCategories.length;
+						workingLinksCountEl.textContent = workingLinksCount;
+
+						// Add filter buttons
+						addFilterButtons(filteredCategories);
+
+						// Calculate how many links should be displayed
+						const unlockedCount = updateUnlockProgress();
+
+						// Create each category section
+						filteredCategories.forEach(category => {
+							const categoryEl = document.createElement('div');
+							categoryEl.className = 'category';
+							if (category.name === "Flamepass") {
+								categoryEl.classList.add('flamepass-category');
+							}
+							categoryEl.dataset.status = category.status;
+							categoryEl.dataset.category = category.name.toLowerCase().replace(/\s+/g, '-');
+
+							// Generate status information
+							let statusIcon, statusClass, statusText;
+							switch (category.status) {
+								case 'flourishing':
+									statusIcon = 'fa-check-circle';
+									statusClass = 'status-flourishing';
+									statusText = 'Flourishing';
+									break;
+								case 'stable':
+									statusIcon = 'fa-circle-check';
+									statusClass = 'status-stable';
+									statusText = 'Stable';
+									break;
+								case 'unstable':
+									statusIcon = 'fa-triangle-exclamation';
+									statusClass = 'status-unstable';
+									statusText = 'Unstable';
+									break;
+								case 'fresh':
+									statusIcon = 'fa-sparkles';
+									statusClass = 'status-fresh';
+									statusText = 'Fresh';
+									break;
+								default:
+									statusIcon = 'fa-circle-info';
+									statusClass = '';
+									statusText = 'Unknown';
+							}
+
+							// Create category HTML structure
+							categoryEl.innerHTML = `
+            <div class="category-header">
+              <div class="category-title-wrapper">
+                <div class="category-icon">
+                  <i class="${category.icon}"></i>
+                </div>
+                <div>
+                  <h3 class="category-title">${category.name}</h3>
+                  <p class="category-description">${category.description}</p>
+                </div>
+              </div>
+              <div class="category-meta">
+                <div class="status-badge status-${category.status}">
+                  <i class="fa-solid ${statusIcon}"></i>
+                  ${statusText}
+                </div>
+                <div class="category-toggle">
+                  <i class="fa-solid fa-chevron-down"></i>
+                </div>
+              </div>
+            </div>
+            <div class="category-content">
+              ${category.name === "Flamepass" ? `
+                <div class="flamepass-notice">
+                  <i class="fa-solid fa-lock flamepass-notice-icon"></i>
+                  <div class="flamepass-notice-text">
+                    Flamepass Login is required to use these links
+                  </div>
+                </div>
+              ` : ''}
+              <div class="links-grid" id="${category.name.toLowerCase().replace(/\s+/g, '-')}-links"></div>
+            </div>
+          `;
+
+							linksContent.appendChild(categoryEl);
+
+							// Make category header collapsible
+							const categoryHeader = categoryEl.querySelector('.category-header');
+							categoryHeader.addEventListener('click', () => {
+								categoryEl.classList.toggle('collapsed');
+
+								// If expanding a category, scroll it into view
+								if (!categoryEl.classList.contains('collapsed')) {
+									setTimeout(() => {
+										categoryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+									}, 100);
+								}
+							});
+
+							const linksGrid = categoryEl.querySelector('.links-grid');
+
+							// Add links to the grid
+							category.links.forEach((link, index) => {
+								// Check if this link should be locked or free
+								const shouldBeLocked = index >= unlockedCount && !(typeof isLoggedIn === 'function' && isLoggedIn());
+
+								if (shouldBeLocked) {
+									// Create locked link preview
+									const lockedContainer = document.createElement('div');
+									lockedContainer.className = 'locked-link-container';
+									lockedContainer.dataset.originalLink = link;
+
+									// Random domain for display
+									const fakeDomains = [
+										'example.com', 'proxy-site.org', 'unblocked.edu',
+										'gameshub.net', 'proxyserver.io', 'unblocker.app'
+									];
+									const randomDomain = fakeDomains[Math.floor(Math.random() * fakeDomains.length)];
+
+									lockedContainer.innerHTML = `
+                <div class="locked-preview">
+                  <i class="fa-solid fa-link link-icon"></i>
+                  <span>https://${randomDomain}/proxy${Math.floor(Math.random() * 1000)}</span>
+                </div>
+                <div class="locked-overlay">
+                  <div class="lock-icon">
+                    <i class="fa-solid fa-lock"></i>
+                  </div>
+                  <div class="unlock-text">Unlock more links</div>
+                </div>
+              `;
+
+									// Show unlock options when clicked
+									lockedContainer.addEventListener('click', (e) => {
+										showUnlockOptions();
+									});
+
+									linksGrid.appendChild(lockedContainer);
+								} else {
+									// Create normal link item
+									const linkItem = document.createElement('div');
+									linkItem.className = 'link-item';
+
+									// Generate link tags based on the URL characteristics
+									const tags = [];
+									if (link.includes('vercel.app')) tags.push('Vercel');
+									if (link.includes('pages.dev')) tags.push('Cloudflare');
+									if (link.includes('github.io')) tags.push('GitHub');
+									if (link.includes('glitch')) tags.push('Glitch');
+
+									// Is this link saved?
+									const isSaved = isLinkSaved(link);
+
+									linkItem.innerHTML = `
+                <i class="fa-solid fa-link link-icon"></i>
+                <div class="link-text-wrapper">
+                  <span class="link-text">${link}</span>
+                  ${tags.length > 0 ? `
+                    <div class="link-tags">
+                      ${tags.map(tag => `<span class="link-tag">${tag}</span>`).join('')}
+                    </div>
+                  ` : ''}
+                </div>
+                <div class="link-action-buttons">
+                  <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" data-link="${link}">
+                    <i class="fa-${isSaved ? 'solid' : 'regular'} fa-bookmark"></i>
+                    <span class="button-tooltip">
+                      ${isSaved ? 'Remove bookmark' : 'Bookmark link'}
+                    </span>
+                  </button>
+                  <button class="action-btn copy-btn" data-link="${link}">
+                    <i class="fa-regular fa-copy"></i>
+                    <span class="button-tooltip">Copy link</span>
+                  </button>
+                </div>
+              `;
+
+									linksGrid.appendChild(linkItem);
+
+									// Add save functionality
+									const saveBtn = linkItem.querySelector('.save-btn');
+									saveBtn.addEventListener('click', (e) => {
+										e.stopPropagation();
+										const linkToSave = saveBtn.dataset.link;
+										const isSaved = saveLink(linkToSave, category.name);
+
+										// Update button appearance
+										saveBtn.classList.toggle('saved', isSaved);
+										saveBtn.querySelector('i').className = isSaved ?
+											'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+										saveBtn.querySelector('.button-tooltip').textContent =
+											isSaved ? 'Remove bookmark' : 'Bookmark link';
+									});
+
+									// Add copy functionality
+									const copyBtn = linkItem.querySelector('.copy-btn');
+									copyBtn.addEventListener('click', (e) => {
+										e.stopPropagation();
+										const linkToCopy = copyBtn.dataset.link;
+										navigator.clipboard.writeText(linkToCopy)
+											.then(() => {
+												showToast('Copied!', 'Link copied to clipboard', 'success');
+											})
+											.catch(err => {
+												console.error('Failed to copy: ', err);
+												showToast('Error', 'Failed to copy link', 'error');
+											});
+									});
+
+									// Make entire item clickable to open link
+									linkItem.addEventListener('click', (e) => {
+										if (!e.target.closest('.action-btn')) {
+											const linkToOpen = linkItem.querySelector('.link-text').textContent;
+
+											// Add points for clicking a link
+											addPoints(CONFIG.POINTS_PER_LINK_CLICK, 'Clicking a link');
+
+											window.open(linkToOpen, '_blank');
+										}
+									});
+								}
+							});
+						});
+
+						// Populate the category select dropdown in the submission form
+						populateCategoryDropdown(filteredCategories);
+
+						// Fix first and last categories to make them expanded by default
+						const firstCategory = document.querySelector('.category');
+						if (firstCategory) {
+							firstCategory.classList.remove('collapsed');
+						}
+					}
+
+					// Populate category dropdown from existing categories
+					function populateCategoryDropdown(categories) {
+						// Clear existing options except the first one
+						while (categorySelect.options.length > 1) {
+							categorySelect.remove(1);
+						}
+
+						// Add options to select dropdown
+						categories.forEach(category => {
+							const option = document.createElement('option');
+							option.value = category.name;
+							option.textContent = category.name;
+							categorySelect.appendChild(option);
+						});
+
+						// Add "Game Sites" and "Other" options if they don't already exist
+						const existingCategories = Array.from(categorySelect.options).map(opt => opt.value);
+
+						if (!existingCategories.includes("Game Sites")) {
+							const gameOption = document.createElement('option');
+							gameOption.value = "Game Sites";
+							gameOption.textContent = "Game Sites";
+							categorySelect.appendChild(gameOption);
+						}
+
+						if (!existingCategories.includes("Other")) {
+							const otherOption = document.createElement('option');
+							otherOption.value = "Other";
+							otherOption.textContent = "Other";
+							categorySelect.appendChild(otherOption);
+						}
+
+						// Remember the selected category for approval process
+						categorySelect.addEventListener('change', function () {
+							localStorage.setItem('approvalCategory', this.value);
+						});
+					}
+
+					// Filter links based on search input
+					function searchLinks() {
+						const searchTerm = searchInput.value.toLowerCase();
+						let hasResults = false;
+
+						// Clear the "No Results" message if it exists
+						const existingNoResults = document.querySelector('.no-results');
+						if (existingNoResults) {
+							existingNoResults.remove();
+						}
+
+						document.querySelectorAll('.category').forEach(category => {
+							let categoryHasResults = false;
+							const linksGrid = category.querySelector('.links-grid');
+							const links = linksGrid.querySelectorAll('.link-item, .locked-link-container');
+
+							links.forEach(link => {
+								let linkText;
+								if (link.classList.contains('link-item')) {
+									linkText = link.querySelector('.link-text').textContent.toLowerCase();
+								} else {
+									// For locked links, use the original link data
+									linkText = link.dataset.originalLink ? link.dataset.originalLink.toLowerCase() : '';
+								}
+
+								if (linkText.includes(searchTerm)) {
+									link.style.display = 'flex';
+									categoryHasResults = true;
+									hasResults = true;
+								} else {
+									link.style.display = 'none';
+								}
+							});
+
+							// Show/hide category based on results
+							category.style.display = categoryHasResults ? 'block' : 'none';
+						});
+
+						// Show no results message if needed
+						if (!hasResults && searchTerm !== '') {
+							const noResults = document.createElement('div');
+							noResults.className = 'no-results';
+							noResults.innerHTML = `
+            <i class="fa-solid fa-search"></i>
+            <p>No matching links found for "${searchTerm}"</p>
+            <p>Try a different search term or check out our other categories.</p>
+          `;
+							linksContent.appendChild(noResults);
+						}
+
+						// Show clear button if search has content
+						if (searchTerm.length > 0) {
+							clearSearchBtn.style.opacity = '1';
+						} else {
+							clearSearchBtn.style.opacity = '0';
+						}
+					}
+
+					// Filter links based on status or category
+					function filterLinks(filter) {
+						document.querySelectorAll('.category').forEach(category => {
+							if (filter === 'all') {
+								category.style.display = 'block';
+							} else if (filter.startsWith('category-')) {
+								// Filter by specific category
+								const categoryName = filter.replace('category-', '');
+								if (category.dataset.category === categoryName) {
+									category.style.display = 'block';
+									if (category.classList.contains('collapsed')) {
+										category.classList.remove('collapsed');
+									}
+								} else {
+									category.style.display = 'none';
+								}
+							} else if (category.dataset.status === filter) {
+								// Filter by status
+								category.style.display = 'block';
+							} else {
+								category.style.display = 'none';
+							}
+						});
+
+						// Clear search when filtering
+						searchInput.value = '';
+						clearSearchBtn.style.opacity = '0';
+					}
+
+					// Function to validate URL
+					function isValidUrl(url) {
+						// Ensure URL has a protocol, add https:// if missing
+						let processedUrl = url.trim();
+						if (!processedUrl.match(/^https?:\/\//i)) {
+							processedUrl = 'https://' + processedUrl;
+						}
+
+						try {
+							new URL(processedUrl);
+							return processedUrl;
+						} catch (e) {
+							return false;
+						}
+					}
+
+					// Function to disable submit button during submission
+					function disableSubmitButton() {
+						if (submitBtn) {
+							submitBtn.disabled = true;
+							submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
+						}
+					}
+
+					// Function to re-enable submit button
+					function enableSubmitButton() {
+						if (submitBtn) {
+							submitBtn.disabled = false;
+							submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Link';
+						}
+					}
+
+					// Check if submission is allowed based on cooldown
+					function canSubmit() {
+						const now = Date.now();
+						if (isSubmitting) {
+							return false;
+						}
+
+						if (now - lastSubmissionTime < SUBMISSION_COOLDOWN) {
+							const secondsLeft = Math.ceil((SUBMISSION_COOLDOWN - (now - lastSubmissionTime)) / 1000);
+							showToast('Please wait', `Try again in ${secondsLeft} seconds`, 'warning');
+							return false;
+						}
+
+						return true;
+					}
+
+					// Refresh saved links list display
+					function refreshSavedLinksList() {
+						if (userState.savedLinks.length === 0) {
+							savedLinksList.style.display = 'none';
+							noSavedLinks.style.display = 'block';
+							return;
+						}
+
+						savedLinksList.style.display = 'flex';
+						noSavedLinks.style.display = 'none';
+						savedLinksList.innerHTML = '';
+
+						// Sort links based on the active sort option
+						let sortedLinks = [...userState.savedLinks];
+
+						if (activeSortOption === 'newest') {
+							sortedLinks.sort((a, b) => b.savedAt - a.savedAt);
+						} else if (activeSortOption === 'oldest') {
+							sortedLinks.sort((a, b) => a.savedAt - b.savedAt);
+						} else if (activeSortOption === 'alphabetical') {
+							sortedLinks.sort((a, b) => a.url.localeCompare(b.url));
+						}
+
+						// Create the sorted list
+						sortedLinks.forEach(link => {
+							const savedLinkItem = document.createElement('div');
+							savedLinkItem.className = 'saved-link-item';
+
+							savedLinkItem.innerHTML = `
+            <i class="fa-solid fa-link saved-link-icon"></i>
+            <span class="saved-link-text">${link.url}</span>
+            <span class="saved-link-category">${link.category}</span>
+            <div class="saved-link-actions">
+              <button class="saved-link-action" data-action="open" data-url="${link.url}">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span class="button-tooltip">Open link</span>
+              </button>
+              <button class="saved-link-action" data-action="copy" data-url="${link.url}">
+                <i class="fa-regular fa-copy"></i>
+                <span class="button-tooltip">Copy link</span>
+              </button>
+              <button class="saved-link-action remove" data-action="remove" data-url="${link.url}">
+                <i class="fa-solid fa-trash-can"></i>
+                <span class="button-tooltip">Remove</span>
+              </button>
+            </div>
+          `;
+
+							savedLinksList.appendChild(savedLinkItem);
+
+							// Add event listeners for each action button
+							const actionButtons = savedLinkItem.querySelectorAll('.saved-link-action');
+							actionButtons.forEach(button => {
+								button.addEventListener('click', (e) => {
+									e.stopPropagation();
+									const action = button.dataset.action;
+									const url = button.dataset.url;
+
+									if (action === 'open') {
+										window.open(url, '_blank');
+									} else if (action === 'copy') {
+										navigator.clipboard.writeText(url)
+											.then(() => {
+												showToast('Copied!', 'Link copied to clipboard', 'success');
+											})
+											.catch(err => {
+												showToast('Error', 'Failed to copy link', 'error');
+											});
+									} else if (action === 'remove') {
+										saveLink(url); // Toggle function will remove it
+										refreshSavedLinksList();
+									}
+								});
+							});
+
+							// Make entire item clickable to open link
+							savedLinkItem.addEventListener('click', (e) => {
+								if (!e.target.closest('.saved-link-action')) {
+									window.open(link.url, '_blank');
+								}
+							});
+						});
+					}
+
+					// Handle form submission
+					submitLinkForm.addEventListener('submit', async (e) => {
+						e.preventDefault();
+
+						// Check if submission is allowed
+						if (!canSubmit()) {
+							return;
+						}
+
+						// First check if user is logged in using auth-controller.min.js
+						if (typeof isLoggedIn !== 'function' || !isLoggedIn()) {
+							loginAlert.style.display = 'block';
+							submitSuccessMessage.style.display = 'none';
+							submitErrorMessage.style.display = 'none';
+							return;
+						}
+
+						const category = categorySelect.value;
+						const linkInput = document.getElementById('linkInput').value.trim();
+						const notes = document.getElementById('notesInput').value.trim();
+
+						// Validate inputs
+						if (!category) {
+							showToast('Error', 'Please select a category', 'error');
+							return;
+						}
+
+						// Process and validate URL
+						const validatedUrl = isValidUrl(linkInput);
+						if (!validatedUrl) {
+							showToast('Error', 'Please enter a valid URL', 'error');
+							return;
+						}
+
+						// Set submission status and disable button
+						isSubmitting = true;
+						disableSubmitButton();
+
+						try {
+							// Create JSON for updating links.json
+							const linksData = await loadLinksData();
+							const categories = linksData.categories || [];
+
+							// Find the category
+							let categoryExists = false;
+							for (let cat of categories) {
+								if (cat.name === category) {
+									categoryExists = true;
+									// Add the new link if it doesn't already exist
+									if (!cat.links.includes(validatedUrl)) {
+										cat.links.unshift(validatedUrl);
 									} else {
-										// If link exists, remove it and add it to the beginning
-										const linkIndex = category.links.indexOf(approveLink);
+										// If link already exists, move it to the top
+										const linkIndex = cat.links.indexOf(validatedUrl);
 										if (linkIndex !== -1) {
-											category.links.splice(linkIndex, 1);
-											category.links.unshift(approveLink);
+											cat.links.splice(linkIndex, 1);
+											cat.links.unshift(validatedUrl);
 										}
 									}
-									categoryFound = true;
 									break;
 								}
 							}
 
 							// If category doesn't exist, create it
-							if (!categoryFound) {
-								let icon = "fa-solid fa-link";
+							if (!categoryExists) {
+								let icon = "fa-solid fa-gamepad";
 								let status = "fresh";
 								let description = "User submitted links";
 
-								// Set specific properties for known categories
-								if (selectedCategory === "Game Sites") {
+								if (category === "Other") {
+									icon = "fa-solid fa-link";
+								} else if (category === "Game Sites") {
 									icon = "fa-solid fa-gamepad";
 									description = "Gaming websites";
 								}
 
 								categories.push({
-									name: selectedCategory,
+									name: category,
 									icon: icon,
 									status: status,
 									description: description,
-									links: [approveLink] // Add as the first item in a new array
+									links: [validatedUrl]
 								});
 							}
 
-							// Create the updated JSON
-							const updatedJson = JSON.stringify({ categories: categories }, null, 2);
+							// Generate updated JSON content
+							const updatedJsonData = JSON.stringify({ categories: categories }, null, 2);
 
-							// Copy the updated JSON to clipboard
-							await navigator.clipboard.writeText(updatedJson);
+							// Set up data for Discord webhook
+							const webhookUrl = 'https://discord.com/api/webhooks/1350269659315835012/u3j0Txmtfb5dxaJYOoFQBW5fxbvyMS_OUffyBAekf1vtd_SfeQ_HdJJ37pvfiqGWwcp0';
 
-							// Show the approval success modal
-							showApprovalModal(approveLink);
+							// Create approval link
+							const approveLink = `${window.location.origin}/ultimate-links.html?approvelink=${encodeURIComponent(validatedUrl)}`;
 
+							// Send to Discord webhook
+							const response = await fetch(webhookUrl, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									content: `<@635187446232907852>\n\n🔔 **New Link Submission** 🔔\n\n📁 **Category:** ${category}\n🔗 **Link:** ${validatedUrl}\n📝 **Notes:** ${notes || 'No additional notes'}\n\n✅ **Approve:** ${approveLink}\n🔍 **Test Link:** ${validatedUrl}\n\n⏰ Submitted at: ${new Date().toLocaleString()}`
+								})
+							});
+
+							if (response.ok) {
+								// Hide form, login alert, and error message
+								loginAlert.style.display = 'none';
+								submitErrorMessage.style.display = 'none';
+
+								// Show success message
+								submitSuccessMessage.style.display = 'block';
+
+								// Add points for submitting a link
+								addPoints(CONFIG.POINTS_PER_SUBMIT, 'Submitting a new link');
+
+								// Update last submission time
+								lastSubmissionTime = Date.now();
+
+								// Show toast notification
+								showToast('Link Submitted', 'Your link has been submitted for review', 'success');
+
+								// Reset form
+								submitLinkForm.reset();
+
+								// Close modal after 2 seconds
+								setTimeout(() => {
+									submitLinkModal.style.display = 'none';
+								}, 2000);
+							} else {
+								throw new Error('Failed to send webhook');
+							}
 						} catch (error) {
-							console.error('Error handling approval link:', error);
-							// Show error modal
-							showApprovalModal(approveLink, true);
+							console.error('Submission error:', error);
+							submitErrorMessage.style.display = 'block';
+							submitSuccessMessage.style.display = 'none';
+							loginAlert.style.display = 'none';
+							showToast('Error', 'Failed to submit link. Please try again.', 'error');
+						} finally {
+							// Re-enable submit button and reset submission status
+							enableSubmitButton();
+							isSubmitting = false;
 						}
-					}
-				}
-
-				// Function to show the approval modal
-				function showApprovalModal(link, isError = false) {
-					// Create modal overlay
-					const modalOverlay = document.createElement('div');
-					modalOverlay.className = 'modal-overlay';
-					modalOverlay.style.display = 'flex';
-
-					// Create modal content
-					const modal = document.createElement('div');
-					modal.className = 'modal';
-
-					// Close button
-					const closeButton = document.createElement('div');
-					closeButton.className = 'modal-close';
-					closeButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-					closeButton.addEventListener('click', () => {
-						document.body.removeChild(modalOverlay);
 					});
 
-					// Modal header
-					const header = document.createElement('div');
-					header.className = 'modal-header';
+					// Update saved links from all link items
+					function updateAllSaveButtons() {
+						document.querySelectorAll('.link-item').forEach(linkItem => {
+							const saveBtn = linkItem.querySelector('.save-btn');
+							if (saveBtn) {
+								const linkUrl = saveBtn.dataset.link;
+								const isSaved = isLinkSaved(linkUrl);
 
-					if (!isError) {
-						header.innerHTML = `
-                <h2><i class="fa-solid fa-check-circle" style="color: #4CAF50;"></i> Link Approved</h2>
-                <p>Updated JSON has been copied to clipboard.</p>
-            `;
-
-						// Message content
-						const content = document.createElement('div');
-						content.style.marginTop = '20px';
-						content.innerHTML = `
-                <p>The updated JSON with link <strong>${link}</strong> has been copied to your clipboard.</p>
-            `;
-
-						modal.appendChild(closeButton);
-						modal.appendChild(header);
-						modal.appendChild(content);
-					} else {
-						header.innerHTML = `
-                <h2><i class="fa-solid fa-triangle-exclamation" style="color: #F44336;"></i> Error</h2>
-                <p>There was a problem adding the link.</p>
-            `;
-
-						// Message content
-						const content = document.createElement('div');
-						content.style.marginTop = '20px';
-						content.innerHTML = `
-                <p>An error occurred while trying to add <strong>${link}</strong> to the links database.</p>
-                <p>Please check the console for details and try again.</p>
-            `;
-
-						modal.appendChild(closeButton);
-						modal.appendChild(header);
-						modal.appendChild(content);
+								saveBtn.classList.toggle('saved', isSaved);
+								saveBtn.querySelector('i').className = isSaved ?
+									'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+								saveBtn.querySelector('.button-tooltip').textContent =
+									isSaved ? 'Remove bookmark' : 'Bookmark link';
+							}
+						});
 					}
 
-					modalOverlay.appendChild(modal);
-					document.body.appendChild(modalOverlay);
+					// Function to check for approvelink parameter in URL
+					async function checkForApproveLink() {
+						const urlParams = new URLSearchParams(window.location.search);
+						const approveLink = urlParams.get('approvelink');
 
-					// Auto close after 10 seconds
-					setTimeout(() => {
-						if (document.body.contains(modalOverlay)) {
-							document.body.removeChild(modalOverlay);
+						if (approveLink) {
+							try {
+								// Load the current links data
+								const response = await fetch('/json/links.json');
+								if (!response.ok) {
+									throw new Error('Failed to load links data');
+								}
+
+								const linksData = await response.json();
+								const categories = linksData.categories;
+
+								// Get the currently selected category from local storage if available
+								// Otherwise use a default category (e.g., "Other")
+								const selectedCategory = localStorage.getItem('approvalCategory') || "Other";
+
+								// Find the selected category in the links data
+								let categoryFound = false;
+								for (const category of categories) {
+									if (category.name === selectedCategory) {
+										// Check if link already exists in this category
+										if (!category.links.includes(approveLink)) {
+											// Add link to the beginning of the array instead of the end
+											category.links.unshift(approveLink);
+										} else {
+											// If link exists, remove it and add it to the beginning
+											const linkIndex = category.links.indexOf(approveLink);
+											if (linkIndex !== -1) {
+												category.links.splice(linkIndex, 1);
+												category.links.unshift(approveLink);
+											}
+										}
+										categoryFound = true;
+										break;
+									}
+								}
+
+								// If category doesn't exist, create it
+								if (!categoryFound) {
+									let icon = "fa-solid fa-link";
+									let status = "fresh";
+									let description = "User submitted links";
+
+									// Set specific properties for known categories
+									if (selectedCategory === "Game Sites") {
+										icon = "fa-solid fa-gamepad";
+										description = "Gaming websites";
+									}
+
+									categories.push({
+										name: selectedCategory,
+										icon: icon,
+										status: status,
+										description: description,
+										links: [approveLink] // Add as the first item in a new array
+									});
+								}
+
+								// Create the updated JSON
+								const updatedJson = JSON.stringify({ categories: categories }, null, 2);
+
+								// Copy the updated JSON to clipboard
+								await navigator.clipboard.writeText(updatedJson);
+
+								// Show success toast
+								showToast('Link Approved', 'Updated JSON has been copied to clipboard', 'success');
+
+							} catch (error) {
+								console.error('Error handling approval link:', error);
+								// Show error toast
+								showToast('Error', 'Failed to process approval link', 'error');
+							}
 						}
-					}, 10000);
-				}
+					}
 
-				// Initialize
-				addFilterButtons();
-				displayLinks();
-				checkForApproveLink();
+					// Event Listeners
+					// Show the submit link modal when the button is clicked
+					submitLinkButton.addEventListener('click', () => {
+						submitLinkModal.style.display = 'flex';
+						submitSuccessMessage.style.display = 'none';
+						submitErrorMessage.style.display = 'none';
 
-				// Set up search functionality
-				searchInput.addEventListener('input', searchLinks);
+						// Show login alert if not logged in
+						if (typeof isLoggedIn !== 'function' || !isLoggedIn()) {
+							loginAlert.style.display = 'block';
+						} else {
+							loginAlert.style.display = 'none';
+						}
 
-				// Run blur fix after a small delay to ensure the DOM is fully processed
-				setTimeout(fixBlurIssue, 100);
+						// Reset form
+						submitLinkForm.reset();
 
-				// Handle scroll to top button
-				const scrollTop = document.querySelector('.scrolltop');
-				scrollTop.addEventListener('click', () => {
-					window.scrollTo({
-						top: 0,
-						behavior: 'smooth'
+						// Always enable the button when opening the modal
+						enableSubmitButton();
+					});
+
+					// Show saved links modal
+					savedLinksButton.addEventListener('click', () => {
+						savedLinksModal.style.display = 'flex';
+						refreshSavedLinksList();
+					});
+
+					// Close modals when close button is clicked
+					document.getElementById('closeSubmitModal').addEventListener('click', () => {
+						submitLinkModal.style.display = 'none';
+					});
+
+					document.getElementById('closeSavedLinksModal').addEventListener('click', () => {
+						savedLinksModal.style.display = 'none';
+					});
+
+					document.getElementById('closeUnlockModal').addEventListener('click', () => {
+						unlockOptionsModal.style.display = 'none';
+					});
+
+					closeWelcomeBanner.addEventListener('click', () => {
+						welcomeBanner.style.display = 'none';
+					});
+
+					closeDailyRewardModal.addEventListener('click', () => {
+						dailyRewardModal.style.display = 'none';
+					});
+
+					// Daily reward button click
+					dailyRewardButton.addEventListener('click', () => {
+						const now = Date.now();
+						const rewardAvailable = userState.dailyRewardClaimed === 0 ||
+							now > userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+
+						if (rewardAvailable) {
+							dailyRewardModal.style.display = 'flex';
+						} else {
+							// Calculate time until next reward
+							const nextRewardTime = userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+							const timeUntilNextReward = nextRewardTime - now;
+
+							const hours = Math.floor(timeUntilNextReward / (1000 * 60 * 60));
+							const minutes = Math.floor((timeUntilNextReward % (1000 * 60 * 60)) / (1000 * 60));
+
+							showToast('Reward Not Available', `Next reward available in ${hours}h ${minutes}m`, 'info');
+						}
+					});
+
+					// Claim reward button click
+					claimRewardButton.addEventListener('click', () => {
+						userState.dailyRewardClaimed = Date.now();
+						userState.unlockProgress.byDaily = true;
+
+						saveUserState();
+						updateUnlockProgress();
+						updateDailyRewardButton();
+
+						// Add points
+						addPoints(20, 'Daily reward claim');
+
+						// Close modal
+						dailyRewardModal.style.display = 'none';
+
+						// Show toast
+						showToast('Reward Claimed!', 'You\'ve unlocked 3 more links for 24 hours!', 'success');
+
+						// Refresh the page to show newly unlocked links
+						setTimeout(() => {
+							location.reload();
+						}, 1500);
+					});
+
+					// Set up unlock options modal handlers
+					loginOption.addEventListener('click', () => {
+						window.location.href = '/login.html';
+					});
+
+					subscribeOption.addEventListener('click', () => {
+						const subscribeUrl = 'https://www.youtube.com/@flamefox8210';
+						window.open(subscribeUrl, '_blank');
+
+						// Ask for confirmation
+						setTimeout(() => {
+							if (confirm('Did you subscribe to the YouTube channel?')) {
+								userState.unlockProgress.bySubscribe = true;
+								userState.subscribedToYouTube = true;
+								saveUserState();
+								updateUnlockProgress();
+								unlockOptionsModal.style.display = 'none';
+
+								showToast('Thank you!', 'You\'ve unlocked 5 more links', 'success');
+
+								// Refresh the page to show newly unlocked links
+								setTimeout(() => {
+									location.reload();
+								}, 1500);
+							}
+						}, 3000);
+					});
+
+					adOption.addEventListener('click', () => {
+						// Simulate ad viewing
+						showToast('Loading Ad', 'Please wait...', 'info');
+
+						setTimeout(() => {
+							// Set ad unlock expiry
+							userState.unlockProgress.byAd = true;
+							userState.adUnlockExpiry = Date.now() + CONFIG.AD_UNLOCK_DURATION;
+							saveUserState();
+							updateUnlockProgress();
+							unlockOptionsModal.style.display = 'none';
+
+							showToast('Ad Completed', 'You\'ve unlocked 2 more links for 24 hours', 'success');
+
+							// Refresh the page to show newly unlocked links
+							setTimeout(() => {
+								location.reload();
+							}, 1500);
+						}, 3000);
+					});
+
+					// Clear search button
+					clearSearchBtn.addEventListener('click', () => {
+						searchInput.value = '';
+						searchLinks();
+						clearSearchBtn.style.opacity = '0';
+					});
+
+					// Close modals when clicking outside
+					window.addEventListener('click', (event) => {
+						if (event.target === submitLinkModal) {
+							submitLinkModal.style.display = 'none';
+						}
+						if (event.target === savedLinksModal) {
+							savedLinksModal.style.display = 'none';
+						}
+						if (event.target === unlockOptionsModal) {
+							unlockOptionsModal.style.display = 'none';
+						}
+						if (event.target === dailyRewardModal) {
+							dailyRewardModal.style.display = 'none';
+						}
+					});
+
+					// Set up search functionality
+					searchInput.addEventListener('input', searchLinks);
+
+					// Initialize
+					loadUserState();
+					displayLinks();
+					checkForApproveLink();
+
+					// Update unlock progress on load
+					updateUnlockProgress();
+
+					// Handle scroll to top button
+					const scrollTop = document.querySelector('.scrolltop');
+					scrollTop.addEventListener('click', () => {
+						window.scrollTo({
+							top: 0,
+							behavior: 'smooth'
+						});
+					});
+
+					// Show/hide scroll to top button
+					window.addEventListener('scroll', () => {
+						if (window.scrollY > 300) {
+							scrollTop.style.display = 'flex';
+						} else {
+							scrollTop.style.display = 'none';
+						}
 					});
 				});
+  </script>
+<script src="/js/localforage.min.js"></script>
+<script src="/js/json-loader.js"></script>
+<script src="/js/c.js"></script>
+<script src="/js/themes.js"></script>
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function () {
+		let hideAds = localStorage.getItem('hideAds');
 
-				// Show/hide scroll to top button
-				window.addEventListener('scroll', () => {
-					if (window.scrollY > 300) {
-						scrollTop.style.display = 'flex';
-					} else {
-						scrollTop.style.display = 'none';
-					}
-				});
-			});
-	</script>
-	<script src="/js/localforage.min.js"></script>
-	<script src="/js/json-loader.js"></script>
-	<script src="/js/c.js"></script>
-	<script src="/js/links-page-handler.min.js"></script>
-	<script src="/js/themes.js"></script>
-	<script type="text/javascript">
-		document.addEventListener('DOMContentLoaded', function () {
-			let hideAds = localStorage.getItem('hideAds');
-
-			if (hideAds === null || hideAds === 'false') {
-				let script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.src =
-					'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
-				document.body.appendChild(script);
-			}
-		});
-	</script>
+		if (hideAds === null || hideAds === 'false') {
+			let script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src =
+				'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+			document.body.appendChild(script);
+		}
+	});
+</script>
 </body>
 
 </html>
