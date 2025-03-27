@@ -248,45 +248,13 @@
         </div>
     </div>
 
-    <!-- Auth Modal -->
-    <div class="auth-modal" id="authModal">
-        <div class="auth-container">
-            <button class="auth-close" id="closeAuthModal">&times;</button>
-            <div class="auth-header">
-                <h2>Sign in to Flamepass</h2>
-                <p>Access our secure proxy and unlock additional features</p>
-            </div>
-            <div class="auth-content">
-                <button class="auth-button google">
-                    <i class="fa-brands fa-google"></i>
-                    Continue with Google
-                </button>
-                <button class="auth-button discord">
-                    <i class="fa-brands fa-discord"></i>
-                    Continue with Discord
-                </button>
-                <div class="auth-divider">
-                    <span>or sign in with email</span>
-                </div>
-                <button class="auth-button" id="emailSignIn">
-                    <i class="fa-solid fa-envelope"></i>
-                    Continue with Email
-                </button>
-                <div class="auth-options">
-                    <a href="/signup.html">Create Account</a>
-                    <a href="/forgot-password.html">Forgot Password?</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="/js/auth-controller.min.js"></script>
     <script src="/js/localforage.min.js"></script>
     <script src="/js/game-page-handler.min.js"></script>
     <script src="/js/themes.js"></script>
     <script src="/js/c.js"></script>
-    <script src="/js/auth-controller.min.js"></script>
     <script>
         // Initialize particles.js
         document.addEventListener('DOMContentLoaded', function () {

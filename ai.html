@@ -1,92 +1,78 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<title>AI Chat - Flamepass</title>
-		<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta charset="UTF-8" />
-		<meta
-			name="description"
-			content="Chat with AI using Flamepass, the next gen proxy."
-		/>
-		<meta
-			name="keywords"
-			content="AI Chat, DuckDuckGo, Flamepass"
-		/>
-		<meta property="og:image" content="/assets/logo.webp" />
-		<!-- Google Analytics DO NOT REMOVE -->
-		<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
-		<script
-			async
-			src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"
-		></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
-			}
-			gtag('js', new Date());
 
-			gtag('config', 'G-SPVQHBL4J1');
-		</script>
+<head>
+	<title>AI Chat - Flamepass</title>
+	<link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8" />
+	<meta name="description" content="Chat with AI using Flamepass, the next gen proxy." />
+	<meta name="keywords" content="AI Chat, DuckDuckGo, Flamepass" />
+	<meta property="og:image" content="/assets/logo.webp" />
+	<!-- Google Analytics DO NOT REMOVE -->
+	<meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
 
-		<link
-			rel="preload"
-			as="style"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-		/>
-		<link
-			rel="preload"
-			as="style"
-			href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
-		/>
-		<link rel="stylesheet" href="/css/index.css" />
-		<link rel="stylesheet" href="/css/themes.css" />
-		<link rel="stylesheet" href="/css/ag.css" />
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-		<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-		<link rel="stylesheet" href="/css/common.css" />
-		<style>
-			/* Page-specific styles that extend common.css */
+		gtag('config', 'G-SPVQHBL4J1');
+	</script>
 
-			#loading-text {
-				padding-left: 20px;
-				padding-right: 20px;
-			}
+	<link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+	<link rel="preload" as="style"
+		href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+	<link rel="stylesheet" href="/css/index.css" />
+	<link rel="stylesheet" href="/css/themes.css" />
+	<link rel="stylesheet" href="/css/ag.css" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+	<link rel="stylesheet" href="/css/common.css" />
+	<style>
+		/* Page-specific styles that extend common.css */
 
-			.ai-chat-wrapper {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				min-height: 90vh;
-				width: 100%;
-				padding-top: 30px;
-				padding-bottom: 30px;
-			}
-			
-			.chat-container {
-				width: 100%;
-				max-width: 1200px;
-				height: 80vh;
-				background-color: rgba(37, 37, 37, 0.7);
-				border-radius: 10px;
-				overflow: hidden;
-				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-				position: relative;
-				display: flex;
-				flex-direction: column;
-			}
-			
-			.chat-header {
-				background-color: rgba(29, 29, 29, 0.8);
-				padding: 15px;
-				color: white;
-				text-align: center;
-				font-weight: bold;
-				font-size: 1.2rem;
-				position: relative;
-				display: flex;
+		#loading-text {
+			padding-left: 20px;
+			padding-right: 20px;
+		}
+
+		.ai-chat-wrapper {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 90vh;
+			width: 100%;
+			padding-top: 30px;
+			padding-bottom: 30px;
+		}
+
+		.chat-container {
+			width: 100%;
+			max-width: 1200px;
+			height: 80vh;
+			background-color: rgba(37, 37, 37, 0.7);
+			border-radius: 10px;
+			overflow: hidden;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			position: relative;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.chat-header {
+			background-color: rgba(29, 29, 29, 0.8);
+			padding: 15px;
+			color: white;
+			text-align: center;
+			font-weight: bold;
+			font-size: 1.2rem;
+			position: relative;
+			display: flex;
 				align-items: center;
 				justify-content: center;
 			}
@@ -166,390 +152,391 @@
 				}
 			}
 		</style>
-	</head>
-
-	<body>
-		<ul class="navbar">
-			<li style="margin-left: -1px; margin-top: 2px">
-				<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo"/></a>
-			</li>
-			<hr style="margin-top: 5px" />
-			<li>
-				<a href="/" title="Home">
-					<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
-				</a>
-			</li>
-			<li>
-				<a href="/&.html" title="Search">
-					<span class="material-symbols-outlined">public</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/a.html" title="Apps">
-					<span class="material-symbols-outlined">apps</span>
-				</a>
-			</li>
-			<li>
-				<a href="/g.html" title="Games">
-					<span class="material-symbols-outlined">joystick</span>
-				</a>
-			</li>
-			<li>
-				<a href="/downloadable-games.html" title="Downloadable Games">
-					<span class="material-symbols-outlined">download</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ultimate-links.html" title="Ultimate Link List">
-					<span class="material-symbols-outlined">list</span>
-				</a>
-			</li>
-			<li>
-				<a href="/links.html" title="Link Generator">
-					<span class="material-symbols-outlined">link</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/guides.html" title="Guides and Methods">
-					<span class="material-symbols-outlined">help_outline</span>
-				</a>
-			</li>
-			<li>
-				<a href="/yt-channels.html" title="Unblocker YouTube Channels">
-					<span class="material-symbols-outlined">play_circle</span>
-				</a>
-			</li>
-			<hr>
-			<li>
-				<a href="/ai.html" title="AI Chat">
-					<span id="navactive" class="material-symbols-outlined">smart_toy</span>
-				</a>
-			</li>
-			<hr />
-			<li>
-				<a href="/~.html" title="Settings">
-					<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
-				</a>
-			</li>
-			<li>
-				<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
-					<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
-						<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
-					</div>
-				</a>
-			</li>
-		</ul>
-
-		<div class="scrolltop">
-			<span class="material-symbols-outlined">arrow_upward</span>
-		</div>
-
-		<div class="main-container">
-			<div class="ai-chat-wrapper">			
-				<div class="chat-container content-section">
-					<div class="chat-header">
-						<img src="/assets/logo.png" alt="Flamepass Logo" class="flamepass-logo">
-						Unlimited AI Chat
-						<button class="refresh-button" title="Refresh AI Chat" id="refresh-button">
-							<i class="fa-solid fa-rotate-right"></i>
-						</button>
-					</div>
-					
-					<div class="iframe-container">
-						<div class="loading-overlay" id="loading-overlay">
-							<div class="spinner"></div>
-							<div id="loading-text">Loading DuckDuckGo AI Chat...</div>
+		</head>
+		
+		<body>
+			<ul class="navbar">
+				<li style="margin-left: -1px; margin-top: 2px">
+					<a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
+				</li>
+				<hr style="margin-top: 5px" />
+				<li>
+					<a href="/" title="Home">
+						<span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+					</a>
+				</li>
+				<li>
+					<a href="/&.html" title="Search">
+						<span class="material-symbols-outlined">public</span>
+					</a>
+				</li>
+				<hr>
+				<li>
+					<a href="/a.html" title="Apps">
+						<span class="material-symbols-outlined">apps</span>
+					</a>
+				</li>
+				<li>
+					<a href="/g.html" title="Games">
+						<span class="material-symbols-outlined">joystick</span>
+					</a>
+				</li>
+				<li>
+					<a href="/downloadable-games.html" title="Downloadable Games">
+						<span class="material-symbols-outlined">download</span>
+					</a>
+				</li>
+				<hr>
+				<li>
+					<a href="/ultimate-links.html" title="Ultimate Link List">
+						<span class="material-symbols-outlined">list</span>
+					</a>
+				</li>
+				<li>
+					<a href="/links.html" title="Link Generator">
+						<span class="material-symbols-outlined">link</span>
+					</a>
+				</li>
+				<hr>
+				<li>
+					<a href="/guides.html" title="Guides and Methods">
+						<span class="material-symbols-outlined">help_outline</span>
+					</a>
+				</li>
+				<li>
+					<a href="/yt-channels.html" title="Unblocker YouTube Channels">
+						<span class="material-symbols-outlined">play_circle</span>
+					</a>
+				</li>
+				<hr>
+				<li>
+					<a href="/ai.html" title="AI Chat">
+						<span id="navactive" class="material-symbols-outlined">smart_toy</span>
+					</a>
+				</li>
+				<hr />
+				<li>
+					<a href="/~.html" title="Settings">
+						<span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+					</a>
+				</li>
+				<li>
+					<a target="_blank" href="https://discord.com/invite/gVaXCTqJDq" title="Discord Server">
+						<div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+							<i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
 						</div>
-						<iframe id="ai-frame" src="about:blank" allow="camera;microphone;clipboard-write;"></iframe>
+					</a>
+				</li>
+			</ul>
+		
+			<div class="scrolltop">
+				<span class="material-symbols-outlined">arrow_upward</span>
+			</div>
+		
+			<div class="main-container">
+				<div class="ai-chat-wrapper">
+					<div class="chat-container content-section">
+						<div class="chat-header">
+							<img src="/assets/logo.png" alt="Flamepass Logo" class="flamepass-logo">
+							Unlimited AI Chat
+							<button class="refresh-button" title="Refresh AI Chat" id="refresh-button">
+								<i class="fa-solid fa-rotate-right"></i>
+							</button>
+						</div>
+		
+						<div class="iframe-container">
+							<div class="loading-overlay" id="loading-overlay">
+								<div class="spinner"></div>
+								<div id="loading-text">Loading DuckDuckGo AI Chat...</div>
+							</div>
+							<iframe id="ai-frame" src="about:blank" allow="camera;microphone;clipboard-write;"></iframe>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		
+			<div style="z-index: -998">
+				<div style="z-index: -998; position: fixed" class="blob"></div>
+				<div style="z-index: -998; position: fixed" class="blobbig"></div>
+				<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+				<div style="z-index: -998; position: fixed" class="blobtop"></div>
+				<div style="z-index: -999; position: fixed" id="particles-js"></div>
+			</div>
+		
+			<script>
+				// Initialize particles.js
+				particlesJS('particles-js', {
+					particles: {
+						number: {
+							value: 86,
+							density: {
+								enable: true,
+								value_area: 800
+							}
+						},
+						color: {
+							value: '#ffffff'
+						},
+						shape: {
+							type: 'circle',
+							stroke: {
+								width: 0,
+								color: '#000000'
+							},
+							polygon: {
+								nb_sides: 5
+							},
+							image: {
+								src: 'img/github.svg',
+								width: 100,
+								height: 100
+							}
+						},
+						opacity: {
+							value: 1,
+							random: true,
+							anim: {
+								enable: false,
+								speed: 1,
+								opacity_min: 0.1,
+								sync: false
+							}
+						},
+						size: {
+							value: 2,
+							random: true,
+							anim: {
+								enable: false,
+								speed: 40,
+								size_min: 0.1,
+								sync: false
+							}
+						},
+						line_linked: {
+							enable: false,
+							distance: 150,
+							color: '#ffffff',
+							opacity: 0.4,
+							width: 1
+						},
+						move: {
+							enable: true,
+							speed: 0.5,
+							direction: 'top',
+							random: false,
+							straight: false,
+							out_mode: 'out',
+							bounce: false,
+							attract: {
+								enable: false,
+								rotateX: 318.0130544358847,
+								rotateY: 556.5228452627983
+							}
+						}
+					},
+					interactivity: {
+						detect_on: 'window',
+						events: {
+							onhover: {
+								enable: false,
+								mode: 'repulse'
+							},
+							onclick: {
+								enable: true,
+								mode: 'push'
+							},
+							resize: true
+						},
+						modes: {
+							grab: {
+								distance: 400,
+								line_linked: {
+									opacity: 1
+								}
+							},
+							bubble: {
+								distance: 400,
+								size: 40,
+								duration: 2,
+								opacity: 8,
+								speed: 3
+							},
+							repulse: {
+								distance: 200,
+								duration: 0.4
+							},
+							push: {
+								particles_nb: 10
+							},
+							remove: {
+								particles_nb: 10
+							}
+						}
+					},
+					retina_detect: true
+				});
+			</script>
+		
+			<script>
+				// DuckDuckGo AI Chat Integration
+				document.addEventListener('DOMContentLoaded', function () {
+					// Elements
+					const aiFrame = document.getElementById('ai-frame');
+					const loadingOverlay = document.getElementById('loading-overlay');
+					const loadingText = document.getElementById('loading-text');
+					const refreshButton = document.getElementById('refresh-button');
 
-		<div style="z-index: -998">
-			<div style="z-index: -998; position: fixed" class="blob"></div>
-			<div style="z-index: -998; position: fixed" class="blobbig"></div>
-			<div style="z-index: -998; position: fixed" class="blobsmall"></div>
-			<div style="z-index: -998; position: fixed" class="blobtop"></div>
-			<div style="z-index: -999; position: fixed" id="particles-js"></div>
-		</div>
-		
-		<script>
-			// Initialize particles.js
-			particlesJS('particles-js', {
-				particles: {
-					number: {
-						value: 86,
-						density: {
-							enable: true,
-							value_area: 800
+					// DuckDuckGo AI chat URL
+					const DDG_AI_URL = "https://duckduckgo.com/aichat";
+
+					// Function to check if user is logged in
+					function isUserLoggedIn() {
+						const loginData = JSON.parse(localStorage.getItem('loginData'));
+						if (!loginData) return false;
+
+						const now = new Date();
+						const expirationDate = new Date(loginData.expiration);
+						if (now > expirationDate) {
+							localStorage.removeItem('loginData');
+							return false;
 						}
-					},
-					color: {
-						value: '#ffffff'
-					},
-					shape: {
-						type: 'circle',
-						stroke: {
-							width: 0,
-							color: '#000000'
-						},
-						polygon: {
-							nb_sides: 5
-						},
-						image: {
-							src: 'img/github.svg',
-							width: 100,
-							height: 100
-						}
-					},
-					opacity: {
-						value: 1,
-						random: true,
-						anim: {
-							enable: false,
-							speed: 1,
-							opacity_min: 0.1,
-							sync: false
-						}
-					},
-					size: {
-						value: 2,
-						random: true,
-						anim: {
-							enable: false,
-							speed: 40,
-							size_min: 0.1,
-							sync: false
-						}
-					},
-					line_linked: {
-						enable: false,
-						distance: 150,
-						color: '#ffffff',
-						opacity: 0.4,
-						width: 1
-					},
-					move: {
-						enable: true,
-						speed: 0.5,
-						direction: 'top',
-						random: false,
-						straight: false,
-						out_mode: 'out',
-						bounce: false,
-						attract: {
-							enable: false,
-							rotateX: 318.0130544358847,
-							rotateY: 556.5228452627983
-						}
+						return true;
 					}
-				},
-				interactivity: {
-					detect_on: 'window',
-					events: {
-						onhover: {
-							enable: false,
-							mode: 'repulse'
-						},
-						onclick: {
-							enable: true,
-							mode: 'push'
-						},
-						resize: true
-					},
-					modes: {
-						grab: {
-							distance: 400,
-							line_linked: {
-								opacity: 1
-							}
-						},
-						bubble: {
-							distance: 400,
-							size: 40,
-							duration: 2,
-							opacity: 8,
-							speed: 3
-						},
-						repulse: {
-							distance: 200,
-							duration: 0.4
-						},
-						push: {
-							particles_nb: 10
-						},
-						remove: {
-							particles_nb: 10
+
+					// Function to create proxy URL
+					const createProxyUrl = (url) => {
+						// Encode the URL and create the proxy link
+						return `/@/index.html?uul=${encodeURIComponent(url)}`;
+					};
+
+					// Function to load DuckDuckGo AI chat
+					const loadDuckDuckGoAI = () => {
+						// Only proceed if the user is logged in
+						if (!isUserLoggedIn()) {
+							loadingText.textContent = "Login required to use AI Chat";
+							return;
 						}
-					}
-				},
-				retina_detect: true
-			});
-		</script>
-		
-		<script>
-			// DuckDuckGo AI Chat Integration
-			document.addEventListener('DOMContentLoaded', function() {
-				// Elements
-				const aiFrame = document.getElementById('ai-frame');
-				const loadingOverlay = document.getElementById('loading-overlay');
-				const loadingText = document.getElementById('loading-text');
-				const refreshButton = document.getElementById('refresh-button');
-				
-				// DuckDuckGo AI chat URL
-				const DDG_AI_URL = "https://duckduckgo.com/aichat";
-				
-				// Function to check if user is logged in
-				function isUserLoggedIn() {
-					const loginData = JSON.parse(localStorage.getItem('loginData'));
-					if (!loginData) return false;
-					
-					const now = new Date();
-					const expirationDate = new Date(loginData.expiration);
-					if (now > expirationDate) {
-						localStorage.removeItem('loginData');
-						return false;
-					}
-					return true;
-				}
-				
-				// Function to create proxy URL
-				const createProxyUrl = (url) => {
-					// Encode the URL and create the proxy link
-					return `/@/index.html?uul=${encodeURIComponent(url)}`;
-				};
-				
-				// Function to load DuckDuckGo AI chat
-				const loadDuckDuckGoAI = () => {
-					// Only proceed if the user is logged in
-					if (!isUserLoggedIn()) {
-						loadingText.textContent = "Login required to use AI Chat";
-						return;
-					}
-					
-					// Show loading overlay
-					loadingOverlay.style.display = 'flex';
-					loadingText.textContent = 'Loading DuckDuckGo AI Chat...';
-					
-					// Create proxy URL
-					const proxyUrl = createProxyUrl(DDG_AI_URL);
-					
-					// Load the service in the iframe
-					aiFrame.src = proxyUrl;
-				};
-				
-				// Handle iframe load event
-				aiFrame.addEventListener('load', function() {
-					// If the iframe is not about:blank, hide the loading overlay
-					if (aiFrame.src !== 'about:blank') {
-						// Give some extra time for the content to fully render
-						setTimeout(() => {
-							loadingOverlay.style.display = 'none';
-						}, 1500);
-					}
-				});
-				
-				// Handle refresh button click
-				refreshButton.addEventListener('click', function() {
-					if (isUserLoggedIn()) {
-						loadDuckDuckGoAI();
-					} else {
-						// If not logged in, do nothing or show a login message
-						loadingText.textContent = "Login required to use AI Chat";
+
+						// Show loading overlay
 						loadingOverlay.style.display = 'flex';
-					}
-				});
-				
-				// Handle iframe error events
-				aiFrame.addEventListener('error', function() {
-					loadingText.textContent = "Error loading DuckDuckGo AI. Please try refreshing.";
-					// Change spinner to error icon
-					document.querySelector('.spinner').style.borderTopColor = 'red';
-				});
-				
-				// Quick fail detection for iframe
-				let frameLoadTimeout;
-				aiFrame.addEventListener('load', function() {
-					clearTimeout(frameLoadTimeout);
-				});
-				
-				function loadWithTimeout() {
-					// Check login status before initial load
-					if (!isUserLoggedIn()) {
-						loadingText.textContent = "Login required to use AI Chat";
-						return;
-					}
-					
-					loadDuckDuckGoAI();
-					
-					// Set a timeout to detect if the service doesn't load properly
-					clearTimeout(frameLoadTimeout);
-					frameLoadTimeout = setTimeout(() => {
-						try {
-							// Try to detect if the frame loaded successfully
-							const frameContent = aiFrame.contentWindow || aiFrame.contentDocument;
-							if (!frameContent || !frameContent.document || frameContent.document.title === "404 Not Found") {
-								loadingText.textContent = "DuckDuckGo AI may be blocked. Try refreshing.";
-							}
-						} catch (e) {
-							// Security exception means frame loaded but from different origin
-							// This is actually good, means the proxy is working
-							loadingOverlay.style.display = 'none';
+						loadingText.textContent = 'Loading DuckDuckGo AI Chat...';
+
+						// Create proxy URL
+						const proxyUrl = createProxyUrl(DDG_AI_URL);
+
+						// Load the service in the iframe
+						aiFrame.src = proxyUrl;
+					};
+
+					// Handle iframe load event
+					aiFrame.addEventListener('load', function () {
+						// If the iframe is not about:blank, hide the loading overlay
+						if (aiFrame.src !== 'about:blank') {
+							// Give some extra time for the content to fully render
+							setTimeout(() => {
+								loadingOverlay.style.display = 'none';
+							}, 1500);
 						}
-					}, 10000); // 10 seconds timeout
-				}
-				
-				// Initial load
-				loadWithTimeout();
-			});
-		</script>
+					});
+
+					// Handle refresh button click
+					refreshButton.addEventListener('click', function () {
+						if (isUserLoggedIn()) {
+							loadDuckDuckGoAI();
+						} else {
+							// If not logged in, do nothing or show a login message
+							loadingText.textContent = "Login required to use AI Chat";
+							loadingOverlay.style.display = 'flex';
+						}
+					});
+
+					// Handle iframe error events
+					aiFrame.addEventListener('error', function () {
+						loadingText.textContent = "Error loading DuckDuckGo AI. Please try refreshing.";
+						// Change spinner to error icon
+						document.querySelector('.spinner').style.borderTopColor = 'red';
+					});
+
+					// Quick fail detection for iframe
+					let frameLoadTimeout;
+					aiFrame.addEventListener('load', function () {
+						clearTimeout(frameLoadTimeout);
+					});
+
+					function loadWithTimeout() {
+						// Check login status before initial load
+						if (!isUserLoggedIn()) {
+							loadingText.textContent = "Login required to use AI Chat";
+							return;
+						}
+
+						loadDuckDuckGoAI();
+
+						// Set a timeout to detect if the service doesn't load properly
+						clearTimeout(frameLoadTimeout);
+						frameLoadTimeout = setTimeout(() => {
+							try {
+								// Try to detect if the frame loaded successfully
+								const frameContent = aiFrame.contentWindow || aiFrame.contentDocument;
+								if (!frameContent || !frameContent.document || frameContent.document.title === "404 Not Found") {
+									loadingText.textContent = "DuckDuckGo AI may be blocked. Try refreshing.";
+								}
+							} catch (e) {
+								// Security exception means frame loaded but from different origin
+								// This is actually good, means the proxy is working
+								loadingOverlay.style.display = 'none';
+							}
+						}, 10000); // 10 seconds timeout
+					}
+
+					// Initial load
+					loadWithTimeout();
+				});
+			</script>
 		
-		<!-- Scroll to top button functionality -->
-		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				const scrollTop = document.querySelector('.scrolltop');
-				
-				// Handle scroll to top button
-				scrollTop.addEventListener('click', () => {
-					window.scrollTo({
-						top: 0,
-						behavior: 'smooth'
+			<!-- Scroll to top button functionality -->
+			<script>
+				document.addEventListener('DOMContentLoaded', () => {
+					const scrollTop = document.querySelector('.scrolltop');
+
+					// Handle scroll to top button
+					scrollTop.addEventListener('click', () => {
+						window.scrollTo({
+							top: 0,
+							behavior: 'smooth'
+						});
+					});
+
+					// Show/hide scroll to top button
+					window.addEventListener('scroll', () => {
+						if (window.scrollY > 300) {
+							scrollTop.style.display = 'flex';
+						} else {
+							scrollTop.style.display = 'none';
+						}
 					});
 				});
-				
-				// Show/hide scroll to top button
-				window.addEventListener('scroll', () => {
-					if (window.scrollY > 300) {
-						scrollTop.style.display = 'flex';
-					} else {
-						scrollTop.style.display = 'none';
+			</script>
+		
+			<script src="/js/localforage.min.js"></script>
+			<script src="/js/json-loader.js"></script>
+			<script src="/js/c.js"></script>
+			<script src="/js/auth-controller.min.js"></script>
+			<script src="/js/ai-page-handler.min.js"></script>
+			<script src="/js/themes.js"></script>
+			<script type="text/javascript">
+				document.addEventListener('DOMContentLoaded', function () {
+					let hideAds = localStorage.getItem('hideAds');
+
+					if (hideAds === null || hideAds === 'false') {
+						let script = document.createElement('script');
+						script.type = 'text/javascript';
+						script.src =
+							'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+						document.body.appendChild(script);
 					}
 				});
-			});
-		</script>
+			</script>
+		</body>
 		
-		<script src="/js/localforage.min.js"></script>
-		<script src="/js/json-loader.js"></script>
-		<script src="/js/c.js"></script>
-		<script src="/js/auth-controller.min.js"></script>
-		<script src="/js/ai-page-handler.min.js"></script>
-		<script src="/js/themes.js"></script>
-		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function () {
-				let hideAds = localStorage.getItem('hideAds');
-
-				if (hideAds === null || hideAds === 'false') {
-					let script = document.createElement('script');
-					script.type = 'text/javascript';
-					script.src =
-						'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
-					document.body.appendChild(script);
-				}
-			});
-		</script>
-	</body>
-</html>
+		</html>
