@@ -286,9 +286,10 @@ function setupCategorySelector() {
           <span class="category-text">${category.name}</span>
         `;
 
-		if (category.requiresAuth) {
+		if (category.requiresAuth && localStorage.getItem("loginData")) {
 			buttonContent += `<span class="material-symbols-outlined lock-icon">lock</span>`;
 		}
+
 
 		button.innerHTML = buttonContent;
 
