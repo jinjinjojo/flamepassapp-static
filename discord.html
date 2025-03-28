@@ -77,7 +77,7 @@
             justify-content: center;
         }
 
-        .widget-container {
+        .iframe-container {
             flex: 1;
             width: 100%;
             overflow: hidden;
@@ -119,7 +119,7 @@
 
         .refresh-button {
             position: absolute;
-            right: 55px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             background: transparent;
@@ -151,10 +151,11 @@
             transition: background 0.2s;
             display: flex;
             align-items: center;
+            text-decoration: none!important;
         }
-
-        .join-discord-button i {
-            margin-right: 5px;
+        
+        .fa-brands {
+            margin: 5px 0px!important;
         }
 
         .join-discord-button:hover {
@@ -172,39 +173,10 @@
             padding: 0px 15px 0px 60px
         }
 
-        .theme-selector {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-selector select {
-            background-color: rgba(40, 40, 40, 0.7);
-            color: white;
-            border: 1px solid #5865F2;
-            border-radius: 4px;
-            padding: 3px 5px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .theme-selector select:focus {
-            outline: none;
-            border-color: #7289DA;
-        }
-
-        .theme-selector label {
-            margin-right: 5px;
-            font-size: 0.8rem;
-            color: #5865F2;
-        }
-
-        widgetbot {
-            width: 100% !important;
-            height: 100% !important;
+        iframe {
+            width: 100%;
+            height: 76vh;
+            border: none;
         }
 
         @media (max-width: 768px) {
@@ -212,12 +184,11 @@
                 height: 75vh;
             }
 
-            .theme-selector label {
-                display: none;
-            }
-
             .join-discord-button span {
                 display: none;
+            }
+            iframe {
+                height: 65vh;
             }
         }
     </style>
@@ -306,32 +277,22 @@
         <div class="discord-chat-wrapper">
             <div class="chat-container content-section">
                 <div class="chat-header">
-                    <div class="theme-selector" id="theme-selector">
-                        <label>Theme:</label>
-                        <select id="theme-select">
-                            <option value="dark">Dark</option>
-                            <option value="light">Light</option>
-                        </select>
-                    </div>
-                    <img src="/assets/logo.png" alt="Flamepass Logo" class="flamepass-logo">
-                    Discord Community Chat
                     <button class="refresh-button" title="Refresh Discord Chat" id="refresh-button">
                         <i class="fa-solid fa-rotate-right"></i>
                     </button>
+                    Discord Community Chat
                     <a href="https://discord.com/invite/gVaXCTqJDq" target="_blank" class="join-discord-button">
-                        <i class="fa-brands fa-discord"></i>
-                        <span>Join Server</span>
+                        <i class="fa-brands fa-discord" style=""></i>
+                        <span style="margin-left: 10px;">Join Server</span>
                     </a>
                 </div>
 
-                <div class="widget-container">
+                <div class="iframe-container">
                     <div class="loading-overlay" id="loading-overlay">
                         <div class="spinner"></div>
                         <div id="loading-text">Loading Discord Chat...</div>
                     </div>
-                    <div id="widgetbot-container">
-                        <!-- Widgetbot will be inserted here -->
-                    </div>
+                    <div id="discord-iframe-container"></div>
                 </div>
             </div>
         </div>
@@ -344,8 +305,6 @@
         <div style="z-index: -998; position: fixed" class="blobtop"></div>
         <div style="z-index: -999; position: fixed" id="particles-js"></div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
 
     <script>
         // Initialize particles.js
@@ -468,23 +427,7 @@
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
             const refreshButton = document.getElementById('refresh-button');
-            const widgetbotContainer = document.getElementById('widgetbot-container');
-            const themeSelect = document.getElementById('theme-select');
-            const themeSelector = document.getElementById('theme-selector');
-
-            // Function to check if user is logged in
-            function isUserLoggedIn() {
-                const loginData = JSON.parse(localStorage.getItem('loginData'));
-                if (!loginData) return false;
-
-                const now = new Date();
-                const expirationDate = new Date(loginData.expiration);
-                if (now > expirationDate) {
-                    localStorage.removeItem('loginData');
-                    return false;
-                }
-                return true;
-            }
+            const iframeContainer = document.getElementById('discord-iframe-container');
 
             // Function to load Discord Widget
             const loadDiscordWidget = () => {
@@ -492,39 +435,32 @@
                 loadingOverlay.style.display = 'flex';
                 loadingText.textContent = 'Loading Discord Chat...';
 
-                // Get current theme (for logged in users)
-                const theme = isUserLoggedIn() ?
-                    (localStorage.getItem('discordTheme') || 'dark') :
-                    'dark';
+                // Clear previous iframe if any
+                iframeContainer.innerHTML = '';
 
-                // Update theme selector
-                themeSelect.value = theme;
+                // Create iframe element
+                const iframe = document.createElement('iframe');
+                iframe.src = "https://e.widgetbot.io/channels/1230658651937574993/1230658652688486453";
+                iframe.setAttribute('allow', 'clipboard-write; fullscreen');
+                iframe.onload = function () {
+                    // Hide loading after iframe loads
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 1000);
+                };
 
-                // Display or hide theme selector based on login status
-                themeSelector.style.display = isUserLoggedIn() ? 'flex' : 'none';
+                // Error handling for iframe load
+                iframe.onerror = function () {
+                    loadingText.textContent = "Error loading Discord Chat. Please try refreshing.";
+                };
 
-                // Clear previous widget if any
-                widgetbotContainer.innerHTML = '';
+                // Append iframe to container
+                iframeContainer.appendChild(iframe);
 
-                // Create widgetbot element
-                const widget = document.createElement('widgetbot');
-                widget.setAttribute('server', '1230658651937574993');
-                widget.setAttribute('channel', '1230658652688486453');
-                widget.setAttribute('width', '100%');
-                widget.setAttribute('height', '100%');
-
-                // Set theme if available as an attribute
-                if (theme === 'light') {
-                    widget.setAttribute('theme', 'light');
-                }
-
-                // Append widget to container
-                widgetbotContainer.appendChild(widget);
-
-                // Hide loading after a delay
+                // Fallback if onload doesn't trigger
                 setTimeout(() => {
                     loadingOverlay.style.display = 'none';
-                }, 2500);
+                }, 5000);
             };
 
             // Handle refresh button click
@@ -532,28 +468,8 @@
                 loadDiscordWidget();
             });
 
-            // Handle theme selection change
-            themeSelect.addEventListener('change', function () {
-                if (!isUserLoggedIn()) return;
-
-                const theme = this.value;
-                localStorage.setItem('discordTheme', theme);
-
-                // Reload the widget with the new theme
-                loadDiscordWidget();
-            });
-
-            // Function to handle login status changes
-            function handleLoginStatusChange() {
-                themeSelector.style.display = isUserLoggedIn() ? 'flex' : 'none';
-            }
-
-            // Check for login status periodically
-            setInterval(handleLoginStatusChange, 30000); // Check every 30 seconds
-
             // Initial load
             loadDiscordWidget();
-            handleLoginStatusChange();
         });
     </script>
 
