@@ -112,37 +112,7 @@ function openIndexedDB(dbName, version) {
 	});
 }
 
-// Helper function to get all items from IndexedDB
-function getAllItemsFromDB(db, storeName) {
-	return new Promise((resolve, reject) => {
-		if (!db) {
-			resolve([]);
-			return;
-		}
-
-		// Make sure the store exists before trying to use it
-		if (!db.objectStoreNames.contains(storeName)) {
-			console.warn(`Store ${storeName} not found in database`);
-			resolve([]);
-			return;
-		}
-
-		const transaction = db.transaction([storeName], 'readonly');
-		const store = transaction.objectStore(storeName);
-		const request = store.getAll();
-
-		request.onsuccess = event => {
-			resolve(event.target.result);
-		};
-
-		request.onerror = event => {
-			console.error(`Error getting items from ${storeName}:`, event.target.error);
-			resolve([]);
-		};
-	});
-}
-
-// Function to store items in IndexedDB
+// Function to store items in IndexedDB without changing the order
 function storeItemsInDB(db, items, storeName) {
 	return new Promise((resolve, reject) => {
 		if (!db) {
@@ -176,8 +146,9 @@ function storeItemsInDB(db, items, storeName) {
 			return;
 		}
 
-		// Add all items
-		items.forEach(item => {
+		// Add all items in their original order
+		// Use an array index as a position counter to preserve order if needed
+		items.forEach((item, index) => {
 			// Ensure each item has an ID
 			if (!item.id) {
 				if (item.slug) {
@@ -185,8 +156,14 @@ function storeItemsInDB(db, items, storeName) {
 				} else if (item.name) {
 					item.id = item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
 				} else {
-					item.id = `item-${Math.random().toString(36).substring(2, 9)}`;
+					item.id = `item-${Math.random().toString(36).substring(2, 7)}`;
 				}
+			}
+
+			// Add originalIndex property to preserve order if needed
+			// We only add this for games to ensure their order is preserved
+			if (storeName === 'items' && db.name.includes('games')) {
+				item._originalIndex = index;
 			}
 
 			const request = store.put(item);
@@ -215,6 +192,50 @@ function storeItemsInDB(db, items, storeName) {
 		transaction.onerror = event => {
 			console.error('Transaction error:', event.target.error);
 			reject(event.target.error);
+		};
+	});
+}
+
+// Helper function to get all items from IndexedDB while preserving the original order
+function getAllItemsFromDB(db, storeName) {
+	return new Promise((resolve, reject) => {
+		if (!db) {
+			resolve([]);
+			return;
+		}
+
+		// Make sure the store exists before trying to use it
+		if (!db.objectStoreNames.contains(storeName)) {
+			console.warn(`Store ${storeName} not found in database`);
+			resolve([]);
+			return;
+		}
+
+		const transaction = db.transaction([storeName], 'readonly');
+		const store = transaction.objectStore(storeName);
+		const request = store.getAll();
+
+		request.onsuccess = event => {
+			let items = event.target.result;
+
+			// For games, ensure original order is preserved if _originalIndex is present
+			if (db.name.includes('games') && items.length > 0 && items[0]._originalIndex !== undefined) {
+				items.sort((a, b) => a._originalIndex - b._originalIndex);
+
+				// Remove the _originalIndex property as it's not needed anymore
+				items = items.map(item => {
+					const newItem = { ...item };
+					delete newItem._originalIndex;
+					return newItem;
+				});
+			}
+
+			resolve(items);
+		};
+
+		request.onerror = event => {
+			console.error(`Error getting items from ${storeName}:`, event.target.error);
+			resolve([]);
 		};
 	});
 }
@@ -455,6 +476,7 @@ async function fetchGames() {
 			if (db) {
 				const games = await getAllItemsFromDB(db, 'items');
 				if (games && games.length > 0) {
+					// Don't sort, just use the order from IndexedDB
 					cache.games = games;
 
 					// Check last update time
@@ -473,7 +495,7 @@ async function fetchGames() {
 								.then(response => response.json())
 								.then(newData => {
 									// Update cache
-									cache.games = newData;
+									cache.games = newData; // Use the order from the server
 									storeItemsInDB(db, newData, 'items');
 								})
 								.catch(err => console.warn('Background refresh failed:', err));
@@ -492,7 +514,7 @@ async function fetchGames() {
 
 		const data = await response.json();
 
-		// Store in memory cache
+		// Store in memory cache without sorting
 		cache.games = data;
 
 		// Store in IndexedDB for future use
@@ -818,7 +840,12 @@ async function loadGamesPage() {
 
 		// Continue with the rest of the function as before
 		updateActiveCategoryButton(currentCategory);
+
+		// Filter games by category without sorting
 		let filteredGames = filterGamesByCategory(data, currentCategory);
+
+		// Note: We removed the sorting step here to preserve the original order
+
 		const gamesPerPage = 50;
 		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
 		const startIndex = (currentPage - 1) * gamesPerPage;
