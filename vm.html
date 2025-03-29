@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Virtual Machines - Flamepass</title>
+    <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="description" content="Access virtual machines through Flamepass with Kasm Workspaces integration." />
+    <meta name="keywords" content="Virtual Machine, VM, Flamepass, Kasm Workspaces, Remote Desktop" />
+    <meta property="og:image" content="/assets/logo.webp" />
+    <!-- Google Analytics DO NOT REMOVE -->
+    <meta name="google-adsense-account" content="ca-pub-3747175608041884" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SPVQHBL4J1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-SPVQHBL4J1');
+    </script>
+
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/themes.css" />
+    <link rel="stylesheet" href="/css/ag.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..400,0..1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="/css/common.css" />
+    <style>
+        /* Page-specific styles that extend common.css */
+        :root {
+            --primary: #de5c34;
+            --primary-light: #ea6e47;
+            --primary-dark: #c44a25;
+            --primary-trans: rgba(222, 92, 52, 0.2);
+            --bg-dark: rgba(37, 37, 37, 0.7);
+            --border-color: #3a3a3a;
+            --text-light: rgba(255, 255, 255, 0.7);
+        }
+
+        #loading-text {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .vm-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            width: 100%;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .vm-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            background-color: rgba(37, 37, 37, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vm-header {
+            background-color: rgba(29, 29, 29, 0.8);
+            padding: 15px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .iframe-container {
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+            background-color: rgba(40, 40, 40, 0.5);
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 30, 30, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #de5c34;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .refresh-button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #de5c34;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .refresh-button:hover {
+            transform: translateY(-50%) rotate(30deg);
+        }
+
+        .flamepass-logo {
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .main-container {
+            padding: 0px 15px 0px 60px
+        }
+
+        /* VM Selection Area */
+        .vm-selection {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            height: 100%;
+        }
+
+        .selection-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ffffff, var(--primary));
+            -webkit-text-fill-color: transparent;
+        }
+
+        .selection-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .vm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .vm-card {
+            background-color: var(--bg-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vm-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .vm-card-header {
+            position: relative;
+            padding: 20px;
+            background: linear-gradient(45deg, rgba(40, 40, 40, 0.7), rgba(60, 60, 60, 0.7));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vm-card-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+
+        .vm-card:hover .vm-card-icon {
+            transform: scale(1.1);
+        }
+
+        .vm-card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .vm-card-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .vm-card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vm-card-description {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .vm-features {
+            margin-bottom: 20px;
+        }
+
+        .vm-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .feature-icon {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .vm-launch-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .vm-launch-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        /* Login Required UI */
+        .login-required {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            padding: 40px;
+        }
+
+        .login-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .login-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .login-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .login-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        /* Session Loading UI */
+        .session-status {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 30, 30, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 15;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 30px;
+        }
+
+        .circle-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid transparent;
+            border-top-color: var(--primary);
+            animation: spin 1.5s linear infinite;
+        }
+
+        .circle-loader:nth-child(2) {
+            border: 5px solid transparent;
+            border-bottom-color: var(--primary-light);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        .loader-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            color: white;
+        }
+
+        .session-message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .session-submessage {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .progress-container {
+            width: 300px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--primary);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .cancel-session-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 30px;
+        }
+
+        .cancel-session-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(30, 30, 30, 0.9);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            font-weight: normal;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(30, 30, 30, 0.9) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Info Card */
+        .info-card {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 0.9rem;
+            max-width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            z-index: 5;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .info-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .info-card-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .info-card-title {
+            font-weight: 600;
+        }
+
+        .info-card-text {
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .close-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-info:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .vm-container {
+                height: 75vh;
+            }
+
+            .vm-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-card {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="navbar">
+        <li style="margin-left: -1px; margin-top: 2px">
+            <a href="/"><img class="logo" src="/assets/logo.webp" alt="Logo" /></a>
+        </li>
+        <hr style="margin-top: 5px" />
+        <li>
+            <a href="/" title="Home">
+                <span style="margin-top: 0px" class="material-symbols-outlined">cottage</span>
+            </a>
+        </li>
+        <li>
+            <a href="/&.html" title="Search">
+                <span class="material-symbols-outlined">public</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="/a.html" title="Apps">
+                <span class="material-symbols-outlined">apps</span>
+            </a>
+        </li>
+        <li>
+            <a href="/g.html" title="Games">
+                <span class="material-symbols-outlined">joystick</span>
+            </a>
+        </li>
+        <li>
+            <a href="/downloadable-games.html" title="Downloadable Games">
+                <span class="material-symbols-outlined">download</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="/ultimate-links.html" title="Ultimate Link List">
+                <span class="material-symbols-outlined">list</span>
+            </a>
+        </li>
+        <li>
+            <a href="/links.html" title="Link Generator">
+                <span class="material-symbols-outlined">link</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="/guides.html" title="Guides and Methods">
+                <span class="material-symbols-outlined">help_outline</span>
+            </a>
+        </li>
+        <li>
+            <a href="/yt-channels.html" title="Unblocker YouTube Channels">
+                <span class="material-symbols-outlined">play_circle</span>
+            </a>
+        </li>
+        <hr>
+        <li>
+            <a href="/ai.html" title="AI Chat">
+                <span class="material-symbols-outlined">smart_toy</span>
+            </a>
+        </li>
+        <hr />
+        <li>
+            <a href="/vm.html" title="Virtual Machines">
+                <span id="navactive" class="material-symbols-outlined">desktop_windows</span>
+            </a>
+        </li>
+        <hr />
+        <li>
+            <a href="/~.html" title="Settings">
+                <span style="margin-top: 0" class="material-symbols-outlined">tune</span>
+            </a>
+        </li>
+        <li>
+            <a href="/discord.html" title="Discord Server">
+                <div style="height: 40px !important; width: 40px !important; margin-top: 10px; margin-bottom: -6px;">
+                    <i class="fa-brands fa-discord" style="transform: translateY(-6px)"></i>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+    <div class="scrolltop">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </div>
+
+    <div class="main-container">
+        <div class="vm-wrapper">
+            <div class="vm-container content-section">
+                <div class="vm-header">
+                    <img src="/assets/logo.png" alt="Flamepass Logo" class="flamepass-logo">
+                    Virtual Machines & Remote Desktops
+                    <button class="refresh-button" title="Refresh Virtual Machine" id="refresh-button">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+
+                <!-- VM Selection UI -->
+                <div class="vm-selection" id="vm-selection">
+                    <h1 class="selection-title">Choose Your Virtual Environment</h1>
+                    <p class="selection-description">
+                        Access fully functional operating systems and applications directly in your browser.
+                        No downloads or installations required. Simply select a virtual environment below to get
+                        started.
+                    </p>
+
+                    <div class="vm-grid">
+                        <div class="vm-card">
+                            <div class="vm-card-header">
+                                <i class="fa-brands fa-ubuntu vm-card-icon"></i>
+                                <h3 class="vm-card-title">Ubuntu Desktop</h3>
+                                <p class="vm-card-subtitle">Linux Desktop Environment</p>
+                            </div>
+                            <div class="vm-card-body">
+                                <p class="vm-card-description">
+                                    Full Ubuntu Linux desktop with pre-installed developer tools, browsers, and
+                                    productivity applications.
+                                </p>
+                                <div class="vm-features">
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Complete desktop experience</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Terminal & development tools</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Firefox & Chrome browsers</span>
+                                    </div>
+                                </div>
+                                <button class="vm-launch-button" data-vm-type="ubuntu">
+                                    <i class="fa-solid fa-play"></i> Launch Ubuntu
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="vm-card">
+                            <div class="vm-card-header">
+                                <i class="fa-brands fa-firefox vm-card-icon"></i>
+                                <h3 class="vm-card-title">Firefox Workspace</h3>
+                                <p class="vm-card-subtitle">Isolated Browser Environment</p>
+                            </div>
+                            <div class="vm-card-body">
+                                <p class="vm-card-description">
+                                    Secure Firefox browser in an isolated container. Perfect for private browsing with
+                                    no traces left on your device.
+                                </p>
+                                <div class="vm-features">
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Private & anonymous browsing</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Built-in ad blocking</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>File upload/download support</span>
+                                    </div>
+                                </div>
+                                <button class="vm-launch-button" data-vm-type="firefox">
+                                    <i class="fa-solid fa-play"></i> Launch Firefox
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="vm-card">
+                            <div class="vm-card-header">
+                                <i class="fa-solid fa-code vm-card-icon"></i>
+                                <h3 class="vm-card-title">Dev Environment</h3>
+                                <p class="vm-card-subtitle">Coding & Development Tools</p>
+                            </div>
+                            <div class="vm-card-body">
+                                <p class="vm-card-description">
+                                    Complete development environment with VS Code, Git, Node.js, Python, and more
+                                    pre-installed.
+                                </p>
+                                <div class="vm-features">
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Visual Studio Code</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Multiple programming languages</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Terminal & Git integration</span>
+                                    </div>
+                                </div>
+                                <button class="vm-launch-button" data-vm-type="dev">
+                                    <i class="fa-solid fa-play"></i> Launch Dev Environment
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="vm-card">
+                            <div class="vm-card-header tooltip">
+                                <i class="fa-brands fa-windows vm-card-icon"></i>
+                                <h3 class="vm-card-title">Windows Desktop</h3>
+                                <p class="vm-card-subtitle">Premium Environment <i class="fa-solid fa-crown"
+                                        style="color: gold;"></i></p>
+                                <span class="tooltiptext">Windows VM access requires a premium subscription</span>
+                            </div>
+                            <div class="vm-card-body">
+                                <p class="vm-card-description">
+                                    Full Windows desktop experience with Microsoft Office and popular Windows
+                                    applications.
+                                </p>
+                                <div class="vm-features">
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Windows 10/11 experience</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Microsoft Office suite</span>
+                                    </div>
+                                    <div class="vm-feature">
+                                        <i class="fa-solid fa-check feature-icon"></i>
+                                        <span>Extended session time</span>
+                                    </div>
+                                </div>
+                                <button class="vm-launch-button" data-vm-type="windows" disabled
+                                    style="background-color: #777; cursor: not-allowed;">
+                                    <i class="fa-solid fa-lock"></i> Premium Feature
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Required UI -->
+                <div class="login-required" id="login-required">
+                    <i class="fa-solid fa-user-lock login-icon"></i>
+                    <h2 class="login-title">Login Required</h2>
+                    <p class="login-description">
+                        You need to be logged in to access virtual machines.
+                        Login to your Flamepass account to unlock this feature and enjoy
+                        browser-based access to remote desktops and applications.
+                    </p>
+                    <button class="login-button" id="login-button">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login to Continue
+                    </button>
+                </div>
+
+                <!-- Session Loading UI -->
+                <div class="session-status" id="session-status">
+                    <div class="loader-container">
+                        <div class="circle-loader"></div>
+                        <div class="circle-loader"></div>
+                        <div class="loader-icon">
+                            <i class="fa-solid fa-desktop"></i>
+                        </div>
+                    </div>
+                    <h3 class="session-message" id="session-message">Initializing Virtual Machine...</h3>
+                    <p class="session-submessage" id="session-submessage">This may take a moment. We're preparing your environment.</p>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <p class="progress-text" id="progress-text">Starting up: 25%</p>
+                    
+                    <button class="cancel-session-button" id="cancel-session">
+                        Cancel and return to selection
+                    </button>
+                </div>
+
+                <!-- VM Iframe Container -->
+                <div class="iframe-container">
+                    <div class="loading-overlay" id="loading-overlay">
+                        <div class="spinner"></div>
+                        <div id="loading-text">Loading Virtual Machine Service...</div>
+                    </div>
+                    <iframe id="vm-frame" src="about:blank" allow="camera;microphone;clipboard-write;midi;autoplay;fullscreen;payment;"></iframe>
+                </div>
+
+                <!-- Info Card -->
+                <div class="info-card" id="info-card">
+                    <span class="close-info" id="close-info">×</span>
+                    <div class="info-card-header">
+                        <i class="fa-solid fa-circle-info info-card-icon"></i>
+                        <span class="info-card-title">Tips for Using VMs</span>
+                    </div>
+                    <p class="info-card-text">
+                        Sessions automatically end after 60 minutes of inactivity. 
+                        Use the fullscreen button in the VM toolbar for the best experience.
+                        Files uploaded to the VM will be deleted when your session ends.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="z-index: -998">
+        <div style="z-index: -998; position: fixed" class="blob"></div>
+        <div style="z-index: -998; position: fixed" class="blobbig"></div>
+        <div style="z-index: -998; position: fixed" class="blobsmall"></div>
+        <div style="z-index: -998; position: fixed" class="blobtop"></div>
+        <div style="z-index: -999; position: fixed" id="particles-js"></div>
+    </div>
+
+    <script>
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 86,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#ffffff'
+                },
+                shape: {
+                    type: 'circle',
+                    stroke: {
+                        width: 0,
+                        color: '#000000'
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    },
+                    image: {
+                        src: 'img/github.svg',
+                        width: 100,
+                        height: 100
+                    }
+                },
+                opacity: {
+                    value: 1,
+                    random: true,
+                    anim: {
+                        enable: false,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 2,
+                    random: true,
+                    anim: {
+                        enable: false,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: false,
+                    distance: 150,
+                    color: '#ffffff',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 0.5,
+                    direction: 'top',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 318.0130544358847,
+                        rotateY: 556.5228452627983
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'window',
+                events: {
+                    onhover: {
+                        enable: false,
+                        mode: 'repulse'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 400,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    bubble: {
+                        distance: 400,
+                        size: 40,
+                        duration: 2,
+                        opacity: 8,
+                        speed: 3
+                    },
+                    repulse: {
+                        distance: 200,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 10
+                    },
+                    remove: {
+                        particles_nb: 10
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+
+    <script>
+        // Kasm Workspaces VM Integration
+        document.addEventListener('DOMContentLoaded', function () {
+            // Elements
+            const vmFrame = document.getElementById('vm-frame');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const refreshButton = document.getElementById('refresh-button');
+            const vmSelection = document.getElementById('vm-selection');
+            const loginRequired = document.getElementById('login-required');
+            const loginButton = document.getElementById('login-button');
+            const sessionStatus = document.getElementById('session-status');
+            const sessionMessage = document.getElementById('session-message');
+            const sessionSubmessage = document.getElementById('session-submessage');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const cancelSession = document.getElementById('cancel-session');
+            const infoCard = document.getElementById('info-card');
+            const closeInfo = document.getElementById('close-info');
+            
+            // Kasm server configuration - this should be your Kasm instance URL
+            const KASM_SERVER_URL = "https://kasm.example.com"; // Replace with your actual Kasm server URL
+            
+            // VM types and their corresponding Kasm workspace IDs
+            const VM_TYPES = {
+                ubuntu: "ubuntu-desktop-workspace-id", // Replace with actual workspace IDs
+                firefox: "firefox-workspace-id",
+                dev: "dev-environment-workspace-id",
+                windows: "windows-desktop-workspace-id"
+            };
+            
+            // Function to check if user is logged in
+            function isUserLoggedIn() {
+                const loginData = JSON.parse(localStorage.getItem('loginData'));
+                if (!loginData) return false;
+
+                const now = new Date();
+                const expirationDate = new Date(loginData.expiration);
+                if (now > expirationDate) {
+                    localStorage.removeItem('loginData');
+                    return false;
+                }
+                return true;
+            }
+            
+            // Function to create proxy URL for the Kasm server
+            const createProxyUrl = (url) => {
+                // Encode the URL and create the proxy link
+                return `/@/index.html?uul=${encodeURIComponent(url)}`;
+            };
+            
+            // Function to load Kasm Workspaces
+            const loadKasmWorkspaces = () => {
+                // Show loading overlay
+                loadingOverlay.style.display = 'flex';
+                loadingText.textContent = 'Loading Virtual Machine Service...';
+                
+                // Create proxy URL for Kasm
+                const proxyUrl = createProxyUrl(KASM_SERVER_URL);
+                
+                // Load the service in the iframe
+                vmFrame.src = proxyUrl;
+            };
+            
+            // Handle VM launch button clicks
+            document.querySelectorAll('.vm-launch-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Don't process disabled buttons
+                    if (this.disabled) return;
+                    
+                    const vmType = this.getAttribute('data-vm-type');
+                    launchVM(vmType);
+                });
+            });
+            
+            // Function to launch a VM
+            function launchVM(vmType) {
+                // Show session status overlay
+                sessionStatus.style.display = 'flex';
+                
+                // Reset progress
+                progressBar.style.width = '0%';
+                progressText.textContent = 'Starting up: 0%';
+                
+                // Update messages based on VM type
+                if (vmType === 'ubuntu') {
+                    sessionMessage.textContent = 'Launching Ubuntu Desktop...';
+                    sessionSubmessage.textContent = 'Preparing Linux environment with GUI desktop.';
+                } else if (vmType === 'firefox') {
+                    sessionMessage.textContent = 'Launching Firefox Workspace...';
+                    sessionSubmessage.textContent = 'Setting up secure browsing environment.';
+                } else if (vmType === 'dev') {
+                    sessionMessage.textContent = 'Launching Development Environment...';
+                    sessionSubmessage.textContent = 'Loading coding tools and development frameworks.';
+                }
+                
+                // Simulate progress (in a real implementation, this would check the actual VM status)
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `Starting up: ${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        
+                        // After "loading" is complete, load Kasm with the selected workspace
+                        loadKasmWithWorkspace(vmType);
+                    }
+                }, 300);
+            }
+            
+            // Function to load Kasm with a specific workspace
+            function loadKasmWithWorkspace(vmType) {
+                // In a real implementation, you would use the Kasm API to start the specific workspace
+                // For this demo, we'll simulate loading the Kasm interface
+                
+                // Hide session status overlay
+                sessionStatus.style.display = 'none';
+                
+                // Show loading overlay
+                loadingOverlay.style.display = 'flex';
+                loadingText.textContent = `Loading ${vmType.charAt(0).toUpperCase() + vmType.slice(1)} Environment...`;
+                
+                // Load Kasm
+                loadKasmWorkspaces();
+                
+                // Show info card after a delay
+                setTimeout(() => {
+                    infoCard.classList.add('show');
+                    
+                    // Auto-hide info card after 10 seconds
+                    setTimeout(() => {
+                        infoCard.classList.remove('show');
+                    }, 10000);
+                }, 3000);
+            }
+            
+            // Handle iframe load event
+            vmFrame.addEventListener('load', function () {
+                // If the iframe is not about:blank, hide the loading overlay
+                if (vmFrame.src !== 'about:blank') {
+                    // Give some extra time for the content to fully render
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 1500);
+                }
+            });
+            
+            // Handle refresh button click
+            refreshButton.addEventListener('click', function () {
+                if (isUserLoggedIn()) {
+                    if (vmFrame.src !== 'about:blank') {
+                        // If VM is already loaded, reload it
+                        vmFrame.src = vmFrame.src;
+                        loadingOverlay.style.display = 'flex';
+                        loadingText.textContent = 'Refreshing Virtual Machine...';
+                    } else {
+                        // Return to VM selection
+                        showVMSelection();
+                    }
+                } else {
+                    // If not logged in, show login required UI
+                    showLoginRequired();
+                }
+            });
+            
+            // Handle login button click
+            loginButton.addEventListener('click', function() {
+                // This will trigger the auth-controller.js login modal
+                document.dispatchEvent(new CustomEvent('flamepass:login:show'));
+                
+                // After login is complete, auth-controller.js will update localStorage
+                // We need to check periodically if the login was successful
+                const loginCheckInterval = setInterval(() => {
+                    if (isUserLoggedIn()) {
+                        clearInterval(loginCheckInterval);
+                        showVMSelection();
+                    }
+                }, 1000);
+            });
+            
+            // Handle cancel session button
+            cancelSession.addEventListener('click', function() {
+                // Hide session status and return to VM selection
+                sessionStatus.style.display = 'none';
+                showVMSelection();
+            });
+            
+            // Handle info card close button
+            closeInfo.addEventListener('click', function() {
+                infoCard.classList.remove('show');
+            });
+            
+            // Function to show VM selection UI
+            function showVMSelection() {
+                vmSelection.style.display = 'flex';
+                loginRequired.style.display = 'none';
+                sessionStatus.style.display = 'none';
+                vmFrame.src = 'about:blank';
+                loadingOverlay.style.display = 'none';
+            }
+            
+            // Function to show login required UI
+            function showLoginRequired() {
+                vmSelection.style.display = 'none';
+                loginRequired.style.display = 'flex';
+                sessionStatus.style.display = 'none';
+                vmFrame.src = 'about:blank';
+                loadingOverlay.style.display = 'none';
+            }
+            
+            // Initial state setup
+            function initializeUI() {
+                if (isUserLoggedIn()) {
+                    showVMSelection();
+                } else {
+                    showLoginRequired();
+                }
+            }
+            
+            // Listen for login/logout events from auth-controller.js
+            document.addEventListener('flamepass:login:success', function() {
+                showVMSelection();
+            });
+            
+            document.addEventListener('flamepass:logout', function() {
+                showLoginRequired();
+            });
+            
+            // Initialize the UI
+            initializeUI();
+        });
+    </script>
+
+    <!-- Scroll to top button functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollTop = document.querySelector('.scrolltop');
+
+            // Handle scroll to top button
+            scrollTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Show/hide scroll to top button
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTop.style.display = 'flex';
+                } else {
+                    scrollTop.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+    <script src="/js/localforage.min.js"></script>
+    <script src="/js/json-loader.js"></script>
+    <script src="/js/c.js"></script>
+    <script src="/js/auth-controller.min.js"></script>
+    <script src="/js/themes.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            let hideAds = localStorage.getItem('hideAds');
+
+            if (hideAds === null || hideAds === 'false') {
+                let script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src =
+                    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3747175608041884';
+                document.body.appendChild(script);
+            }
+        });
+    </script>
+</body>
+
+</html>

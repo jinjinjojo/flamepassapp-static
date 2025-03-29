@@ -81,6 +81,7 @@ function clearOldCache() {
 function openIndexedDB(dbName, version) {
 	return new Promise((resolve, reject) => {
 		if (!window.indexedDB) {
+			console.warn('IndexedDB not supported in this browser');
 			resolve(null);
 			return;
 		}
@@ -114,6 +115,18 @@ function openIndexedDB(dbName, version) {
 // Helper function to get all items from IndexedDB
 function getAllItemsFromDB(db, storeName) {
 	return new Promise((resolve, reject) => {
+		if (!db) {
+			resolve([]);
+			return;
+		}
+
+		// Make sure the store exists before trying to use it
+		if (!db.objectStoreNames.contains(storeName)) {
+			console.warn(`Store ${storeName} not found in database`);
+			resolve([]);
+			return;
+		}
+
 		const transaction = db.transaction([storeName], 'readonly');
 		const store = transaction.objectStore(storeName);
 		const request = store.getAll();
@@ -132,46 +145,71 @@ function getAllItemsFromDB(db, storeName) {
 // Function to store items in IndexedDB
 function storeItemsInDB(db, items, storeName) {
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([storeName], 'readwrite');
+		if (!db) {
+			resolve();
+			return;
+		}
+
+		// Make sure the store exists before trying to use it
+		if (!db.objectStoreNames.contains(storeName)) {
+			console.warn(`Store ${storeName} not found in database`);
+			resolve();
+			return;
+		}
+
+		const transaction = db.transaction([storeName, 'meta'], 'readwrite');
 		const store = transaction.objectStore(storeName);
 
 		// Clear existing data first
 		store.clear();
 
-		// Add all items
+		// Prepare to count completed operations
 		let completed = 0;
+		const totalItems = items.length;
+
+		// Handle empty items array
+		if (totalItems === 0) {
+			// Update timestamp anyway
+			const metaStore = transaction.objectStore('meta');
+			metaStore.put({ key: 'lastUpdate', value: Date.now() });
+			resolve();
+			return;
+		}
+
+		// Add all items
 		items.forEach(item => {
 			// Ensure each item has an ID
 			if (!item.id) {
 				if (item.slug) {
 					item.id = item.slug;
 				} else if (item.name) {
-					item.id = item.name.toLowerCase().replace(/\s+/g, '-');
+					item.id = item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
 				} else {
-					item.id = `item-${Math.random().toString(36).substr(2, 9)}`;
+					item.id = `item-${Math.random().toString(36).substring(2, 9)}`;
 				}
 			}
 
 			const request = store.put(item);
+
 			request.onsuccess = () => {
 				completed++;
-				if (completed === items.length) {
+				if (completed === totalItems) {
 					// Also store timestamp for cache expiration
-					const metaTransaction = db.transaction(['meta'], 'readwrite');
-					const metaStore = metaTransaction.objectStore('meta');
+					const metaStore = transaction.objectStore('meta');
 					metaStore.put({ key: 'lastUpdate', value: Date.now() });
-
-					resolve();
 				}
 			};
+
 			request.onerror = event => {
 				console.error(`Error storing item in ${storeName}:`, event.target.error);
-				reject(event.target.error);
+				// Continue with other items
+				completed++;
 			};
 		});
 
 		transaction.oncomplete = () => {
-			console.log(`Transaction completed: stored items in ${storeName}`);
+			console.log(`Transaction completed: stored ${completed} items in ${storeName}`);
+			resolve();
 		};
 
 		transaction.onerror = event => {
@@ -181,75 +219,117 @@ function storeItemsInDB(db, items, storeName) {
 	});
 }
 
-// Function to load JSON data with caching using IndexedDB and localStorage as fallback
+// Function to check if a database exists and has data
+async function checkDatabaseExists(dbName) {
+	return new Promise((resolve) => {
+		const request = indexedDB.open(dbName);
+		let dbExists = true;
+
+		request.onupgradeneeded = () => {
+			// If onupgradeneeded is called, this means the database didn't exist or version was lower
+			dbExists = false;
+		};
+
+		request.onsuccess = async () => {
+			const db = request.result;
+
+			if (!dbExists) {
+				db.close();
+				resolve(false);
+				return;
+			}
+
+			// Check if it has the required object stores
+			if (!db.objectStoreNames.contains('items') || !db.objectStoreNames.contains('meta')) {
+				db.close();
+				resolve(false);
+				return;
+			}
+
+			// Check if it has any items
+			try {
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const countRequest = store.count();
+
+				countRequest.onsuccess = () => {
+					const hasData = countRequest.result > 0;
+					db.close();
+					resolve(hasData);
+				};
+
+				countRequest.onerror = () => {
+					db.close();
+					resolve(false);
+				};
+			} catch (e) {
+				db.close();
+				resolve(false);
+			}
+		};
+
+		request.onerror = () => {
+			resolve(false);
+		};
+	});
+}
+
+// Function to load JSON data with caching
 async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 	// Return cached data if available in memory
 	if (cache[cacheKey]) {
 		return cache[cacheKey];
 	}
 
+	// Special case for games
+	if (cacheKey === 'games' && useIndexedDB) {
+		return fetchGames();
+	}
+
 	try {
 		// Try IndexedDB first if enabled for this resource
 		if (useIndexedDB) {
 			const dbName = `flamepass_${cacheKey}`;
-			const db = await openIndexedDB(dbName, 1);
+			const dbExists = await checkDatabaseExists(dbName);
 
-			if (db) {
-				// Check if we have any data in IndexedDB
-				const items = await getAllItemsFromDB(db, 'items');
+			if (dbExists) {
+				const db = await openIndexedDB(dbName, 1);
+				if (db) {
+					const items = await getAllItemsFromDB(db, 'items');
+					if (items && items.length > 0) {
+						// Store in memory cache
+						cache[cacheKey] = items;
 
-				// If we have items in IndexedDB, use them
-				if (items && items.length > 0) {
-					// Check if cache is fresh enough
-					const metaTransaction = db.transaction(['meta'], 'readonly');
-					const metaStore = metaTransaction.objectStore('meta');
-					const lastUpdateRequest = metaStore.get('lastUpdate');
+						// Check last update time
+						const metaTransaction = db.transaction(['meta'], 'readonly');
+						const metaStore = metaTransaction.objectStore('meta');
+						const lastUpdateRequest = metaStore.get('lastUpdate');
 
-					const getLastUpdate = new Promise(resolve => {
 						lastUpdateRequest.onsuccess = () => {
-							if (lastUpdateRequest.result) {
-								resolve(lastUpdateRequest.result.value);
-							} else {
-								resolve(0);
+							const lastUpdate = lastUpdateRequest.result ? lastUpdateRequest.result.value : 0;
+							const cacheAge = Date.now() - lastUpdate;
+
+							// If cache is older than 1 hour, refresh in background
+							if (cacheAge > 3600000) {
+								console.log(`Refreshing ${cacheKey} cache in background...`);
+								fetch(url)
+									.then(response => response.json())
+									.then(newData => {
+										// Update cache
+										cache[cacheKey] = newData;
+										storeItemsInDB(db, newData, 'items');
+									})
+									.catch(err => console.warn('Background refresh failed:', err));
 							}
 						};
-						lastUpdateRequest.onerror = () => resolve(0);
-					});
 
-					const lastUpdate = await getLastUpdate;
-					const cacheExpiry = 3600000; // 1 hour
-
-					// If cache is fresh, use it directly
-					if (Date.now() - lastUpdate < cacheExpiry) {
-						cache[cacheKey] = items;
 						return items;
 					}
-
-					// Otherwise, return items but fetch updated data in background
-					cache[cacheKey] = items;
-
-					// Fetch new data in background
-					fetch(url)
-						.then(response => response.json())
-						.then(newData => {
-							// Update IndexedDB and memory cache
-							storeItemsInDB(db, newData, 'items');
-							cache[cacheKey] = newData;
-						})
-						.catch(error => {
-							console.warn(`Background fetch error for ${url}:`, error);
-						});
-
-					// Return cached items immediately
-					return items;
 				}
-
-				// If no items in IndexedDB, we need to fetch from network
-				// Fall through to fetch logic below
 			}
 		}
 
-		// If no IndexedDB or no data in it, check localStorage
+		// Check localStorage as fallback
 		const cachedData = localStorage.getItem(`cache_${cacheKey}`);
 		if (cachedData) {
 			try {
@@ -258,7 +338,7 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 				if (Date.now() - timestamp < 3600000) {
 					cache[cacheKey] = data;
 
-					// If IndexedDB is enabled but empty, store this data there
+					// If IndexedDB is enabled, store data there for next time
 					if (useIndexedDB) {
 						const dbName = `flamepass_${cacheKey}`;
 						const db = await openIndexedDB(dbName, 1);
@@ -274,41 +354,37 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 			}
 		}
 
-		// Fetch fresh data if no cache or cache expired
+		// Fetch fresh data from network
+		console.log(`Fetching ${cacheKey} from network...`);
 		const response = await fetch(url);
 		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
 		const data = await response.json();
 
-		// Update memory cache
+		// Store in memory cache
 		cache[cacheKey] = data;
 
-		// Store in IndexedDB if enabled for this resource
+		// Store in IndexedDB if enabled
 		if (useIndexedDB) {
-			try {
-				const dbName = `flamepass_${cacheKey}`;
-				const db = await openIndexedDB(dbName, 1);
-				if (db) {
-					await storeItemsInDB(db, data, 'items');
-				}
-			} catch (indexedDBError) {
-				console.warn(`Error storing ${cacheKey} in IndexedDB:`, indexedDBError);
+			const dbName = `flamepass_${cacheKey}`;
+			const db = await openIndexedDB(dbName, 1);
+			if (db) {
+				await storeItemsInDB(db, data, 'items');
 			}
-		}
-
-		// Check localStorage capacity and clear old cache if needed
-		if (isStorageFull()) {
-			clearOldCache();
 		}
 
 		// Also store in localStorage as fallback
 		try {
+			if (isStorageFull()) {
+				clearOldCache();
+			}
+
 			localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
 				data,
 				timestamp: Date.now()
 			}));
 		} catch (storageError) {
-			console.warn('localStorage quota exceeded, using memory cache only');
-			// Clear some items and try again
+			console.warn('localStorage quota exceeded, using memory cache only', storageError);
 			clearOldCache();
 			try {
 				localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
@@ -317,7 +393,6 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 				}));
 			} catch (retryError) {
 				console.error('Still unable to store in localStorage after cleanup');
-				// Continue using memory cache
 			}
 		}
 
@@ -325,11 +400,12 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 	} catch (error) {
 		console.error(`Error fetching ${url}:`, error);
 
-		// Try fallbacks in order: memory cache -> IndexedDB -> localStorage
+		// Try to get from memory cache
 		if (cache[cacheKey]) {
 			return cache[cacheKey];
 		}
 
+		// Try to get from IndexedDB
 		if (useIndexedDB) {
 			try {
 				const dbName = `flamepass_${cacheKey}`;
@@ -346,14 +422,112 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 			}
 		}
 
-		// Last resort: try localStorage
+		// Try to get from localStorage as last resort
 		try {
 			const cachedData = localStorage.getItem(`cache_${cacheKey}`);
 			if (cachedData) {
-				return JSON.parse(cachedData).data;
+				const parsed = JSON.parse(cachedData);
+				return parsed.data || [];
 			}
 		} catch (e) {
 			console.warn(`Error retrieving ${cacheKey} from localStorage:`, e);
+		}
+
+		return [];
+	}
+}
+
+// Function to fetch and cache games using IndexedDB, similar to the game page handler
+async function fetchGames() {
+	try {
+		// Check if we have data in memory cache
+		if (cache.games && Array.isArray(cache.games) && cache.games.length > 0) {
+			return cache.games;
+		}
+
+		// Check if the database exists and has data
+		const dbName = 'flamepass_games';
+		const dbExists = await checkDatabaseExists(dbName);
+
+		if (dbExists) {
+			// Get data from IndexedDB
+			const db = await openIndexedDB(dbName, 1);
+			if (db) {
+				const games = await getAllItemsFromDB(db, 'items');
+				if (games && games.length > 0) {
+					cache.games = games;
+
+					// Check last update time
+					const metaTransaction = db.transaction(['meta'], 'readonly');
+					const metaStore = metaTransaction.objectStore('meta');
+					const lastUpdateRequest = metaStore.get('lastUpdate');
+
+					lastUpdateRequest.onsuccess = () => {
+						const lastUpdate = lastUpdateRequest.result ? lastUpdateRequest.result.value : 0;
+						const cacheAge = Date.now() - lastUpdate;
+
+						// If cache is older than 1 hour, refresh in background
+						if (cacheAge > 3600000) {
+							console.log('Refreshing games cache in background...');
+							fetch('/json/g.json')
+								.then(response => response.json())
+								.then(newData => {
+									// Update cache
+									cache.games = newData;
+									storeItemsInDB(db, newData, 'items');
+								})
+								.catch(err => console.warn('Background refresh failed:', err));
+						}
+					};
+
+					return games;
+				}
+			}
+		}
+
+		// If no data in IndexedDB or database doesn't exist, fetch from network
+		console.log('No games in IndexedDB, fetching from network');
+		const response = await fetch('/json/g.json');
+		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+		const data = await response.json();
+
+		// Store in memory cache
+		cache.games = data;
+
+		// Store in IndexedDB for future use
+		const db = await openIndexedDB(dbName, 1);
+		if (db) {
+			await storeItemsInDB(db, data, 'items');
+		}
+
+		// Also store in localStorage as a fallback
+		try {
+			if (isStorageFull()) {
+				clearOldCache();
+			}
+
+			localStorage.setItem('cache_games', JSON.stringify({
+				data,
+				timestamp: Date.now()
+			}));
+		} catch (e) {
+			console.warn('localStorage storage failed:', e);
+		}
+
+		return data;
+	} catch (error) {
+		console.error('Error fetching games:', error);
+
+		// Try to get from localStorage as last resort
+		try {
+			const cachedData = localStorage.getItem('cache_games');
+			if (cachedData) {
+				const parsedData = JSON.parse(cachedData);
+				return parsedData.data || [];
+			}
+		} catch (e) {
+			console.warn('Error retrieving from localStorage:', e);
 		}
 
 		return [];
@@ -634,34 +808,24 @@ async function loadGamesPage() {
 		// Only set up category selector and pagination controls once
 		setupCategorySelector();
 
-		// Get games data using IndexedDB instead of direct fetch
-		const data = await fetchWithCache('/json/g.json', 'games', true);
+		// Get games data using the dedicated function for games
+		const data = await fetchGames();
 
 		// Get current category and page from URL params
 		const urlParams = new URLSearchParams(window.location.search);
 		const currentCategory = urlParams.get('category') || 'cloud'; // Default to Cloud Gaming
 		const currentPage = parseInt(urlParams.get('page') || '1');
 
-		// Update active category in selector
+		// Continue with the rest of the function as before
 		updateActiveCategoryButton(currentCategory);
-
-		// Filter games by category
 		let filteredGames = filterGamesByCategory(data, currentCategory);
-
-		// Calculate pagination
 		const gamesPerPage = 50;
 		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
 		const startIndex = (currentPage - 1) * gamesPerPage;
 		const endIndex = startIndex + gamesPerPage;
 		const currentGames = filteredGames.slice(startIndex, endIndex);
-
-		// Create pagination controls
 		createPaginationControls(currentPage, totalPages, currentCategory);
-
-		// Render games with improvements
 		renderGames(currentGames, currentCategory, filteredGames);
-
-		// Set up event handlers
 		setupGameSearchFunction(filteredGames);
 		setupRandomGameButton();
 		setupScrollToTop();
@@ -765,11 +929,9 @@ function setupCategorySelector() {
           <span class="material-symbols-outlined category-icon">${category.icon}</span>
           <span class="category-text">${category.name}</span>
         `;
-
 		if (category.requiresAuth && !localStorage.getItem("loginData")) {
 			buttonContent += `<span class="material-symbols-outlined lock-icon">lock</span>`;
 		}
-
 
 		button.innerHTML = buttonContent;
 
@@ -1154,7 +1316,7 @@ function setupRandomGameButton() {
 
 		try {
 			// Get all games from IndexedDB
-			const allGames = await fetchWithCache('/json/g.json', 'games', true);
+			const allGames = await fetchGames();
 
 			// Filter games by current category
 			const categoryGames = allGames.filter(g =>
@@ -1242,28 +1404,28 @@ function addGameOverlayStyles() {
 	const styleEl = document.createElement('style');
 	styleEl.id = 'game-overlay-styles';
 	styleEl.textContent = `
-       .game-overlay {
-           position: absolute;
-           bottom: 0;
-           left: 0;
-           width: 93%;
-           padding: 15px;
-           background: linear-gradient(transparent, rgb(0, 0, 0));
-           color: white;
-           opacity: 1;
-           transition: opacity 0.3s;
-       }
-       
-       .game-title {
-           margin: 0;
-           font-size: 1.2rem;
-           font-weight: 600;
-           text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-           overflow: hidden;
-           text-overflow: ellipsis;
-           white-space: nowrap;
-       }
-   `;
+        .game-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 93%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgb(0, 0, 0));
+            color: white;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+        
+        .game-title {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    `;
 
 	document.head.appendChild(styleEl);
 }
@@ -1275,75 +1437,75 @@ function addCustomGameStyles() {
 	const styleEl = document.createElement('style');
 	styleEl.id = 'custom-game-styles';
 	styleEl.textContent = `
-       .gameAnchor {
-           position: relative;
-           overflow: hidden;
-           border-radius: 8px;
-           transition: transform 0.3s ease;
-       }
-       
-       .gameAnchor:hover {
-           transform: translateY(-5px);
-       }
-       
-       .gameImage {
-           width: 100%;
-           height: 100%;
-           object-fit: cover;
-           border-radius: 8px;
-       }
-       
-       .lock-overlay {
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           background-color: rgba(0, 0, 0, 0.7);
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           color: white;
-           font-size: 24px;
-           z-index: 100;
-           cursor: pointer;
-           transition: opacity 0.3s ease;
-           border-radius: 8px;
-       }
-       
-       /* Search results info */
-       .search-results-info {
-           text-align: center;
-           margin: 20px 0;
-           color: #fff;
-           font-size: 16px;
-           background-color: rgba(30, 30, 30, 0.7);
-           padding: 15px;
-           border-radius: 8px;
-       }
-       
-       .clear-search-button {
-           padding: 5px 10px;
-           background-color: #ff6600;
-           border: none;
-           border-radius: 4px;
-           color: white;
-           cursor: pointer;
-           transition: background-color 0.3s;
-           margin-left: 10px;
-       }
-       
-       .clear-search-button:hover {
-           background-color: #ff8033;
-       }
-       
-       /* Lock icon for category buttons */
-       .lock-icon {
-           font-size: 16px;
-           margin-left: 5px;
-           color: #ff6600;
-       }
-   `;
+        .gameAnchor {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .gameAnchor:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gameImage {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            border-radius: 8px;
+        }
+        
+        /* Search results info */
+        .search-results-info {
+            text-align: center;
+            margin: 20px 0;
+            color: #fff;
+            font-size: 16px;
+            background-color: rgba(30, 30, 30, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .clear-search-button {
+            padding: 5px 10px;
+            background-color: #ff6600;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        
+        .clear-search-button:hover {
+            background-color: #ff8033;
+        }
+        
+        /* Lock icon for category buttons */
+        .lock-icon {
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff6600;
+        }
+    `;
 
 	document.head.appendChild(styleEl);
 }
@@ -1408,101 +1570,45 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Add a style for better scrolling performance
 	const perfStyle = document.createElement('style');
 	perfStyle.textContent = `
-   body.is-scrolling * {
-     transition-property: none !important;
-     animation: none !important;
-   }
- `;
+    body.is-scrolling * {
+      transition-property: none !important;
+      animation: none !important;
+    }
+  `;
 	document.head.appendChild(perfStyle);
 
 	// Optimize for mobile devices
 	if (isMobileDevice()) {
 		const mobileStyle = document.createElement('style');
 		mobileStyle.textContent = `
-     .appImage, .gameImage, .shortcutBigimg {
-       transform: none !important;
-       transition: opacity 0.2s ease !important;
-     }
-     
-     .appImage:hover, .gameImage:hover, .shortcutBigimg:hover {
-       opacity: 0.8;
-     }
-   `;
+      .appImage, .gameImage, .shortcutBigimg {
+        transform: none !important;
+        transition: opacity 0.2s ease !important;
+      }
+      
+      .appImage:hover, .gameImage:hover, .shortcutBigimg:hover {
+        opacity: 0.8;
+      }
+    `;
 		document.head.appendChild(mobileStyle);
 	}
-});
 
-// Initialize IndexedDB for each data type when DOM loads
-document.addEventListener('DOMContentLoaded', async () => {
-	try {
-		// Pre-initialize all IndexedDB databases for better performance
-		const dbTypes = ['games', 'apps', 'smallShortcuts', 'bigShortcuts'];
-
-		for (const type of dbTypes) {
-			const dbName = `flamepass_${type}`;
-			await openIndexedDB(dbName, 1);
-		}
-
+	// Try to initialize IndexedDB databases for better performance
+	Promise.all([
+		openIndexedDB('flamepass_games', 1),
+		openIndexedDB('flamepass_apps', 1),
+		openIndexedDB('flamepass_smallShortcuts', 1),
+		openIndexedDB('flamepass_bigShortcuts', 1)
+	]).then(() => {
 		console.log('IndexedDB databases initialized');
-	} catch (error) {
+	}).catch(error => {
 		console.warn('Error initializing IndexedDB databases:', error);
-	}
-
-	// Check for network connection and initiate cache sync if online
-	if (navigator.onLine) {
-		syncCaches();
-	}
-});
-
-// Function to sync all caches when online
-async function syncCaches() {
-	const resources = [
-		{ url: '/json/g.json', key: 'games' },
-		{ url: '/json/a.json', key: 'apps' },
-		{ url: '/json/s.json', key: 'smallShortcuts' },
-		{ url: '/json/sb.json', key: 'bigShortcuts' }
-	];
-
-	for (const resource of resources) {
-		try {
-			// Check if cache is older than 1 hour
-			const dbName = `flamepass_${resource.key}`;
-			const db = await openIndexedDB(dbName, 1);
-
-			if (db) {
-				const metaTransaction = db.transaction(['meta'], 'readonly');
-				const metaStore = metaTransaction.objectStore('meta');
-				const lastUpdateRequest = metaStore.get('lastUpdate');
-
-				lastUpdateRequest.onsuccess = async () => {
-					const lastUpdate = lastUpdateRequest.result ? lastUpdateRequest.result.value : 0;
-					const cacheAge = Date.now() - lastUpdate;
-
-					// Refresh cache if older than 1 hour or doesn't exist
-					if (cacheAge > 3600000 || lastUpdate === 0) {
-						console.log(`Refreshing ${resource.key} cache...`);
-
-						// Fetch in background without awaiting to prevent blocking
-						fetchWithCache(resource.url, resource.key, true)
-							.then(() => console.log(`${resource.key} cache refreshed`))
-							.catch(error => console.warn(`Error refreshing ${resource.key} cache:`, error));
-					}
-				};
-			}
-		} catch (error) {
-			console.warn(`Error checking cache age for ${resource.key}:`, error);
-		}
-	}
-}
-
-// Listen for online status changes
-window.addEventListener('online', () => {
-	console.log('Online status restored, syncing caches...');
-	syncCaches();
+	});
 });
 
 // Export key functions for other scripts to use
 window.fetchWithCache = fetchWithCache;
+window.fetchGames = fetchGames;
 window.openIndexedDB = openIndexedDB;
 window.storeItemsInDB = storeItemsInDB;
 window.getAllItemsFromDB = getAllItemsFromDB;
