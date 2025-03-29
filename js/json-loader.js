@@ -458,7 +458,162 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 	}
 }
 
-// Function to fetch and cache games using IndexedDB, similar to the game page handler
+// Add these new functions to your code
+
+// Function specifically for storing games with order preservation
+function storeGamesInDB(db, games) {
+	return new Promise((resolve, reject) => {
+		if (!db) {
+			resolve();
+			return;
+		}
+
+		// Create a transaction that includes both object stores
+		try {
+			const transaction = db.transaction(['items', 'meta'], 'readwrite');
+			const store = transaction.objectStore('items');
+			const metaStore = transaction.objectStore('meta');
+
+			// Clear existing data first
+			store.clear();
+
+			// Also store the original array as a special object for order preservation
+			const orderObject = {
+				key: 'gamesOrder',
+				value: games.map(game => game.id || game.slug || createGameId(game))
+			};
+
+			metaStore.put(orderObject);
+			metaStore.put({ key: 'lastUpdate', value: Date.now() });
+
+			// Add all games individually
+			let completed = 0;
+			games.forEach(game => {
+				// Ensure each game has an ID
+				if (!game.id) {
+					if (game.slug) {
+						game.id = game.slug;
+					} else if (game.name) {
+						game.id = createGameId(game);
+					} else {
+						game.id = `game-${Math.random().toString(36).substring(2, 7)}`;
+					}
+				}
+
+				// Store the game without any order-related properties
+				const request = store.put(game);
+
+				request.onsuccess = () => {
+					completed++;
+					if (completed === games.length) {
+						console.log(`Stored ${completed} games with order preservation`);
+					}
+				};
+
+				request.onerror = event => {
+					console.error('Error storing game:', event.target.error);
+					completed++;
+				};
+			});
+
+			transaction.oncomplete = () => {
+				console.log('Transaction completed: stored games with order preservation');
+				resolve();
+			};
+
+			transaction.onerror = event => {
+				console.error('Transaction error:', event.target.error);
+				reject(event.target.error);
+			};
+		} catch (error) {
+			console.error('Error starting transaction:', error);
+			reject(error);
+		}
+	});
+}
+
+// Helper function to create a consistent ID for a game
+function createGameId(game) {
+	return game.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
+}
+
+// Function specifically for getting games with order preservation
+async function getGamesFromDB(db) {
+	return new Promise((resolve, reject) => {
+		if (!db) {
+			resolve([]);
+			return;
+		}
+
+		try {
+			// First get the order array
+			const metaTransaction = db.transaction(['meta'], 'readonly');
+			const metaStore = metaTransaction.objectStore('meta');
+			const orderRequest = metaStore.get('gamesOrder');
+
+			orderRequest.onsuccess = async () => {
+				const orderArray = orderRequest.result ? orderRequest.result.value : null;
+
+				// Now get all the games
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const gamesRequest = store.getAll();
+
+				gamesRequest.onsuccess = () => {
+					const games = gamesRequest.result;
+
+					// If we have an order array, use it to sort the games
+					if (orderArray && Array.isArray(orderArray)) {
+						// Create a map of id -> game for efficient lookup
+						const gamesMap = {};
+						games.forEach(game => {
+							gamesMap[game.id] = game;
+						});
+
+						// Recreate the games array in the original order
+						const orderedGames = orderArray
+							.map(id => gamesMap[id])
+							.filter(game => game !== undefined); // Filter out any missing games
+
+						// If any games weren't in the order array, add them at the end
+						const remainingGames = games.filter(game => !orderArray.includes(game.id));
+
+						resolve([...orderedGames, ...remainingGames]);
+					} else {
+						// If no order array, just return the games as is
+						resolve(games);
+					}
+				};
+
+				gamesRequest.onerror = event => {
+					console.error('Error getting games:', event.target.error);
+					resolve([]);
+				};
+			};
+
+			orderRequest.onerror = event => {
+				console.error('Error getting games order:', event.target.error);
+				// Fallback: get games without order
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const request = store.getAll();
+
+				request.onsuccess = () => {
+					resolve(request.result);
+				};
+
+				request.onerror = () => {
+					resolve([]);
+				};
+			};
+		} catch (error) {
+			console.error('Error in getGamesFromDB:', error);
+			resolve([]);
+		}
+	});
+}
+
+// Update the fetchGames function to use the order-preserving functions
 async function fetchGames() {
 	try {
 		// Check if we have data in memory cache
@@ -474,9 +629,11 @@ async function fetchGames() {
 			// Get data from IndexedDB
 			const db = await openIndexedDB(dbName, 1);
 			if (db) {
-				const games = await getAllItemsFromDB(db, 'items');
+				// Use the order-preserving function
+				const games = await getGamesFromDB(db);
+
 				if (games && games.length > 0) {
-					// Don't sort, just use the order from IndexedDB
+					// Store in memory cache
 					cache.games = games;
 
 					// Check last update time
@@ -494,9 +651,9 @@ async function fetchGames() {
 							fetch('/json/g.json')
 								.then(response => response.json())
 								.then(newData => {
-									// Update cache
-									cache.games = newData; // Use the order from the server
-									storeItemsInDB(db, newData, 'items');
+									// Update cache with order preserved
+									cache.games = newData;
+									storeGamesInDB(db, newData);
 								})
 								.catch(err => console.warn('Background refresh failed:', err));
 						}
@@ -514,13 +671,13 @@ async function fetchGames() {
 
 		const data = await response.json();
 
-		// Store in memory cache without sorting
+		// Store in memory cache
 		cache.games = data;
 
-		// Store in IndexedDB for future use
+		// Store in IndexedDB with order preservation
 		const db = await openIndexedDB(dbName, 1);
 		if (db) {
-			await storeItemsInDB(db, data, 'items');
+			await storeGamesInDB(db, data);
 		}
 
 		// Also store in localStorage as a fallback
