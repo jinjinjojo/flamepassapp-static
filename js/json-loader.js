@@ -77,15 +77,155 @@ function clearOldCache() {
 	});
 }
 
-// Function to load JSON data with caching
-async function fetchWithCache(url, cacheKey) {
-	// Return cached data if available
+// Helper function to open IndexedDB
+function openIndexedDB(dbName, version) {
+	return new Promise((resolve, reject) => {
+		if (!window.indexedDB) {
+			resolve(null);
+			return;
+		}
+
+		const request = indexedDB.open(dbName, version);
+
+		request.onerror = event => {
+			console.error(`IndexedDB error for ${dbName}:`, event.target.error);
+			resolve(null);
+		};
+
+		request.onsuccess = event => {
+			resolve(event.target.result);
+		};
+
+		request.onupgradeneeded = event => {
+			const db = event.target.result;
+
+			// Create object stores if they don't exist
+			if (!db.objectStoreNames.contains('items')) {
+				db.createObjectStore('items', { keyPath: 'id' });
+			}
+
+			if (!db.objectStoreNames.contains('meta')) {
+				db.createObjectStore('meta', { keyPath: 'key' });
+			}
+		};
+	});
+}
+
+// Helper function to get all items from IndexedDB
+function getAllItemsFromDB(db, storeName) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction([storeName], 'readonly');
+		const store = transaction.objectStore(storeName);
+		const request = store.getAll();
+
+		request.onsuccess = event => {
+			resolve(event.target.result);
+		};
+
+		request.onerror = event => {
+			console.error(`Error getting items from ${storeName}:`, event.target.error);
+			resolve([]);
+		};
+	});
+}
+
+// Function to store items in IndexedDB
+function storeItemsInDB(db, items, storeName) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction([storeName], 'readwrite');
+		const store = transaction.objectStore(storeName);
+
+		// Clear existing data first
+		store.clear();
+
+		// Add all items
+		let completed = 0;
+		items.forEach(item => {
+			// Ensure each item has an ID
+			if (!item.id) {
+				if (item.slug) {
+					item.id = item.slug;
+				} else if (item.name) {
+					item.id = item.name.toLowerCase().replace(/\s+/g, '-');
+				} else {
+					item.id = `item-${Math.random().toString(36).substr(2, 9)}`;
+				}
+			}
+
+			const request = store.put(item);
+			request.onsuccess = () => {
+				completed++;
+				if (completed === items.length) {
+					// Also store timestamp for cache expiration
+					const metaTransaction = db.transaction(['meta'], 'readwrite');
+					const metaStore = metaTransaction.objectStore('meta');
+					metaStore.put({ key: 'lastUpdate', value: Date.now() });
+
+					resolve();
+				}
+			};
+			request.onerror = event => {
+				console.error(`Error storing item in ${storeName}:`, event.target.error);
+				reject(event.target.error);
+			};
+		});
+
+		transaction.oncomplete = () => {
+			console.log(`Transaction completed: stored items in ${storeName}`);
+		};
+
+		transaction.onerror = event => {
+			console.error('Transaction error:', event.target.error);
+			reject(event.target.error);
+		};
+	});
+}
+
+// Function to load JSON data with caching using IndexedDB and localStorage as fallback
+async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
+	// Return cached data if available in memory
 	if (cache[cacheKey]) {
 		return cache[cacheKey];
 	}
 
 	try {
-		// Check if data exists in local storage
+		// Try IndexedDB first if enabled for this resource
+		if (useIndexedDB) {
+			const dbName = `flamepass_${cacheKey}`;
+			const db = await openIndexedDB(dbName, 1);
+
+			if (db) {
+				// Check if we have a recent cache in IndexedDB
+				const metaTransaction = db.transaction(['meta'], 'readonly');
+				const metaStore = metaTransaction.objectStore('meta');
+				const lastUpdateRequest = metaStore.get('lastUpdate');
+
+				const getLastUpdate = new Promise(resolve => {
+					lastUpdateRequest.onsuccess = () => {
+						if (lastUpdateRequest.result) {
+							resolve(lastUpdateRequest.result.value);
+						} else {
+							resolve(0);
+						}
+					};
+					lastUpdateRequest.onerror = () => resolve(0);
+				});
+
+				const lastUpdate = await getLastUpdate;
+				const cacheExpiry = 3600000; // 1 hour
+
+				// If cache is fresh, use it
+				if (Date.now() - lastUpdate < cacheExpiry) {
+					const items = await getAllItemsFromDB(db, 'items');
+					if (items && items.length > 0) {
+						cache[cacheKey] = items;
+						return items;
+					}
+				}
+			}
+		}
+
+		// If not in IndexedDB or stale, check localStorage
 		const cachedData = localStorage.getItem(`cache_${cacheKey}`);
 		if (cachedData) {
 			const { data, timestamp } = JSON.parse(cachedData);
@@ -98,16 +238,31 @@ async function fetchWithCache(url, cacheKey) {
 
 		// Fetch fresh data if cache is expired or doesn't exist
 		const response = await fetch(url);
+		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 		const data = await response.json();
 
-		// Update cache
+		// Update memory cache
 		cache[cacheKey] = data;
 
-		// Check storage capacity and clear old cache if needed
+		// Store in IndexedDB if enabled for this resource
+		if (useIndexedDB) {
+			try {
+				const dbName = `flamepass_${cacheKey}`;
+				const db = await openIndexedDB(dbName, 1);
+				if (db) {
+					await storeItemsInDB(db, data, 'items');
+				}
+			} catch (indexedDBError) {
+				console.warn(`Error storing ${cacheKey} in IndexedDB:`, indexedDBError);
+			}
+		}
+
+		// Check localStorage capacity and clear old cache if needed
 		if (isStorageFull()) {
 			clearOldCache();
 		}
 
+		// Also store in localStorage as fallback
 		try {
 			localStorage.setItem(`cache_${cacheKey}`, JSON.stringify({
 				data,
@@ -132,24 +287,317 @@ async function fetchWithCache(url, cacheKey) {
 	} catch (error) {
 		console.error(`Error fetching ${url}:`, error);
 
-		// If we have cached data, use it as fallback even if expired
-		const cachedData = localStorage.getItem(`cache_${cacheKey}`);
-		if (cachedData) {
-			return JSON.parse(cachedData).data;
+		// Try fallback in this order: memory cache -> IndexedDB -> localStorage
+		if (cache[cacheKey]) {
+			return cache[cacheKey];
+		}
+
+		if (useIndexedDB) {
+			try {
+				const dbName = `flamepass_${cacheKey}`;
+				const db = await openIndexedDB(dbName, 1);
+				if (db) {
+					const items = await getAllItemsFromDB(db, 'items');
+					if (items && items.length > 0) {
+						cache[cacheKey] = items;
+						return items;
+					}
+				}
+			} catch (dbError) {
+				console.warn(`Error retrieving ${cacheKey} from IndexedDB:`, dbError);
+			}
+		}
+
+		// Last resort: try localStorage
+		try {
+			const cachedData = localStorage.getItem(`cache_${cacheKey}`);
+			if (cachedData) {
+				return JSON.parse(cachedData).data;
+			}
+		} catch (e) {
+			console.warn(`Error retrieving ${cacheKey} from localStorage:`, e);
 		}
 
 		return [];
 	}
 }
 
-// Optimized function to load games page with category authentication
+// Enhanced function to load apps with caching and performance improvements
+async function loadApps() {
+	try {
+		// Attempt to fetch app data with caching
+		const data = await fetchWithCache('/json/a.json', 'apps', true);
+		const appsContainer = document.querySelector('.appsContainer');
+
+		// Clear existing content
+		if (appsContainer) {
+			appsContainer.innerHTML = '';
+
+			// Sort apps alphabetically
+			data.sort((a, b) => a.name.localeCompare(b.name));
+
+			// Use DocumentFragment for better performance
+			const fragment = document.createDocumentFragment();
+
+			// Create app elements
+			data.forEach(app => {
+				// Create app link
+				const appLink = document.createElement('a');
+				appLink.href = `/&?q=${encodeURIComponent(app.name)}`;
+
+				// Set data attributes for categories and filtering
+				if (app.categories && app.name) {
+					app.categories.forEach(category => {
+						appLink.id = (appLink.id ? appLink.id + ' ' : '') + category;
+					});
+
+					// Create standardized class name for the app
+					let appNameClass = app.name
+						.toLowerCase()
+						.replace(/\s+/g, '-')
+						.replace(/[^a-z0-9]/g, '-');
+					appLink.className = appNameClass;
+
+					// Add data attributes for improved filtering
+					appLink.dataset.name = app.name.toLowerCase();
+					appLink.dataset.categories = app.categories.join(' ').toLowerCase();
+				}
+
+				// Create and configure image
+				const appImage = document.createElement('img');
+				appImage.src = app.img;
+				appImage.alt = app.name || 'App';
+				appImage.title = app.name || 'App';
+				appImage.className = 'appImage';
+				appImage.loading = 'lazy'; // Lazy loading for better performance
+
+				// Fallback for missing images
+				appImage.onerror = () => {
+					appImage.src = '/assets/default.png';
+				};
+
+				// Append elements
+				appLink.appendChild(appImage);
+				fragment.appendChild(appLink);
+			});
+
+			// Append all elements at once for better performance
+			appsContainer.appendChild(fragment);
+
+			// Set up search functionality
+			setupAppSearch();
+			setupScrollToTop();
+		}
+
+		return data; // Return data for potential further use
+	} catch (error) {
+		console.error('Error loading apps:', error);
+		const appsContainer = document.querySelector('.appsContainer');
+
+		if (appsContainer) {
+			// Display error message to user
+			appsContainer.innerHTML = '<p class="error-message">Failed to load apps. Please try again later.</p>';
+		}
+
+		// Rethrow for external handling
+		throw error;
+	}
+}
+
+// Set up app search functionality
+function setupAppSearch() {
+	const appsSearchInput = document.querySelector('.appsSearchInput');
+	if (!appsSearchInput) return;
+
+	// Use debounce to improve performance during rapid typing
+	let searchTimeout;
+
+	appsSearchInput.addEventListener('input', () => {
+		// Clear previous timeout
+		clearTimeout(searchTimeout);
+
+		// Set new timeout (200ms debounce)
+		searchTimeout = setTimeout(() => {
+			// Disable animations during search for better performance
+			document.querySelectorAll('.appImage').forEach(image => {
+				image.classList.add('no-animation');
+			});
+
+			const searchQuery = appsSearchInput.value
+				.toLowerCase()
+				.trim()
+				.replace(/\s+/g, '-')
+				.replace(/[^a-z0-9-]/g, '-');
+
+			// Filter apps
+			const appLinks = document.querySelectorAll('.appsContainer a');
+			let visibleCount = 0;
+
+			appLinks.forEach(link => {
+				if (searchQuery === '') {
+					link.style.display = '';
+					visibleCount++;
+				} else if (link.className.includes(searchQuery)) {
+					link.style.display = '';
+					visibleCount++;
+				} else {
+					link.style.display = 'none';
+				}
+			});
+
+			// Re-enable animations after search completes
+			setTimeout(() => {
+				document.querySelectorAll('.appImage').forEach(image => {
+					image.classList.remove('no-animation');
+				});
+			}, 50);
+		}, 200);
+	});
+}
+
+// Enhanced function to load big shortcuts with caching
+async function loadBigShortcuts() {
+	try {
+		// Attempt to fetch shortcuts data with caching
+		const data = await fetchWithCache('/json/sb.json', 'bigShortcuts', true);
+		const shortcuts = document.querySelector('.shortcutsBig');
+
+		// Clear existing content
+		if (shortcuts) {
+			shortcuts.innerHTML = '';
+
+			// Use DocumentFragment for better performance
+			const fragment = document.createDocumentFragment();
+
+			// Create shortcut elements
+			data.forEach(shortcut => {
+				const shortcutLink = document.createElement('a');
+
+				// Special case for settings
+				if (shortcut.name.toLowerCase() === 'settings') {
+					shortcutLink.href = '/~/#/proxy';
+				} else {
+					shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
+				}
+
+				// Create and configure image
+				const shortcutImage = document.createElement('img');
+				shortcutImage.src = shortcut.img;
+				shortcutImage.alt = shortcut.name;
+				shortcutImage.title = shortcut.name;
+
+				// Add classes and styles
+				shortcutLink.classList.add('shortcutBig');
+				shortcutImage.classList.add('shortcutBigimg');
+				shortcutImage.style.width = '170px';
+				shortcutImage.style.height = '90px';
+				shortcutImage.style.padding = '0';
+				shortcutImage.style.transition = '0.2s';
+
+				// Update search box styles
+				const searchInput = document.getElementById('gointospace');
+				if (searchInput) {
+					searchInput.style.cssText = 'width: 500px; text-align: left; padding: 15px; margin-right: -0.5rem; padding-left: 49.5px;';
+				}
+
+				const searchButton = document.querySelector('.gointospaceSearchButton');
+				if (searchButton) {
+					searchButton.style.cssText = 'transform: translate(-34px, 3px); user-select: none; cursor: default;';
+				}
+
+				// Fallback for missing images
+				shortcutImage.onerror = () => {
+					shortcutImage.src = '/assets/default.png';
+				};
+
+				// Append elements
+				shortcutLink.appendChild(shortcutImage);
+				fragment.appendChild(shortcutLink);
+			});
+
+			// Append all elements at once for better performance
+			shortcuts.appendChild(fragment);
+		}
+
+		return data; // Return data for potential further use
+	} catch (error) {
+		console.error('Error loading big shortcuts:', error);
+		const shortcuts = document.querySelector('.shortcutsBig');
+
+		if (shortcuts) {
+			// Display error message to user
+			shortcuts.innerHTML = '<p class="error-message">Failed to load shortcuts.</p>';
+		}
+
+		// Rethrow for external handling
+		throw error;
+	}
+}
+
+// Similar function for small shortcuts if needed
+async function loadSmallShortcuts() {
+	try {
+		// Attempt to fetch shortcuts data with caching
+		const data = await fetchWithCache('/json/s.json', 'smallShortcuts', true);
+		const shortcuts = document.querySelector('.shortcuts');
+
+		if (shortcuts) {
+			// Clear existing content
+			shortcuts.innerHTML = '';
+
+			// Use DocumentFragment for better performance
+			const fragment = document.createDocumentFragment();
+
+			// Create shortcut elements
+			data.forEach(shortcut => {
+				const shortcutLink = document.createElement('a');
+
+				if (shortcut.name.toLowerCase() === 'settings') {
+					shortcutLink.href = '/~/#/proxy';
+				} else {
+					shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
+				}
+
+				const shortcutImage = document.createElement('img');
+				shortcutImage.src = shortcut.img;
+				shortcutImage.alt = shortcut.name;
+				shortcutImage.title = shortcut.name;
+				shortcutLink.classList.add('shortcut');
+
+				// Fallback for missing images
+				shortcutImage.onerror = () => {
+					shortcutImage.src = '/assets/default.png';
+				};
+
+				shortcutLink.appendChild(shortcutImage);
+				fragment.appendChild(shortcutLink);
+			});
+
+			// Append all elements at once for better performance
+			shortcuts.appendChild(fragment);
+		}
+
+		return data;
+	} catch (error) {
+		console.error('Error loading small shortcuts:', error);
+		const shortcuts = document.querySelector('.shortcuts');
+
+		if (shortcuts) {
+			shortcuts.innerHTML = '<p class="error-message">Failed to load shortcuts.</p>';
+		}
+
+		throw error;
+	}
+}
+
+// Optimized function to load games page using IndexedDB
 async function loadGamesPage() {
 	try {
 		// Only set up category selector and pagination controls once
 		setupCategorySelector();
 
-		// Get games data
-		const data = await fetchWithCache('/json/g.json', 'games');
+		// Get games data using IndexedDB instead of direct fetch
+		const data = await fetchWithCache('/json/g.json', 'games', true);
 
 		// Get current category and page from URL params
 		const urlParams = new URLSearchParams(window.location.search);
@@ -161,12 +609,6 @@ async function loadGamesPage() {
 
 		// Filter games by category
 		let filteredGames = filterGamesByCategory(data, currentCategory);
-
-		// Sort games alphabetically ONLY for non-cloud categories
-		// Cloud games remain in their original order as provided by the API
-		// if (currentCategory !== 'cloud') {
-		// 	filteredGames = sortGames(filteredGames);
-		// }
 
 		// Calculate pagination
 		const gamesPerPage = 50;
@@ -673,22 +1115,8 @@ function setupRandomGameButton() {
 		const currentCategory = urlParams.get('category') || 'cloud';
 
 		try {
-			// Get all games or use cached data
-			let allGames;
-
-			if (cache.games) {
-				allGames = cache.games;
-			} else {
-				// Try localStorage
-				const cachedData = localStorage.getItem('cache_games');
-				if (cachedData) {
-					allGames = JSON.parse(cachedData).data;
-				} else {
-					// Fetch if not in cache
-					const response = await fetch('/json/g.json');
-					allGames = await response.json();
-				}
-			}
+			// Get all games from IndexedDB
+			const allGames = await fetchWithCache('/json/g.json', 'games', true);
 
 			// Filter games by current category
 			const categoryGames = allGames.filter(g =>
@@ -776,28 +1204,28 @@ function addGameOverlayStyles() {
 	const styleEl = document.createElement('style');
 	styleEl.id = 'game-overlay-styles';
 	styleEl.textContent = `
-        .game-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 93%;
-            padding: 15px;
-            background: linear-gradient(transparent, rgb(0, 0, 0));
-            color: white;
-            opacity: 1;
-            transition: opacity 0.3s;
-        }
-        
-        .game-title {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    `;
+       .game-overlay {
+           position: absolute;
+           bottom: 0;
+           left: 0;
+           width: 93%;
+           padding: 15px;
+           background: linear-gradient(transparent, rgb(0, 0, 0));
+           color: white;
+           opacity: 1;
+           transition: opacity 0.3s;
+       }
+       
+       .game-title {
+           margin: 0;
+           font-size: 1.2rem;
+           font-weight: 600;
+           text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+           overflow: hidden;
+           text-overflow: ellipsis;
+           white-space: nowrap;
+       }
+   `;
 
 	document.head.appendChild(styleEl);
 }
@@ -809,75 +1237,234 @@ function addCustomGameStyles() {
 	const styleEl = document.createElement('style');
 	styleEl.id = 'custom-game-styles';
 	styleEl.textContent = `
-        .gameAnchor {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-        
-        .gameAnchor:hover {
-            transform: translateY(-5px);
-        }
-        
-        .gameImage {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        
-        .lock-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 24px;
-            z-index: 100;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-            border-radius: 8px;
-        }
-        
-        /* Search results info */
-        .search-results-info {
-            text-align: center;
-            margin: 20px 0;
-            color: #fff;
-            font-size: 16px;
-            background-color: rgba(30, 30, 30, 0.7);
-            padding: 15px;
-            border-radius: 8px;
-        }
-        
-        .clear-search-button {
-            padding: 5px 10px;
-            background-color: #ff6600;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-left: 10px;
-        }
-        
-        .clear-search-button:hover {
-            background-color: #ff8033;
-        }
-        
-        /* Lock icon for category buttons */
-        .lock-icon {
-            font-size: 16px;
-            margin-left: 5px;
-            color: #ff6600;
-        }
-    `;
+       .gameAnchor {
+           position: relative;
+           overflow: hidden;
+           border-radius: 8px;
+           transition: transform 0.3s ease;
+       }
+       
+       .gameAnchor:hover {
+           transform: translateY(-5px);
+       }
+       
+       .gameImage {
+           width: 100%;
+           height: 100%;
+           object-fit: cover;
+           border-radius: 8px;
+       }
+       
+       .lock-overlay {
+           position: absolute;
+           top: 0;
+           left: 0;
+           width: 100%;
+           height: 100%;
+           background-color: rgba(0, 0, 0, 0.7);
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           color: white;
+           font-size: 24px;
+           z-index: 100;
+           cursor: pointer;
+           transition: opacity 0.3s ease;
+           border-radius: 8px;
+       }
+       
+       /* Search results info */
+       .search-results-info {
+           text-align: center;
+           margin: 20px 0;
+           color: #fff;
+           font-size: 16px;
+           background-color: rgba(30, 30, 30, 0.7);
+           padding: 15px;
+           border-radius: 8px;
+       }
+       
+       .clear-search-button {
+           padding: 5px 10px;
+           background-color: #ff6600;
+           border: none;
+           border-radius: 4px;
+           color: white;
+           cursor: pointer;
+           transition: background-color 0.3s;
+           margin-left: 10px;
+       }
+       
+       .clear-search-button:hover {
+           background-color: #ff8033;
+       }
+       
+       /* Lock icon for category buttons */
+       .lock-icon {
+           font-size: 16px;
+           margin-left: 5px;
+           color: #ff6600;
+       }
+   `;
 
 	document.head.appendChild(styleEl);
 }
+
+// Add search results information function
+function updateSearchResultsInfo(query, count, container) {
+	if (!query) {
+		// Remove info if search is empty
+		const existingInfo = document.querySelector('.search-results-info');
+		if (existingInfo) existingInfo.remove();
+		return;
+	}
+
+	// Get or create the info element
+	let resultsInfo = document.querySelector('.search-results-info');
+
+	if (!resultsInfo) {
+		resultsInfo = document.createElement('div');
+		resultsInfo.className = 'search-results-info';
+		container.parentNode.insertBefore(resultsInfo, container);
+	}
+
+	// Create clear button
+	const clearButton = document.createElement('button');
+	clearButton.className = 'clear-search-button';
+	clearButton.textContent = 'Clear';
+	clearButton.addEventListener('click', () => {
+		const searchInput = document.querySelector('.appsSearchInput, #gameSearch');
+		if (searchInput) {
+			searchInput.value = '';
+			searchInput.dispatchEvent(new Event('input'));
+			searchInput.focus();
+		}
+	});
+
+	// Update info text
+	resultsInfo.innerHTML = `Found ${count} ${container.classList.contains('appsContainer') ? 'app' : 'game'}${count === 1 ? '' : 's'} matching "${query}"`;
+	resultsInfo.appendChild(clearButton);
+}
+
+// Function to check if the device is mobile
+function isMobileDevice() {
+	return (window.innerWidth <= 768) ||
+		(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+}
+
+// Initialize event listeners and add some performance optimizations
+document.addEventListener('DOMContentLoaded', () => {
+	// Optimize animation performance by disabling them during scroll
+	let scrollTimeout;
+	window.addEventListener('scroll', () => {
+		if (!document.body.classList.contains('is-scrolling')) {
+			document.body.classList.add('is-scrolling');
+		}
+
+		clearTimeout(scrollTimeout);
+		scrollTimeout = setTimeout(() => {
+			document.body.classList.remove('is-scrolling');
+		}, 200);
+	}, { passive: true });
+
+	// Add a style for better scrolling performance
+	const perfStyle = document.createElement('style');
+	perfStyle.textContent = `
+   body.is-scrolling * {
+     transition-property: none !important;
+     animation: none !important;
+   }
+ `;
+	document.head.appendChild(perfStyle);
+
+	// Optimize for mobile devices
+	if (isMobileDevice()) {
+		const mobileStyle = document.createElement('style');
+		mobileStyle.textContent = `
+     .appImage, .gameImage, .shortcutBigimg {
+       transform: none !important;
+       transition: opacity 0.2s ease !important;
+     }
+     
+     .appImage:hover, .gameImage:hover, .shortcutBigimg:hover {
+       opacity: 0.8;
+     }
+   `;
+		document.head.appendChild(mobileStyle);
+	}
+});
+
+// Initialize IndexedDB for each data type when DOM loads
+document.addEventListener('DOMContentLoaded', async () => {
+	try {
+		// Pre-initialize all IndexedDB databases for better performance
+		const dbTypes = ['games', 'apps', 'smallShortcuts', 'bigShortcuts'];
+
+		for (const type of dbTypes) {
+			const dbName = `flamepass_${type}`;
+			await openIndexedDB(dbName, 1);
+		}
+
+		console.log('IndexedDB databases initialized');
+	} catch (error) {
+		console.warn('Error initializing IndexedDB databases:', error);
+	}
+
+	// Check for network connection and initiate cache sync if online
+	if (navigator.onLine) {
+		syncCaches();
+	}
+});
+
+// Function to sync all caches when online
+async function syncCaches() {
+	const resources = [
+		{ url: '/json/g.json', key: 'games' },
+		{ url: '/json/a.json', key: 'apps' },
+		{ url: '/json/s.json', key: 'smallShortcuts' },
+		{ url: '/json/sb.json', key: 'bigShortcuts' }
+	];
+
+	for (const resource of resources) {
+		try {
+			// Check if cache is older than 1 hour
+			const dbName = `flamepass_${resource.key}`;
+			const db = await openIndexedDB(dbName, 1);
+
+			if (db) {
+				const metaTransaction = db.transaction(['meta'], 'readonly');
+				const metaStore = metaTransaction.objectStore('meta');
+				const lastUpdateRequest = metaStore.get('lastUpdate');
+
+				lastUpdateRequest.onsuccess = async () => {
+					const lastUpdate = lastUpdateRequest.result ? lastUpdateRequest.result.value : 0;
+					const cacheAge = Date.now() - lastUpdate;
+
+					// Refresh cache if older than 1 hour or doesn't exist
+					if (cacheAge > 3600000 || lastUpdate === 0) {
+						console.log(`Refreshing ${resource.key} cache...`);
+
+						// Fetch in background without awaiting to prevent blocking
+						fetchWithCache(resource.url, resource.key, true)
+							.then(() => console.log(`${resource.key} cache refreshed`))
+							.catch(error => console.warn(`Error refreshing ${resource.key} cache:`, error));
+					}
+				};
+			}
+		} catch (error) {
+			console.warn(`Error checking cache age for ${resource.key}:`, error);
+		}
+	}
+}
+
+// Listen for online status changes
+window.addEventListener('online', () => {
+	console.log('Online status restored, syncing caches...');
+	syncCaches();
+});
+
+// Export key functions for other scripts to use
+window.fetchWithCache = fetchWithCache;
+window.openIndexedDB = openIndexedDB;
+window.storeItemsInDB = storeItemsInDB;
+window.getAllItemsFromDB = getAllItemsFromDB;
