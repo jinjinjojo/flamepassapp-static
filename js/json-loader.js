@@ -195,48 +195,86 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 			const db = await openIndexedDB(dbName, 1);
 
 			if (db) {
-				// Check if we have a recent cache in IndexedDB
-				const metaTransaction = db.transaction(['meta'], 'readonly');
-				const metaStore = metaTransaction.objectStore('meta');
-				const lastUpdateRequest = metaStore.get('lastUpdate');
+				// Check if we have any data in IndexedDB
+				const items = await getAllItemsFromDB(db, 'items');
 
-				const getLastUpdate = new Promise(resolve => {
-					lastUpdateRequest.onsuccess = () => {
-						if (lastUpdateRequest.result) {
-							resolve(lastUpdateRequest.result.value);
-						} else {
-							resolve(0);
-						}
-					};
-					lastUpdateRequest.onerror = () => resolve(0);
-				});
+				// If we have items in IndexedDB, use them
+				if (items && items.length > 0) {
+					// Check if cache is fresh enough
+					const metaTransaction = db.transaction(['meta'], 'readonly');
+					const metaStore = metaTransaction.objectStore('meta');
+					const lastUpdateRequest = metaStore.get('lastUpdate');
 
-				const lastUpdate = await getLastUpdate;
-				const cacheExpiry = 3600000; // 1 hour
+					const getLastUpdate = new Promise(resolve => {
+						lastUpdateRequest.onsuccess = () => {
+							if (lastUpdateRequest.result) {
+								resolve(lastUpdateRequest.result.value);
+							} else {
+								resolve(0);
+							}
+						};
+						lastUpdateRequest.onerror = () => resolve(0);
+					});
 
-				// If cache is fresh, use it
-				if (Date.now() - lastUpdate < cacheExpiry) {
-					const items = await getAllItemsFromDB(db, 'items');
-					if (items && items.length > 0) {
+					const lastUpdate = await getLastUpdate;
+					const cacheExpiry = 3600000; // 1 hour
+
+					// If cache is fresh, use it directly
+					if (Date.now() - lastUpdate < cacheExpiry) {
 						cache[cacheKey] = items;
 						return items;
 					}
+
+					// Otherwise, return items but fetch updated data in background
+					cache[cacheKey] = items;
+
+					// Fetch new data in background
+					fetch(url)
+						.then(response => response.json())
+						.then(newData => {
+							// Update IndexedDB and memory cache
+							storeItemsInDB(db, newData, 'items');
+							cache[cacheKey] = newData;
+						})
+						.catch(error => {
+							console.warn(`Background fetch error for ${url}:`, error);
+						});
+
+					// Return cached items immediately
+					return items;
 				}
+
+				// If no items in IndexedDB, we need to fetch from network
+				// Fall through to fetch logic below
 			}
 		}
 
-		// If not in IndexedDB or stale, check localStorage
+		// If no IndexedDB or no data in it, check localStorage
 		const cachedData = localStorage.getItem(`cache_${cacheKey}`);
 		if (cachedData) {
-			const { data, timestamp } = JSON.parse(cachedData);
-			// Use cache if less than 1 hour old
-			if (Date.now() - timestamp < 3600000) {
-				cache[cacheKey] = data;
-				return data;
+			try {
+				const { data, timestamp } = JSON.parse(cachedData);
+				// Use cache if less than 1 hour old
+				if (Date.now() - timestamp < 3600000) {
+					cache[cacheKey] = data;
+
+					// If IndexedDB is enabled but empty, store this data there
+					if (useIndexedDB) {
+						const dbName = `flamepass_${cacheKey}`;
+						const db = await openIndexedDB(dbName, 1);
+						if (db) {
+							await storeItemsInDB(db, data, 'items');
+						}
+					}
+
+					return data;
+				}
+			} catch (e) {
+				console.warn(`Error parsing localStorage cache for ${cacheKey}:`, e);
 			}
 		}
 
-		// Fetch fresh data if cache is expired or doesn't exist
+		// Fetch fresh data if no cache or cache expired
 		const response = await fetch(url);
 		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 		const data = await response.json();
@@ -287,7 +325,7 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 	} catch (error) {
 		console.error(`Error fetching ${url}:`, error);
 
-		// Try fallback in this order: memory cache -> IndexedDB -> localStorage
+		// Try fallbacks in order: memory cache -> IndexedDB -> localStorage
 		if (cache[cacheKey]) {
 			return cache[cacheKey];
 		}
