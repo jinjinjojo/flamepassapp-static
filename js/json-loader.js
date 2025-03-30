@@ -77,11 +77,11 @@ function clearOldCache() {
 	});
 }
 
-// Helper function to open IndexedDB
+// Modified openIndexedDB function to create a specific index for games order
 function openIndexedDB(dbName, version) {
 	return new Promise((resolve, reject) => {
 		if (!window.indexedDB) {
-			console.warn('IndexedDB not supported in this browser');
+			console.warn('IndexedDB not supported');
 			resolve(null);
 			return;
 		}
@@ -89,7 +89,7 @@ function openIndexedDB(dbName, version) {
 		const request = indexedDB.open(dbName, version);
 
 		request.onerror = event => {
-			console.error(`IndexedDB error for ${dbName}:`, event.target.error);
+			console.error(`IndexedDB error:`, event.target.error);
 			resolve(null);
 		};
 
@@ -100,15 +100,329 @@ function openIndexedDB(dbName, version) {
 		request.onupgradeneeded = event => {
 			const db = event.target.result;
 
-			// Create object stores if they don't exist
-			if (!db.objectStoreNames.contains('items')) {
-				db.createObjectStore('items', { keyPath: 'id' });
-			}
+			// For games database, create a special structure with position index
+			if (dbName === 'flamepass_games') {
+				// Check if store exists
+				if (!db.objectStoreNames.contains('items')) {
+					// Create store with id as keyPath
+					const store = db.createObjectStore('items', { keyPath: 'id' });
+				}
 
-			if (!db.objectStoreNames.contains('meta')) {
-				db.createObjectStore('meta', { keyPath: 'key' });
+				// Create meta store if needed
+				if (!db.objectStoreNames.contains('meta')) {
+					db.createObjectStore('meta', { keyPath: 'key' });
+				}
+			} else {
+				// For other databases, use standard setup
+				if (!db.objectStoreNames.contains('items')) {
+					db.createObjectStore('items', { keyPath: 'id' });
+				}
+
+				if (!db.objectStoreNames.contains('meta')) {
+					db.createObjectStore('meta', { keyPath: 'key' });
+				}
 			}
 		};
+	});
+}
+
+// Helper function to create a consistent ID for a game
+function createGameId(game) {
+	return game.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
+}
+
+// Function specifically for storing games with order preservation
+function storeGamesInDB(db, games) {
+	return new Promise((resolve, reject) => {
+		if (!db) {
+			console.error("DB object is null in storeGamesInDB");
+			resolve();
+			return;
+		}
+
+		console.log("Starting storeGamesInDB with", games.length, "games");
+		console.log("First 5 game names in original order:", games.slice(0, 5).map(g => g.name));
+
+		// Create a transaction that includes both object stores
+		try {
+			const transaction = db.transaction(['items', 'meta'], 'readwrite');
+			const store = transaction.objectStore('items');
+			const metaStore = transaction.objectStore('meta');
+
+			// Clear existing data first
+			store.clear();
+
+			// IMPORTANT: Create an explicit array of indices for order preservation
+			const orderArray = games.map((game, index) => {
+				// Ensure each game has a unique ID
+				if (!game.id) {
+					if (game.slug) {
+						game.id = game.slug;
+					} else if (game.name) {
+						game.id = createGameId(game);
+					} else {
+						game.id = `game-${Math.random().toString(36).substring(2, 7)}`;
+					}
+				}
+
+				// Return the ID and original index
+				return {
+					id: game.id,
+					originalIndex: index
+				};
+			});
+
+			console.log("Order array created with", orderArray.length, "entries");
+			console.log("First 5 IDs in order array:", orderArray.slice(0, 5).map(o => o.id));
+
+			// Store the order array
+			metaStore.put({
+				key: 'gamesOrder',
+				value: orderArray
+			});
+
+			// Update timestamp
+			metaStore.put({ key: 'lastUpdate', value: Date.now() });
+
+			// Add all games individually with originalIndex property
+			let completed = 0;
+			games.forEach((game, index) => {
+				// Store originalIndex directly in the game object
+				game._originalIndex = index;
+
+				const request = store.put(game);
+
+				request.onsuccess = () => {
+					completed++;
+					if (completed === games.length) {
+						console.log(`Completed storing all ${completed} games with order preservation`);
+					}
+				};
+
+				request.onerror = event => {
+					console.error('Error storing game:', event.target.error);
+					completed++;
+				};
+			});
+
+			transaction.oncomplete = () => {
+				console.log('Transaction completed: stored games with order preservation');
+				resolve();
+			};
+
+			transaction.onerror = event => {
+				console.error('Transaction error:', event.target.error);
+				reject(event.target.error);
+			};
+		} catch (error) {
+			console.error('Error starting transaction:', error);
+			reject(error);
+		}
+	});
+}
+
+// Function specifically for getting games with order preservation
+async function getGamesFromDB(db) {
+	return new Promise((resolve, reject) => {
+		if (!db) {
+			console.error("DB object is null in getGamesFromDB");
+			resolve([]);
+			return;
+		}
+
+		console.log("Starting getGamesFromDB");
+
+		try {
+			// First get the order array
+			const metaTransaction = db.transaction(['meta'], 'readonly');
+			const metaStore = metaTransaction.objectStore('meta');
+			const orderRequest = metaStore.get('gamesOrder');
+
+			orderRequest.onsuccess = async () => {
+				const orderArray = orderRequest.result ? orderRequest.result.value : null;
+
+				if (orderArray) {
+					console.log("Retrieved order array with", orderArray.length, "entries");
+					console.log("First 5 entries in order array:", orderArray.slice(0, 5));
+				} else {
+					console.warn("No order array found in IndexedDB");
+				}
+
+				// Now get all the games
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const gamesRequest = store.getAll();
+
+				gamesRequest.onsuccess = () => {
+					const games = gamesRequest.result;
+					console.log("Retrieved", games.length, "games from IndexedDB");
+
+					if (games.length > 0) {
+						console.log("First game from DB:", games[0].name);
+						console.log("Sample game _originalIndex:", games[0]._originalIndex);
+					}
+
+					// If we have an order array, use it to sort the games
+					if (orderArray && Array.isArray(orderArray)) {
+						// Create a map of id -> game for efficient lookup
+						const gamesMap = {};
+						games.forEach(game => {
+							gamesMap[game.id] = game;
+						});
+
+						// Use the orderArray to sort games by their original index
+						const orderedGames = orderArray
+							.sort((a, b) => a.originalIndex - b.originalIndex)
+							.map(item => gamesMap[item.id])
+							.filter(game => game !== undefined); // Filter out any missing games
+
+						console.log("Returning", orderedGames.length, "ordered games");
+						if (orderedGames.length > 0) {
+							console.log("First 5 game names in restored order:", orderedGames.slice(0, 5).map(g => g.name));
+						}
+
+						// Check for games not in the order array
+						const missingGameIds = games
+							.filter(game => !orderArray.some(item => item.id === game.id))
+							.map(game => game.id);
+
+						if (missingGameIds.length > 0) {
+							console.log("Found", missingGameIds.length, "games not in the order array");
+							// Add these games to the end
+							const remainingGames = games.filter(game =>
+								!orderArray.some(item => item.id === game.id)
+							);
+							orderedGames.push(...remainingGames);
+						}
+
+						resolve(orderedGames);
+					} else if (games.length > 0 && games[0]._originalIndex !== undefined) {
+						// Fallback: sort by the _originalIndex property directly
+						console.log("Fallback: sorting by _originalIndex property");
+						const sortedGames = [...games].sort((a, b) => {
+							return (a._originalIndex || 0) - (b._originalIndex || 0);
+						});
+
+						console.log("First 5 game names after sorting by _originalIndex:",
+							sortedGames.slice(0, 5).map(g => g.name));
+
+						resolve(sortedGames);
+					} else {
+						// If all else fails, return games as-is
+						console.warn("No order information found, returning games as-is");
+						resolve(games);
+					}
+				};
+
+				gamesRequest.onerror = event => {
+					console.error('Error getting games:', event.target.error);
+					resolve([]);
+				};
+			};
+
+			orderRequest.onerror = event => {
+				console.error('Error getting games order:', event.target.error);
+				// Fallback: try to get games and sort by _originalIndex
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const request = store.getAll();
+
+				request.onsuccess = () => {
+					const games = request.result;
+					if (games.length > 0 && games[0]._originalIndex !== undefined) {
+						const sortedGames = [...games].sort((a, b) => {
+							return (a._originalIndex || 0) - (b._originalIndex || 0);
+						});
+						resolve(sortedGames);
+					} else {
+						resolve(games);
+					}
+				};
+
+				request.onerror = () => {
+					resolve([]);
+				};
+			};
+		} catch (error) {
+			console.error('Error in getGamesFromDB:', error);
+			resolve([]);
+		}
+	});
+}
+
+// Function specifically for getting games with order preservation
+async function getGamesFromDB(db) {
+	return new Promise((resolve, reject) => {
+		if (!db) {
+			resolve([]);
+			return;
+		}
+
+		try {
+			// First get the order array
+			const metaTransaction = db.transaction(['meta'], 'readonly');
+			const metaStore = metaTransaction.objectStore('meta');
+			const orderRequest = metaStore.get('gamesOrder');
+
+			orderRequest.onsuccess = async () => {
+				const orderArray = orderRequest.result ? orderRequest.result.value : null;
+
+				// Now get all the games
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const gamesRequest = store.getAll();
+
+				gamesRequest.onsuccess = () => {
+					const games = gamesRequest.result;
+
+					// If we have an order array, use it to sort the games
+					if (orderArray && Array.isArray(orderArray)) {
+						// Create a map of id -> game for efficient lookup
+						const gamesMap = {};
+						games.forEach(game => {
+							gamesMap[game.id] = game;
+						});
+
+						// Recreate the games array in the original order
+						const orderedGames = orderArray
+							.map(id => gamesMap[id])
+							.filter(game => game !== undefined); // Filter out any missing games
+
+						// If any games weren't in the order array, add them at the end
+						const remainingGames = games.filter(game => !orderArray.includes(game.id));
+
+						resolve([...orderedGames, ...remainingGames]);
+					} else {
+						// If no order array, just return the games as is
+						resolve(games);
+					}
+				};
+
+				gamesRequest.onerror = event => {
+					console.error('Error getting games:', event.target.error);
+					resolve([]);
+				};
+			};
+
+			orderRequest.onerror = event => {
+				console.error('Error getting games order:', event.target.error);
+				// Fallback: get games without order
+				const transaction = db.transaction(['items'], 'readonly');
+				const store = transaction.objectStore('items');
+				const request = store.getAll();
+
+				request.onsuccess = () => {
+					resolve(request.result);
+				};
+
+				request.onerror = () => {
+					resolve([]);
+				};
+			};
+		} catch (error) {
+			console.error('Error in getGamesFromDB:', error);
+			resolve([]);
+		}
 	});
 }
 
@@ -196,7 +510,7 @@ function storeItemsInDB(db, items, storeName) {
 	});
 }
 
-// Helper function to get all items from IndexedDB while preserving the original order
+// Helper function to get all items from IndexedDB while preserving insertion order
 function getAllItemsFromDB(db, storeName) {
 	return new Promise((resolve, reject) => {
 		if (!db) {
@@ -213,30 +527,44 @@ function getAllItemsFromDB(db, storeName) {
 
 		const transaction = db.transaction([storeName], 'readonly');
 		const store = transaction.objectStore(storeName);
-		const request = store.getAll();
 
-		request.onsuccess = event => {
-			let items = event.target.result;
+		// For games specifically, try to maintain insertion order
+		if (db.name === 'flamepass_games' && storeName === 'items') {
+			// Use cursor to retrieve in insertion order
+			const items = [];
+			const cursorRequest = store.openCursor();
 
-			// For games, ensure original order is preserved if _originalIndex is present
-			if (db.name.includes('games') && items.length > 0 && items[0]._originalIndex !== undefined) {
-				items.sort((a, b) => a._originalIndex - b._originalIndex);
+			cursorRequest.onsuccess = (event) => {
+				const cursor = event.target.result;
+				if (cursor) {
+					items.push(cursor.value);
+					cursor.continue();
+				} else {
+					// All items collected
+					resolve(items);
+				}
+			};
 
-				// Remove the _originalIndex property as it's not needed anymore
-				items = items.map(item => {
-					const newItem = { ...item };
-					delete newItem._originalIndex;
-					return newItem;
-				});
-			}
+			cursorRequest.onerror = (event) => {
+				console.error(`Error getting items with cursor:`, event.target.error);
+				// Fall back to getAll() if cursor fails
+				const getAllRequest = store.getAll();
+				getAllRequest.onsuccess = () => resolve(getAllRequest.result);
+				getAllRequest.onerror = () => resolve([]);
+			};
+		} else {
+			// For non-games data, use regular getAll
+			const request = store.getAll();
 
-			resolve(items);
-		};
+			request.onsuccess = event => {
+				resolve(event.target.result);
+			};
 
-		request.onerror = event => {
-			console.error(`Error getting items from ${storeName}:`, event.target.error);
-			resolve([]);
-		};
+			request.onerror = event => {
+				console.error(`Error getting items from ${storeName}:`, event.target.error);
+				resolve([]);
+			};
+		}
 	});
 }
 
@@ -458,182 +786,25 @@ async function fetchWithCache(url, cacheKey, useIndexedDB = false) {
 	}
 }
 
-// Add these new functions to your code
-
-// Function specifically for storing games with order preservation
-function storeGamesInDB(db, games) {
-	return new Promise((resolve, reject) => {
-		if (!db) {
-			resolve();
-			return;
-		}
-
-		// Create a transaction that includes both object stores
-		try {
-			const transaction = db.transaction(['items', 'meta'], 'readwrite');
-			const store = transaction.objectStore('items');
-			const metaStore = transaction.objectStore('meta');
-
-			// Clear existing data first
-			store.clear();
-
-			// Also store the original array as a special object for order preservation
-			const orderObject = {
-				key: 'gamesOrder',
-				value: games.map(game => game.id || game.slug || createGameId(game))
-			};
-
-			metaStore.put(orderObject);
-			metaStore.put({ key: 'lastUpdate', value: Date.now() });
-
-			// Add all games individually
-			let completed = 0;
-			games.forEach(game => {
-				// Ensure each game has an ID
-				if (!game.id) {
-					if (game.slug) {
-						game.id = game.slug;
-					} else if (game.name) {
-						game.id = createGameId(game);
-					} else {
-						game.id = `game-${Math.random().toString(36).substring(2, 7)}`;
-					}
-				}
-
-				// Store the game without any order-related properties
-				const request = store.put(game);
-
-				request.onsuccess = () => {
-					completed++;
-					if (completed === games.length) {
-						console.log(`Stored ${completed} games with order preservation`);
-					}
-				};
-
-				request.onerror = event => {
-					console.error('Error storing game:', event.target.error);
-					completed++;
-				};
-			});
-
-			transaction.oncomplete = () => {
-				console.log('Transaction completed: stored games with order preservation');
-				resolve();
-			};
-
-			transaction.onerror = event => {
-				console.error('Transaction error:', event.target.error);
-				reject(event.target.error);
-			};
-		} catch (error) {
-			console.error('Error starting transaction:', error);
-			reject(error);
-		}
-	});
-}
-
-// Helper function to create a consistent ID for a game
-function createGameId(game) {
-	return game.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
-}
-
-// Function specifically for getting games with order preservation
-async function getGamesFromDB(db) {
-	return new Promise((resolve, reject) => {
-		if (!db) {
-			resolve([]);
-			return;
-		}
-
-		try {
-			// First get the order array
-			const metaTransaction = db.transaction(['meta'], 'readonly');
-			const metaStore = metaTransaction.objectStore('meta');
-			const orderRequest = metaStore.get('gamesOrder');
-
-			orderRequest.onsuccess = async () => {
-				const orderArray = orderRequest.result ? orderRequest.result.value : null;
-
-				// Now get all the games
-				const transaction = db.transaction(['items'], 'readonly');
-				const store = transaction.objectStore('items');
-				const gamesRequest = store.getAll();
-
-				gamesRequest.onsuccess = () => {
-					const games = gamesRequest.result;
-
-					// If we have an order array, use it to sort the games
-					if (orderArray && Array.isArray(orderArray)) {
-						// Create a map of id -> game for efficient lookup
-						const gamesMap = {};
-						games.forEach(game => {
-							gamesMap[game.id] = game;
-						});
-
-						// Recreate the games array in the original order
-						const orderedGames = orderArray
-							.map(id => gamesMap[id])
-							.filter(game => game !== undefined); // Filter out any missing games
-
-						// If any games weren't in the order array, add them at the end
-						const remainingGames = games.filter(game => !orderArray.includes(game.id));
-
-						resolve([...orderedGames, ...remainingGames]);
-					} else {
-						// If no order array, just return the games as is
-						resolve(games);
-					}
-				};
-
-				gamesRequest.onerror = event => {
-					console.error('Error getting games:', event.target.error);
-					resolve([]);
-				};
-			};
-
-			orderRequest.onerror = event => {
-				console.error('Error getting games order:', event.target.error);
-				// Fallback: get games without order
-				const transaction = db.transaction(['items'], 'readonly');
-				const store = transaction.objectStore('items');
-				const request = store.getAll();
-
-				request.onsuccess = () => {
-					resolve(request.result);
-				};
-
-				request.onerror = () => {
-					resolve([]);
-				};
-			};
-		} catch (error) {
-			console.error('Error in getGamesFromDB:', error);
-			resolve([]);
-		}
-	});
-}
-
-// Update the fetchGames function to use the order-preserving functions
+// Function to fetch games using the order preservation
 async function fetchGames() {
 	try {
-		// Check if we have data in memory cache
+		// Check memory cache first
 		if (cache.games && Array.isArray(cache.games) && cache.games.length > 0) {
+			console.log("Returning games from memory cache:", cache.games.length);
 			return cache.games;
 		}
 
-		// Check if the database exists and has data
-		const dbName = 'flamepass_games';
-		const dbExists = await checkDatabaseExists(dbName);
-
-		if (dbExists) {
-			// Get data from IndexedDB
-			const db = await openIndexedDB(dbName, 1);
-			if (db) {
-				// Use the order-preserving function
+		// Try IndexedDB with order preservation
+		const db = await openIndexedDB('flamepass_games', 1);
+		if (db) {
+			try {
+				// Get games using the order preservation function
+				console.log("Attempting to get games from IndexedDB with order preservation");
 				const games = await getGamesFromDB(db);
 
-				if (games && games.length > 0) {
-					// Store in memory cache
+				if (games.length > 0) {
+					console.log("Successfully retrieved", games.length, "games from IndexedDB");
 					cache.games = games;
 
 					// Check last update time
@@ -647,70 +818,106 @@ async function fetchGames() {
 
 						// If cache is older than 1 hour, refresh in background
 						if (cacheAge > 3600000) {
-							console.log('Refreshing games cache in background...');
-							fetch('/json/g.json')
-								.then(response => response.json())
-								.then(newData => {
-									// Update cache with order preserved
-									cache.games = newData;
-									storeGamesInDB(db, newData);
-								})
-								.catch(err => console.warn('Background refresh failed:', err));
+							console.log('Cache is old, refreshing games in background...');
+							refreshGamesInBackground(db);
 						}
 					};
 
 					return games;
 				}
+			} catch (error) {
+				console.warn('Error getting games from IndexedDB:', error);
 			}
 		}
 
-		// If no data in IndexedDB or database doesn't exist, fetch from network
-		console.log('No games in IndexedDB, fetching from network');
+		// Fetch from network
+		console.log('Fetching games from network');
 		const response = await fetch('/json/g.json');
-		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+		if (!response.ok) throw new Error(`Network error: ${response.status}`);
 
 		const data = await response.json();
-
-		// Store in memory cache
+		console.log('Successfully fetched', data.length, 'games from network');
+		console.log('First 5 game names from network:', data.slice(0, 5).map(g => g.name));
 		cache.games = data;
 
 		// Store in IndexedDB with order preservation
-		const db = await openIndexedDB(dbName, 1);
 		if (db) {
+			console.log('Storing games in IndexedDB with order preservation');
 			await storeGamesInDB(db, data);
-		}
-
-		// Also store in localStorage as a fallback
-		try {
-			if (isStorageFull()) {
-				clearOldCache();
-			}
-
-			localStorage.setItem('cache_games', JSON.stringify({
-				data,
-				timestamp: Date.now()
-			}));
-		} catch (e) {
-			console.warn('localStorage storage failed:', e);
 		}
 
 		return data;
 	} catch (error) {
-		console.error('Error fetching games:', error);
-
-		// Try to get from localStorage as last resort
-		try {
-			const cachedData = localStorage.getItem('cache_games');
-			if (cachedData) {
-				const parsedData = JSON.parse(cachedData);
-				return parsedData.data || [];
-			}
-		} catch (e) {
-			console.warn('Error retrieving from localStorage:', e);
-		}
-
+		console.error('Error in fetchGames:', error);
 		return [];
 	}
+}
+// Helper function to refresh games data in background
+function refreshGamesInBackground(db) {
+	console.log('Refreshing games cache in background...');
+	fetch('/json/g.json')
+		.then(response => response.json())
+		.then(data => {
+			console.log('Refresh: Fetched', data.length, 'games from network');
+			console.log('Refresh: First 5 game names:', data.slice(0, 5).map(g => g.name));
+
+			// Update memory cache
+			cache.games = data;
+
+			try {
+				// Store games with order preservation
+				storeGamesInDB(db, data);
+			} catch (error) {
+				console.error('Error in background refresh:', error);
+			}
+		})
+		.catch(error => {
+			console.warn('Background refresh failed:', error);
+		});
+}
+// Helper for clearing items
+function clearItemsFromDB(db, storeName) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction([storeName], 'readwrite');
+		const store = transaction.objectStore(storeName);
+		const request = store.clear();
+
+		request.onsuccess = () => resolve();
+		request.onerror = event => {
+			console.error('Error clearing items:', event.target.error);
+			resolve(); // Resolve anyway to continue
+		};
+	});
+}
+
+// Helper for adding a single item
+function addItemToDB(db, storeName, item) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction([storeName], 'readwrite');
+		const store = transaction.objectStore(storeName);
+		const request = store.add(item);
+
+		request.onsuccess = () => resolve();
+		request.onerror = event => {
+			console.error('Error adding item:', event.target.error);
+			resolve(); // Resolve anyway to continue
+		};
+	});
+}
+
+// Helper for updating meta
+function updateMetaInDB(db, key, value) {
+	return new Promise((resolve, reject) => {
+		const transaction = db.transaction(['meta'], 'readwrite');
+		const store = transaction.objectStore('meta');
+		const request = store.put({ key, value });
+
+		request.onsuccess = () => resolve();
+		request.onerror = event => {
+			console.error('Error updating meta:', event.target.error);
+			resolve(); // Resolve anyway to continue
+		};
+	});
 }
 
 // Enhanced function to load apps with caching and performance improvements
@@ -734,7 +941,7 @@ async function loadApps() {
 			data.forEach(app => {
 				// Create app link
 				const appLink = document.createElement('a');
-				appLink.href = `/&?q=${encodeURIComponent(app.name)}`;
+				appLink.href = `/@/index.html?uul=${encodeURIComponent(app.name)}`;
 
 				// Set data attributes for categories and filtering
 				if (app.categories && app.name) {
@@ -868,7 +1075,7 @@ async function loadBigShortcuts() {
 				if (shortcut.name.toLowerCase() === 'settings') {
 					shortcutLink.href = '/~/#/proxy';
 				} else {
-					shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
+					shortcutLink.href = `/@/index.html?uul=${encodeURIComponent(shortcut.name)}`;
 				}
 
 				// Create and configure image
@@ -946,7 +1153,7 @@ async function loadSmallShortcuts() {
 				if (shortcut.name.toLowerCase() === 'settings') {
 					shortcutLink.href = '/~/#/proxy';
 				} else {
-					shortcutLink.href = `/&?q=${encodeURIComponent(shortcut.name)}`;
+					shortcutLink.href = `/@/index.html?uul=${encodeURIComponent(shortcut.name)}`;
 				}
 
 				const shortcutImage = document.createElement('img');
@@ -987,7 +1194,7 @@ async function loadGamesPage() {
 		// Only set up category selector and pagination controls once
 		setupCategorySelector();
 
-		// Get games data using the dedicated function for games
+		// Get games data using the dedicated function for games with order preservation
 		const data = await fetchGames();
 
 		// Get current category and page from URL params
@@ -1001,7 +1208,8 @@ async function loadGamesPage() {
 		// Filter games by category without sorting
 		let filteredGames = filterGamesByCategory(data, currentCategory);
 
-		// Note: We removed the sorting step here to preserve the original order
+		// Do NOT sort games here - we need to maintain the original order from g.json
+		// filteredGames = sortGames(filteredGames); // Intentionally commented out
 
 		const gamesPerPage = 50;
 		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
@@ -1155,7 +1363,7 @@ function filterGamesByCategory(games, category) {
 	return games.filter(game => (game.category || 'browser') === category);
 }
 
-// Memoized sorting function for better performance
+// Memoized sorting function for better performance - NOT USED for games to maintain original order
 const sortGames = (() => {
 	const cache = {};
 
