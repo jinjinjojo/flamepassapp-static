@@ -1,11 +1,5 @@
 [
 	{
-		"name": "! Request a game",
-		"url": "https://docs.google.com/forms/d/e/1FAIpQLSeZcPMt3toVL8EtKLfHMbKpx4lZzqAAr5ifvZJRwoXqsLSf-A/viewform?usp=pp_url",
-		"img": "/assets/requestApp.jpg",
-		"categories": ["all"]
-	},
-	{
 		"name": "Amazon",
 		"url": "https://www.amazon.com/",
 		"img": "/assets/imgs/a/Amazon.webp",
@@ -16,12 +10,6 @@
 		"url": "https://luna.amazon.com/",
 		"img": "/assets/imgs/a/Amazon_Luna.webp",
 		"categories": ["all", "game"]
-	},
-	{
-		"name": "OpenAI",
-		"url": "https://chat.openai.com/",
-		"img": "/assets/imgs/a/OpenAI.webp",
-		"categories": ["all", "media", "popular", "ai"]
 	},
 	{
 		"name": "Chess.com",
@@ -37,13 +25,7 @@
 	},
 	{
 		"name": "Discord",
-		"url": "https://discord.com/",
-		"img": "/assets/imgs/a/Discord.webp",
-		"categories": ["all", "social", "messaging", "media"]
-	},
-	{
-		"name": "Discord | Login",
-		"url": "https://discord.com/login",
+		"url": "https://discord.com/channels/@me",
 		"img": "/assets/imgs/a/Discord.webp",
 		"categories": ["all", "social", "messaging", "media"]
 	},
@@ -60,7 +42,7 @@
 		"categories": ["all", "media", "popular"]
 	},
 	{
-		"name": "Geforce NOW",
+		"name": "GeForce NOW",
 		"url": "https://play.geforcenow.com/",
 		"img": "/assets/imgs/a/Geforce_NOW.webp",
 		"categories": ["all", "game", "popular"]

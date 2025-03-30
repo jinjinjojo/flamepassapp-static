@@ -941,7 +941,7 @@ async function loadApps() {
 			data.forEach(app => {
 				// Create app link
 				const appLink = document.createElement('a');
-				appLink.href = `/@/index.html?uul=${encodeURIComponent(app.name)}`;
+				appLink.href = `/@/index.html?uul=${encodeURIComponent(app.url)}`;
 
 				// Set data attributes for categories and filtering
 				if (app.categories && app.name) {
@@ -1075,7 +1075,7 @@ async function loadBigShortcuts() {
 				if (shortcut.name.toLowerCase() === 'settings') {
 					shortcutLink.href = '/~/#/proxy';
 				} else {
-					shortcutLink.href = `/@/index.html?uul=${encodeURIComponent(shortcut.name)}`;
+					shortcutLink.href = `/@/index.html?uul=${encodeURIComponent(shortcut.url)}`;
 				}
 
 				// Create and configure image
@@ -1153,7 +1153,7 @@ async function loadSmallShortcuts() {
 				if (shortcut.name.toLowerCase() === 'settings') {
 					shortcutLink.href = '/~/#/proxy';
 				} else {
-					shortcutLink.href = `/@/index.html?uul=${encodeURIComponent(shortcut.name)}`;
+					shortcutLink.href = `/@/index.html?uul=${encodeURIComponent(shortcut.url)}`;
 				}
 
 				const shortcutImage = document.createElement('img');
