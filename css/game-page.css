@@ -883,6 +883,10 @@
         font-size: 1rem;
     }
 
+    .tip-description a{
+        color: var(--accent-primary)
+    }
+
     /* Advanced Tips Section */
     .advanced-tips {
         margin-bottom: 40px;
