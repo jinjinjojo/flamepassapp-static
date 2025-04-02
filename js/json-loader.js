@@ -131,7 +131,7 @@ function createGameId(game) {
 	return game.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
 }
 
-// Function specifically for storing games with order preservation
+// 1. Modify storeGamesInDB function to use a simpler approach
 function storeGamesInDB(db, games) {
 	return new Promise((resolve, reject) => {
 		if (!db) {
@@ -140,20 +140,18 @@ function storeGamesInDB(db, games) {
 			return;
 		}
 
-		console.log("Starting storeGamesInDB with", games.length, "games");
-		console.log("First 5 game names in original order:", games.slice(0, 5).map(g => g.name));
+		console.log("Storing games with order preservation:", games.length, "games");
 
-		// Create a transaction that includes both object stores
 		try {
 			const transaction = db.transaction(['items', 'meta'], 'readwrite');
 			const store = transaction.objectStore('items');
 			const metaStore = transaction.objectStore('meta');
 
-			// Clear existing data first
+			// Clear existing data
 			store.clear();
 
-			// IMPORTANT: Create an explicit array of indices for order preservation
-			const orderArray = games.map((game, index) => {
+			// Create a simple ordered array of game IDs in their original order
+			const gameIds = games.map((game, index) => {
 				// Ensure each game has a unique ID
 				if (!game.id) {
 					if (game.slug) {
@@ -165,31 +163,24 @@ function storeGamesInDB(db, games) {
 					}
 				}
 
-				// Return the ID and original index
-				return {
-					id: game.id,
-					originalIndex: index
-				};
+				// Store the original index directly in the game object
+				game._originalIndex = index;
+
+				return game.id;
 			});
 
-			console.log("Order array created with", orderArray.length, "entries");
-			console.log("First 5 IDs in order array:", orderArray.slice(0, 5).map(o => o.id));
-
-			// Store the order array
+			// Store the simple ordered array of game IDs
 			metaStore.put({
 				key: 'gamesOrder',
-				value: orderArray
+				value: gameIds
 			});
 
 			// Update timestamp
 			metaStore.put({ key: 'lastUpdate', value: Date.now() });
 
-			// Add all games individually with originalIndex property
+			// Add all games
 			let completed = 0;
-			games.forEach((game, index) => {
-				// Store originalIndex directly in the game object
-				game._originalIndex = index;
-
+			games.forEach(game => {
 				const request = store.put(game);
 
 				request.onsuccess = () => {
@@ -221,8 +212,9 @@ function storeGamesInDB(db, games) {
 	});
 }
 
-// Function specifically for getting games with order preservation
-async function getGamesFromDB(db) {
+
+// 2. Simplify getGamesFromDB function for more reliable operation
+function getGamesFromDB(db) {
 	return new Promise((resolve, reject) => {
 		if (!db) {
 			console.error("DB object is null in getGamesFromDB");
@@ -230,7 +222,7 @@ async function getGamesFromDB(db) {
 			return;
 		}
 
-		console.log("Starting getGamesFromDB");
+		console.log("Retrieving games with order preservation");
 
 		try {
 			// First get the order array
@@ -238,105 +230,99 @@ async function getGamesFromDB(db) {
 			const metaStore = metaTransaction.objectStore('meta');
 			const orderRequest = metaStore.get('gamesOrder');
 
-			orderRequest.onsuccess = async () => {
-				const orderArray = orderRequest.result ? orderRequest.result.value : null;
+			orderRequest.onsuccess = () => {
+				const gameIds = orderRequest.result ? orderRequest.result.value : null;
 
-				if (orderArray) {
-					console.log("Retrieved order array with", orderArray.length, "entries");
-					console.log("First 5 entries in order array:", orderArray.slice(0, 5));
-				} else {
-					console.warn("No order array found in IndexedDB");
-				}
+				if (gameIds && Array.isArray(gameIds)) {
+					console.log("Retrieved order array with", gameIds.length, "game IDs");
 
-				// Now get all the games
-				const transaction = db.transaction(['items'], 'readonly');
-				const store = transaction.objectStore('items');
-				const gamesRequest = store.getAll();
+					// Now get all the games
+					const transaction = db.transaction(['items'], 'readonly');
+					const store = transaction.objectStore('items');
+					const gamesRequest = store.getAll();
 
-				gamesRequest.onsuccess = () => {
-					const games = gamesRequest.result;
-					console.log("Retrieved", games.length, "games from IndexedDB");
+					gamesRequest.onsuccess = () => {
+						const games = gamesRequest.result;
+						console.log("Retrieved", games.length, "games from IndexedDB");
 
-					if (games.length > 0) {
-						console.log("First game from DB:", games[0].name);
-						console.log("Sample game _originalIndex:", games[0]._originalIndex);
-					}
-
-					// If we have an order array, use it to sort the games
-					if (orderArray && Array.isArray(orderArray)) {
-						// Create a map of id -> game for efficient lookup
+						// Create a map for efficient lookup
 						const gamesMap = {};
 						games.forEach(game => {
 							gamesMap[game.id] = game;
 						});
 
-						// Use the orderArray to sort games by their original index
-						const orderedGames = orderArray
-							.sort((a, b) => a.originalIndex - b.originalIndex)
-							.map(item => gamesMap[item.id])
-							.filter(game => game !== undefined); // Filter out any missing games
+						// Reconstruct the games array in the original order
+						const orderedGames = [];
 
-						console.log("Returning", orderedGames.length, "ordered games");
-						if (orderedGames.length > 0) {
-							console.log("First 5 game names in restored order:", orderedGames.slice(0, 5).map(g => g.name));
-						}
+						// First add games in the specified order
+						gameIds.forEach(id => {
+							if (gamesMap[id]) {
+								orderedGames.push(gamesMap[id]);
+								// Remove from map to track which games have been added
+								delete gamesMap[id];
+							}
+						});
 
-						// Check for games not in the order array
-						const missingGameIds = games
-							.filter(game => !orderArray.some(item => item.id === game.id))
-							.map(game => game.id);
+						// Then add any remaining games not in the order array
+						const remainingGames = Object.values(gamesMap);
+						if (remainingGames.length > 0) {
+							console.log("Adding", remainingGames.length, "games not in the order array");
 
-						if (missingGameIds.length > 0) {
-							console.log("Found", missingGameIds.length, "games not in the order array");
-							// Add these games to the end
-							const remainingGames = games.filter(game =>
-								!orderArray.some(item => item.id === game.id)
-							);
+							// Sort remaining games by _originalIndex if available
+							remainingGames.sort((a, b) => {
+								if (a._originalIndex !== undefined && b._originalIndex !== undefined) {
+									return a._originalIndex - b._originalIndex;
+								}
+								return 0;
+							});
+
 							orderedGames.push(...remainingGames);
 						}
 
+						console.log("Final ordered games count:", orderedGames.length);
 						resolve(orderedGames);
-					} else if (games.length > 0 && games[0]._originalIndex !== undefined) {
-						// Fallback: sort by the _originalIndex property directly
-						console.log("Fallback: sorting by _originalIndex property");
-						const sortedGames = [...games].sort((a, b) => {
-							return (a._originalIndex || 0) - (b._originalIndex || 0);
-						});
+					};
 
-						console.log("First 5 game names after sorting by _originalIndex:",
-							sortedGames.slice(0, 5).map(g => g.name));
+					gamesRequest.onerror = event => {
+						console.error('Error getting games:', event.target.error);
+						resolve([]);
+					};
+				} else {
+					// Fallback: try to get games and sort by _originalIndex
+					console.warn("No order array found, falling back to _originalIndex sorting");
+					const transaction = db.transaction(['items'], 'readonly');
+					const store = transaction.objectStore('items');
+					const request = store.getAll();
 
-						resolve(sortedGames);
-					} else {
-						// If all else fails, return games as-is
-						console.warn("No order information found, returning games as-is");
-						resolve(games);
-					}
-				};
+					request.onsuccess = () => {
+						const games = request.result;
+						if (games.length > 0 && games.some(g => g._originalIndex !== undefined)) {
+							const sortedGames = [...games].sort((a, b) => {
+								return (a._originalIndex || 0) - (b._originalIndex || 0);
+							});
+							resolve(sortedGames);
+						} else {
+							console.warn("No _originalIndex found, returning games in default order");
+							resolve(games);
+						}
+					};
 
-				gamesRequest.onerror = event => {
-					console.error('Error getting games:', event.target.error);
-					resolve([]);
-				};
+					request.onerror = event => {
+						console.error('Error in fallback:', event.target.error);
+						resolve([]);
+					};
+				}
 			};
 
 			orderRequest.onerror = event => {
 				console.error('Error getting games order:', event.target.error);
-				// Fallback: try to get games and sort by _originalIndex
+				// Fallback to getting games without specific order
 				const transaction = db.transaction(['items'], 'readonly');
 				const store = transaction.objectStore('items');
 				const request = store.getAll();
 
 				request.onsuccess = () => {
-					const games = request.result;
-					if (games.length > 0 && games[0]._originalIndex !== undefined) {
-						const sortedGames = [...games].sort((a, b) => {
-							return (a._originalIndex || 0) - (b._originalIndex || 0);
-						});
-						resolve(sortedGames);
-					} else {
-						resolve(games);
-					}
+					resolve(request.result);
 				};
 
 				request.onerror = () => {
