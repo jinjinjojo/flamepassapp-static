@@ -965,6 +965,10 @@
         margin: 0;
     }
 
+    .advanced-tip-content p {
+        color: var(--accent-primary);
+    }
+
     /* Emergency Unblocking Section */
     .emergency-unblock {
         background: linear-gradient(to right, rgba(30, 34, 45, 0.5), rgba(20, 22, 30, 0.5));

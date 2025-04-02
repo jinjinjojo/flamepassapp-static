@@ -6,10 +6,6 @@ body {
   padding: 0;
 }
 
-a:any-link {
-  color: var(--accent-primary);
-}
-
 
 #header {
   background-color: #fff;
