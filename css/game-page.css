@@ -1475,10 +1475,10 @@
     /* Game container and layout */
     .game-container {
         max-width: 1200px;
-        margin: 30px auto;
+        margin: 0 auto;
         min-height: 300px;
         animation: fade-in 0.5s ease-out;
-        padding: 0 20px;
+        padding: 100px 20px 50px 80px;
     }
 
     .game-info {
