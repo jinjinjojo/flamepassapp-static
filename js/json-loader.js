@@ -1,4 +1,4 @@
-// Enhanced JSON loader with caching, lazy loading, and performance improvements
+// JSON-loader.js 
 localforage.setItem('e', 'e');
 
 // Cache objects to prevent multiple fetches
@@ -953,7 +953,6 @@ async function loadApps() {
 				appImage.alt = app.name || 'App';
 				appImage.title = app.name || 'App';
 				appImage.className = 'appImage';
-				appImage.loading = 'lazy'; // Lazy loading for better performance
 
 				// Fallback for missing images
 				appImage.onerror = () => {
@@ -1505,7 +1504,6 @@ function renderGames(games, currentCategory, allGamesInCategory) {
 		gameImage.alt = game.name;
 		gameImage.title = game.name;
 		gameImage.className = 'gameImage';
-		gameImage.loading = 'lazy'; // Add lazy loading for images
 
 		// Add game overlay with name
 		const gameOverlay = document.createElement('div');
