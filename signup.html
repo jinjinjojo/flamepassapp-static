@@ -97,8 +97,7 @@
     /* Video Section */
     .video-container {
       position: relative;
-      padding-bottom: 56.25%;
-      /* 16:9 Aspect Ratio */
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
       height: 0;
       overflow: hidden;
       margin: 25px 0;
@@ -116,12 +115,39 @@
       border-radius: 10px;
     }
 
-    /* Premium Features as a numbered list */
+    /* Premium Features as a star list */
+    .benefits-headline {
+      text-align: center;
+      margin-bottom: 26px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 5px 15px;
+      border-radius: 20px;
+      margin-top: 5px;
+    }
+
+    .benefits-headline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 149, 0, 0.15) 100%);
+      border-radius: 20px;
+      z-index: -1;
+    }
+
     .premium-features-list {
-      counter-reset: feature-counter;
       list-style-type: none;
       padding: 0;
-      margin: 24px 0;
+      margin: 24px auto;
+      max-width: 550px;
     }
 
     .premium-feature-item {
@@ -141,21 +167,14 @@
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .premium-feature-item::before {
-      counter-increment: feature-counter;
-      content: counter(feature-counter);
-      min-width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #ff6600 0%, #ff9500 100%);
-      color: white;
-      border-radius: 50%;
+    .premium-feature-star {
+      color: #ff6600;
+      font-size: 22px;
+      min-width: 30px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 18px;
       margin-right: 16px;
-      box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+      filter: drop-shadow(0 0 3px rgba(255, 102, 0, 0.5));
     }
 
     .premium-feature-text {
@@ -330,18 +349,6 @@
       margin-top: 5px;
     }
 
-    .premium-headline::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 149, 0, 0.15) 100%);
-      border-radius: 20px;
-      z-index: -1;
-    }
-
     .premium-details {
       display: flex;
       flex-direction: column;
@@ -387,8 +394,6 @@
       font-weight: 600;
       margin: 0 0 8px 0;
       color: #ffffff;
-      background: linear-gradient(90deg, #ffffff, #dddddd);
-      -webkit-text-fill-color: transparent;
     }
 
     .detail-content p {
@@ -610,7 +615,6 @@
         padding: 20px;
       }
     }
-
     .info-section {
       border-radius: 8px;
       padding: 12px 20px;
@@ -720,7 +724,7 @@
         <h1 class="login-title">Sign Up for Flamepass</h1>
         <p class="login-subtitle">Your hub for the latest unblocker links, games & tools</p>
       </div>
-
+      
       <!-- Enhanced Info Section -->
       <div class="info-section">
         <h3 class="info-title">About Flamepass</h3>
@@ -735,26 +739,28 @@
       <!-- Video Section -->
       <div class="video-container">
         <!-- Replace with your video embed code -->
-        <iframe src="about:blank" frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
+        <iframe src="about:blank" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
 
       <div class="divider"></div>
 
-      <!-- Premium Features Section as a numbered list -->
+      <!-- Premium Features Section as a star list -->
       <h2 class="benefits-headline">🔥 UNLOCK PREMIUM FEATURES 🔥</h2>
       <ul class="premium-features-list">
         <li class="premium-feature-item">
+          <i class="fas fa-star premium-feature-star"></i>
           <span class="premium-feature-text">700+ Updated Unblocker Links</span>
         </li>
         <li class="premium-feature-item">
+          <i class="fas fa-star premium-feature-star"></i>
           <span class="premium-feature-text">GPT-4o AI Chat Bot</span>
         </li>
         <li class="premium-feature-item">
+          <i class="fas fa-star premium-feature-star"></i>
           <span class="premium-feature-text">4,000+ Unblocked Games & Apps</span>
         </li>
         <li class="premium-feature-item">
+          <i class="fas fa-star premium-feature-star"></i>
           <span class="premium-feature-text">ALL 60+ Downloadable Games</span>
         </li>
       </ul>
@@ -776,8 +782,7 @@
           </div>
           <div class="signup-step">
             <div class="step-number">3</div>
-            <div class="step-text"><a href="/login.html" style="color: white; text-decoration: underline;">Login</a>
-              with email & key</div>
+            <div class="step-text"><a href="/login.html" style="color: white; text-decoration: underline;">Login</a> with email & key</div>
           </div>
         </div>
       </div>
@@ -799,32 +804,29 @@
             </div>
             <div class="detail-content">
               <h3>Always Updated Unblocker Links</h3>
-              <p>Daily fresh, tested proxy links that work when official sites get blocked. Access from home, use at
-                school —
+              <p>Daily fresh, tested proxy links that work when official sites get blocked. Access from home, use at school —
                 never hit a wall again.</p>
             </div>
           </div>
-
+          
           <div class="premium-detail-item">
             <div class="detail-icon">
               <span class="material-symbols-outlined">sports_esports</span>
             </div>
             <div class="detail-content">
               <h3>Downloadable Games That Work Anywhere</h3>
-              <p>Pre-tested games that work on school devices even offline. Bypass network restrictions and always have
-                something
+              <p>Pre-tested games that work on school devices even offline. Bypass network restrictions and always have something
                 to play.</p>
             </div>
           </div>
-
+          
           <div class="premium-detail-item">
             <div class="detail-icon">
               <span class="material-symbols-outlined">school</span>
             </div>
             <div class="detail-content">
               <h3>Access From Any Device</h3>
-              <p>Flamepass app can be accessed through ANY normal unblocker too. When one method fails, you'll still
-                have access
+              <p>Flamepass app can be accessed through ANY normal unblocker too. When one method fails, you'll still have access
                 to all your premium features.</p>
             </div>
           </div>
@@ -849,12 +851,13 @@
         </div>
 
         <div class="guarantee-badge">
-          <span class="material-symbols-outlined">verified_user</span>
+          <span class="material-symbols-outlined">
+            </span>
           <div class="guarantee-text">
             <h3>100% Satisfaction Guarantee</h3>
             <p>Not happy? Get a full refund within 7 days. No questions asked.</p>
             <div class="guarantee-email">Just email us at: flamepassproxies@gmail.com</div>
-            </div>
+          </div>
         </div>
 
         <div class="cta-section">
