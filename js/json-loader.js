@@ -1930,28 +1930,7 @@ function isMobileDevice() {
 
 // Initialize event listeners and add some performance optimizations
 document.addEventListener('DOMContentLoaded', () => {
-	// Optimize animation performance by disabling them during scroll
-	let scrollTimeout;
-	window.addEventListener('scroll', () => {
-		if (!document.body.classList.contains('is-scrolling')) {
-			document.body.classList.add('is-scrolling');
-		}
-
-		clearTimeout(scrollTimeout);
-		scrollTimeout = setTimeout(() => {
-			document.body.classList.remove('is-scrolling');
-		}, 200);
-	}, { passive: true });
-
-	// Add a style for better scrolling performance
-	const perfStyle = document.createElement('style');
-	perfStyle.textContent = `
-    body.is-scrolling * {
-      transition-property: none !important;
-      animation: none !important;
-    }
-  `;
-	document.head.appendChild(perfStyle);
+	
 
 	// Optimize for mobile devices
 	if (isMobileDevice()) {
