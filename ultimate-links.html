@@ -809,22 +809,46 @@
 			overflow-y: auto;
 		}
 
+		/* Make scrollbar visible */
 		.saved-links-content::-webkit-scrollbar {
-			width: 8px;
+			width: 10px;
+			background-color: rgba(0, 0, 0, 0.2);
 		}
 
 		.saved-links-content::-webkit-scrollbar-track {
-			background: rgba(0, 0, 0, 0.1);
+			background: rgba(0, 0, 0, 0.2);
 			border-radius: 10px;
 		}
 
 		.saved-links-content::-webkit-scrollbar-thumb {
-			background: rgba(222, 92, 52, 0.5);
+			background: rgba(222, 92, 52, 0.6);
 			border-radius: 10px;
+			border: 2px solid rgba(0, 0, 0, 0.1);
 		}
 
 		.saved-links-content::-webkit-scrollbar-thumb:hover {
-			background: rgba(222, 92, 52, 0.7);
+			background: rgba(222, 92, 52, 0.8);
+		}
+
+		/* Make all scrollbars visible */
+		::-webkit-scrollbar {
+			width: 10px;
+			background-color: rgba(0, 0, 0, 0.2);
+		}
+
+		::-webkit-scrollbar-track {
+			background: rgba(0, 0, 0, 0.2);
+			border-radius: 10px;
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: rgba(222, 92, 52, 0.6);
+			border-radius: 10px;
+			border: 2px solid rgba(0, 0, 0, 0.1);
+		}
+
+		::-webkit-scrollbar-thumb:hover {
+			background: rgba(222, 92, 52, 0.8);
 		}
 
 		.saved-links-header {
@@ -1553,23 +1577,6 @@
       color: white;
     }
 
-    /* Daily reward system */
-    .daily-reward-btn {
-      position: relative;
-    }
-
-    .reward-indicator {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      width: 10px;
-      height: 10px;
-      background-color: #4CAF50;
-      border-radius: 50%;
-      border: 2px solid #1e1e1e;
-      animation: pulse 2s infinite;
-    }
-
     /* Loading & skeleton states */
     .skeleton-category {
       margin-bottom: 25px;
@@ -1823,14 +1830,14 @@
 	<div class="scrolltop">
 		<span class="material-symbols-outlined">arrow_upward</span>
 	</div>
-
+	
 	<div class="links-container">
 		<h1 class="page-title">Ultimate Links List</h1>
 		<p class="page-description">The #1 collection of proxy links for school. Use these links to
 			bypass filters and enjoy unrestricted internet access.</p>
-
-		<!-- Welcome back banner (conditionally displayed) -->
-		<div class="welcome-banner" id="welcomeBanner">
+	
+		<!-- Welcome back banner (conditionally displayed) - Will be handled in JS -->
+		<div class="welcome-banner" id="welcomeBanner" style="display: none;">
 			<div class="welcome-icon">
 				<i class="fa-solid fa-hand-wave"></i>
 			</div>
@@ -1843,7 +1850,7 @@
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 		</div>
-
+	
 		<!-- Stats Bar -->
 		<div class="stats-bar">
 			<div class="stat-item">
@@ -1861,639 +1868,642 @@
 				<div class="stat-value" id="workingLinksCount">0</div>
 				<div class="stat-label">Working Links</div>
 			</div>
-
+	
 			<!-- Points display (only shown when logged in) -->
 			<div class="points-display" id="pointsDisplay" style="display: none;">
 				<i class="fa-solid fa-gem points-icon"></i>
 				<span class="points-value" id="userPoints">0</span>
 			</div>
+		</div>
+	
+		<!-- Enhanced Search with Icon and Clear Button -->
+		<div class="search-container">
+			<i class="fa-solid fa-search search-icon"></i>
+			<input type="text" class="search-input" placeholder="Search for proxies, games, apps..." id="searchInput">
+			<button class="search-clear" id="clearSearch">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		</div>
+	
+		<!-- Action Buttons Container - Only show the appropriate buttons based on login status -->
+		<div class="action-buttons-container">
+			<button id="submitLinkButton" class="primary-action-btn submit-link-btn">
+				<i class="fa-solid fa-plus"></i> Submit a Link
+			</button>
+			<button id="savedLinksButton" class="secondary-action-btn saved-links-btn">
+				<i class="fa-solid fa-bookmark"></i> Saved Links
+				<span id="savedLinksCount" class="badge">0</span>
+			</button>
+			<!-- Daily reward button removed for logged-in users (will be handled in JS) -->
+			<button id="dailyRewardButton" class="secondary-action-btn daily-reward-btn" style="display: none;">
+				<i class="fa-solid fa-gift"></i> Daily Reward
+				<span class="reward-indicator" id="rewardIndicator"></span>
+			</button>
+		</div>
+	
+		<!-- Enhanced Filter Buttons with Count Badges -->
+		<div class="filter-container" id="filterButtons">
+			<!-- Filter buttons will be added by JavaScript -->
+		</div>
+	
+		<!-- Links Content Area - Initial Loading State -->
+		<div id="linksContent">
+			<!-- Loading skeleton state -->
+			<div class="skeleton-category">
+				<div class="skeleton-header">
+					<div class="skeleton-title-wrapper">
+						<div class="skeleton-icon"></div>
+						<div class="skeleton-title"></div>
+					</div>
+					<div class="skeleton-badge"></div>
+				</div>
+				<div class="skeleton-content">
+					<div class="skeleton-grid">
+						<div class="skeleton-link"></div>
+						<div class="skeleton-link"></div>
+						<div class="skeleton-link"></div>
+					</div>
+				</div>
 			</div>
-			
-			<!-- Enhanced Search with Icon and Clear Button -->
-			<div class="search-container">
-				<i class="fa-solid fa-search search-icon"></i>
-				<input type="text" class="search-input" placeholder="Search for proxies, games, apps..." id="searchInput">
-				<button class="search-clear" id="clearSearch">
-					<i class="fa-solid fa-xmark"></i>
+			<div class="skeleton-category">
+				<div class="skeleton-header">
+					<div class="skeleton-title-wrapper">
+						<div class="skeleton-icon"></div>
+						<div class="skeleton-title"></div>
+					</div>
+					<div class="skeleton-badge"></div>
+				</div>
+				<div class="skeleton-content">
+					<div class="skeleton-grid">
+						<div class="skeleton-link"></div>
+						<div class="skeleton-link"></div>
+						<div class="skeleton-link"></div>
+					</div>
+				</div>
+			</div>
+			<!-- Categories and links will be added by JavaScript -->
+		</div>
+	</div>
+	
+	<!-- Submit Link Modal -->
+	<div class="modal-overlay" id="submitLinkModal">
+		<div class="modal">
+			<div class="modal-close" id="closeSubmitModal">
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+			<div class="modal-header">
+				<h2><i class="fa-solid fa-plus-circle"></i> Submit a Link</h2>
+				<p>Found a working proxy? Submit it for approval!</p>
+			</div>
+	
+			<form id="submitLinkForm" class="submit-link-form">
+				<div class="form-group">
+					<label for="categorySelect"><i class="fa-solid fa-folder"></i> Category</label>
+					<select id="categorySelect" required>
+						<option value="" disabled selected>Select a category</option>
+						<!-- Categories will be populated via JavaScript -->
+					</select>
+				</div>
+	
+				<div class="form-group">
+					<label for="linkInput"><i class="fa-solid fa-link"></i> Link URL</label>
+					<input type="text" id="linkInput" placeholder="example.com" required>
+					<small class="form-hint">Full links (https://...) work too</small>
+				</div>
+	
+				<div class="form-group">
+					<label for="notesInput"><i class="fa-solid fa-note-sticky"></i> Additional Notes (optional)</label>
+					<textarea id="notesInput" placeholder="Any additional information about this link..."></textarea>
+				</div>
+	
+				<button type="submit" class="submit-btn">
+					<i class="fa-solid fa-paper-plane"></i> Submit Link
+				</button>
+			</form>
+	
+			<div id="loginAlert" class="login-alert" style="display: none;">
+				<i class="fa-solid fa-triangle-exclamation"></i> You must be logged in to submit a link.
+				<a href="/login.html">Log in to continue</a>
+			</div>
+	
+			<div id="submitSuccessMessage" class="message-container success-message" style="display: none;">
+				<i class="fa-solid fa-check-circle"></i> Thank you! Your link has been submitted for review.
+			</div>
+	
+			<div id="submitErrorMessage" class="message-container error-message" style="display: none;">
+				<i class="fa-solid fa-triangle-exclamation"></i> There was an error submitting your link. Please try again.
+			</div>
+		</div>
+	</div>
+	
+	<!-- Saved Links Modal -->
+	<div class="saved-links-modal" id="savedLinksModal">
+		<div class="saved-links-content">
+			<div class="modal-close" id="closeSavedLinksModal">
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+			<div class="saved-links-header">
+				<h2 class="saved-links-title"><i class="fa-solid fa-bookmark"></i> Saved Links</h2>
+				<p class="saved-links-description">Quickly access your favorite links</p>
+			</div>
+	
+			<div id="savedLinksList" class="saved-links-list">
+				<!-- Saved links will be added here -->
+			</div>
+	
+			<div id="noSavedLinks" class="no-saved-links">
+				<i class="fa-solid fa-bookmark"></i>
+				<p>You don't have any saved links yet. Click the bookmark icon on any link to save it for quick access.</p>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Unlock Options Modal - Simplified to remove ad option -->
+	<div class="unlock-options-modal" id="unlockOptionsModal">
+		<div class="unlock-modal-content">
+			<div class="unlock-modal-close" id="closeUnlockModal">
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+			<div class="unlock-modal-header">
+				<h2>Unlock More Links</h2>
+				<p>Choose an option below to access more links</p>
+			</div>
+	
+			<div class="unlock-options">
+				<div class="unlock-option" id="loginOption">
+					<div class="unlock-option-icon">
+						<i class="fa-solid fa-user"></i>
+					</div>
+					<h3>Login</h3>
+					<p>Create an account or login to access all links</p>
+				</div>
+	
+				<div class="unlock-option" id="subscribeOption">
+					<div class="unlock-option-icon">
+						<i class="fa-brands fa-youtube"></i>
+					</div>
+					<h3>Subscribe</h3>
+					<p>Subscribe to our YouTube channel to unlock 5 more links</p>
+				</div>
+			</div>
+	
+			<div class="unlock-progress">
+				<div class="unlock-progress-header">
+					<span class="unlock-progress-title">Your unlocked links</span>
+					<span class="unlock-progress-count"><span id="unlockedLinksCount">6</span>/<span
+							id="totalLinksPerCategory">20</span></span>
+				</div>
+				<div class="progress-bar-container">
+					<div class="progress-bar" id="unlockedProgressBar" style="width: 30%;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Daily Reward Modal - Will be conditionally shown based on login status -->
+	<div class="modal-overlay" id="dailyRewardModal">
+		<div class="modal" style="max-width: 450px; text-align: center;">
+			<div class="modal-close" id="closeDailyRewardModal">
+				<i class="fa-solid fa-xmark"></i>
+			</div>
+			<div class="modal-header">
+				<h2><i class="fa-solid fa-gift" style="color: #de5c34;"></i> Daily Reward</h2>
+				<p>Claim your daily reward to unlock more features!</p>
+			</div>
+	
+			<div style="padding: 20px 0; display: flex; flex-direction: column; align-items: center;">
+				<div style="font-size: 4rem; margin-bottom: 20px; color: #de5c34; animation: pulse 2s infinite;">
+					<i class="fa-solid fa-gift"></i>
+				</div>
+				<h3 style="color: white; margin: 0 0 10px;">Your reward is ready!</h3>
+				<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 25px;">Click below to unlock 3 more links for 24
+					hours.</p>
+	
+				<button id="claimRewardButton" class="submit-btn" style="max-width: 200px;">
+					<i class="fa-solid fa-hand-point-up"></i> Claim Reward
 				</button>
 			</div>
-			
-			<!-- Action Buttons Container -->
-			<div class="action-buttons-container">
-				<button id="submitLinkButton" class="primary-action-btn submit-link-btn">
-					<i class="fa-solid fa-plus"></i> Submit a Link
-				</button>
-				<button id="savedLinksButton" class="secondary-action-btn saved-links-btn">
-					<i class="fa-solid fa-bookmark"></i> Saved Links
-					<span id="savedLinksCount" class="badge">0</span>
-				</button>
-				<button id="dailyRewardButton" class="secondary-action-btn daily-reward-btn">
-					<i class="fa-solid fa-gift"></i> Daily Reward
-					<span class="reward-indicator" id="rewardIndicator"></span>
-				</button>
+	
+			<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+				<p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin: 0;">Come back tomorrow for another
+					reward!</p>
 			</div>
-			
-			<!-- Enhanced Filter Buttons with Count Badges -->
-			<div class="filter-container" id="filterButtons">
-				<!-- Filter buttons will be added by JavaScript -->
-			</div>
-			
-			<!-- Links Content Area - Initial Loading State -->
-			<div id="linksContent">
-				<!-- Loading skeleton state -->
-				<div class="skeleton-category">
-					<div class="skeleton-header">
-						<div class="skeleton-title-wrapper">
-							<div class="skeleton-icon"></div>
-							<div class="skeleton-title"></div>
-						</div>
-						<div class="skeleton-badge"></div>
-					</div>
-					<div class="skeleton-content">
-						<div class="skeleton-grid">
-							<div class="skeleton-link"></div>
-							<div class="skeleton-link"></div>
-							<div class="skeleton-link"></div>
-						</div>
-					</div>
-				</div>
-				<div class="skeleton-category">
-					<div class="skeleton-header">
-						<div class="skeleton-title-wrapper">
-							<div class="skeleton-icon"></div>
-							<div class="skeleton-title"></div>
-						</div>
-						<div class="skeleton-badge"></div>
-					</div>
-					<div class="skeleton-content">
-						<div class="skeleton-grid">
-							<div class="skeleton-link"></div>
-							<div class="skeleton-link"></div>
-							<div class="skeleton-link"></div>
-						</div>
-					</div>
-				</div>
-				<!-- Categories and links will be added by JavaScript -->
-			</div>
-			</div>
-			
-			<!-- Submit Link Modal -->
-			<div class="modal-overlay" id="submitLinkModal">
-				<div class="modal">
-					<div class="modal-close" id="closeSubmitModal">
-						<i class="fa-solid fa-xmark"></i>
-					</div>
-					<div class="modal-header">
-						<h2><i class="fa-solid fa-plus-circle"></i> Submit a Link</h2>
-						<p>Found a working proxy? Submit it for approval!</p>
-					</div>
-			
-					<form id="submitLinkForm" class="submit-link-form">
-						<div class="form-group">
-							<label for="categorySelect"><i class="fa-solid fa-folder"></i> Category</label>
-							<select id="categorySelect" required>
-								<option value="" disabled selected>Select a category</option>
-								<!-- Categories will be populated via JavaScript -->
-							</select>
-						</div>
-			
-						<div class="form-group">
-							<label for="linkInput"><i class="fa-solid fa-link"></i> Link URL</label>
-							<input type="text" id="linkInput" placeholder="example.com" required>
-							<small class="form-hint">Full links (https://...) work too</small>
-						</div>
-			
-						<div class="form-group">
-							<label for="notesInput"><i class="fa-solid fa-note-sticky"></i> Additional Notes (optional)</label>
-							<textarea id="notesInput" placeholder="Any additional information about this link..."></textarea>
-						</div>
-			
-						<button type="submit" class="submit-btn">
-							<i class="fa-solid fa-paper-plane"></i> Submit Link
-						</button>
-					</form>
-			
-					<div id="loginAlert" class="login-alert" style="display: none;">
-						<i class="fa-solid fa-triangle-exclamation"></i> You must be logged in to submit a link.
-						<a href="/login.html">Log in to continue</a>
-					</div>
-			
-					<div id="submitSuccessMessage" class="message-container success-message" style="display: none;">
-						<i class="fa-solid fa-check-circle"></i> Thank you! Your link has been submitted for review.
-					</div>
-			
-					<div id="submitErrorMessage" class="message-container error-message" style="display: none;">
-						<i class="fa-solid fa-triangle-exclamation"></i> There was an error submitting your link. Please try again.
-					</div>
-				</div>
-			</div>
-			
-			<!-- Saved Links Modal -->
-			<div class="saved-links-modal" id="savedLinksModal">
-				<div class="saved-links-content">
-					<div class="modal-close" id="closeSavedLinksModal">
-						<i class="fa-solid fa-xmark"></i>
-					</div>
-					<div class="saved-links-header">
-						<h2 class="saved-links-title"><i class="fa-solid fa-bookmark"></i> Saved Links</h2>
-						<p class="saved-links-description">Quickly access your favorite links</p>
-					</div>
-			
-					<div id="savedLinksList" class="saved-links-list">
-						<!-- Saved links will be added here -->
-					</div>
-			
-					<div id="noSavedLinks" class="no-saved-links">
-						<i class="fa-solid fa-bookmark"></i>
-						<p>You don't have any saved links yet. Click the bookmark icon on any link to save it for quick access.</p>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Unlock Options Modal -->
-			<div class="unlock-options-modal" id="unlockOptionsModal">
-				<div class="unlock-modal-content">
-					<div class="unlock-modal-close" id="closeUnlockModal">
-						<i class="fa-solid fa-xmark"></i>
-					</div>
-					<div class="unlock-modal-header">
-						<h2>Unlock More Links</h2>
-						<p>Choose an option below to access more links</p>
-					</div>
-			
-					<div class="unlock-options">
-						<div class="unlock-option" id="loginOption">
-							<div class="unlock-option-icon">
-								<i class="fa-solid fa-user"></i>
-							</div>
-							<h3>Login</h3>
-							<p>Create an account or login to access all links</p>
-						</div>
-			
-						<div class="unlock-option" id="subscribeOption">
-							<div class="unlock-option-icon">
-								<i class="fa-brands fa-youtube"></i>
-							</div>
-							<h3>Subscribe</h3>
-							<p>Subscribe to our YouTube channel to unlock 5 more links</p>
-						</div>
-			
-						<div class="unlock-option" id="adOption">
-							<div class="unlock-option-icon">
-								<i class="fa-solid fa-rectangle-ad"></i>
-							</div>
-							<h3>Watch Ad</h3>
-							<p>Watch a short ad to unlock 2 more links for 24 hours</p>
-						</div>
-					</div>
-			
-					<div class="unlock-progress">
-						<div class="unlock-progress-header">
-							<span class="unlock-progress-title">Your unlocked links</span>
-							<span class="unlock-progress-count"><span id="unlockedLinksCount">6</span>/<span
-									id="totalLinksPerCategory">20</span></span>
-						</div>
-						<div class="progress-bar-container">
-							<div class="progress-bar" id="unlockedProgressBar" style="width: 30%;"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Daily Reward Modal -->
-			<div class="modal-overlay" id="dailyRewardModal">
-				<div class="modal" style="max-width: 450px; text-align: center;">
-					<div class="modal-close" id="closeDailyRewardModal">
-						<i class="fa-solid fa-xmark"></i>
-					</div>
-					<div class="modal-header">
-						<h2><i class="fa-solid fa-gift" style="color: #de5c34;"></i> Daily Reward</h2>
-						<p>Claim your daily reward to unlock more features!</p>
-					</div>
-			
-					<div style="padding: 20px 0; display: flex; flex-direction: column; align-items: center;">
-						<div style="font-size: 4rem; margin-bottom: 20px; color: #de5c34; animation: pulse 2s infinite;">
-							<i class="fa-solid fa-gift"></i>
-						</div>
-						<h3 style="color: white; margin: 0 0 10px;">Your reward is ready!</h3>
-						<p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 25px;">Click below to unlock 3 more links for 24
-							hours.</p>
-			
-						<button id="claimRewardButton" class="submit-btn" style="max-width: 200px;">
-							<i class="fa-solid fa-hand-point-up"></i> Claim Reward
-						</button>
-					</div>
-			
-					<div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-						<p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin: 0;">Come back tomorrow for another
-							reward!</p>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Toast notifications container -->
-			<div class="toast-container" id="toastContainer">
-				<!-- Toasts will be added here -->
-			</div>
-			
-			<div style="z-index: -998">
-				<div style="z-index: -998; position: fixed" class="blob"></div>
-				<div style="z-index: -998; position: fixed" class="blobbig"></div>
-				<div style="z-index: -998; position: fixed" class="blobsmall"></div>
-				<div style="z-index: -998; position: fixed" class="blobtop"></div>
-				<div style="z-index: -999; position: fixed" id="particles-js"></div>
-			</div>
-			
-			<script>
-				document.addEventListener('DOMContentLoaded', () => {
-					// Configuration
-					const CONFIG = {
-						FREE_LINKS_COUNT: 6, // Increased from 3 to 6
-						POINTS_PER_VISIT: 5,
-						POINTS_PER_LINK_CLICK: 2,
-						POINTS_PER_SUBMIT: 10,
-						LINKS_UNLOCKED_BY_AD: 2,
-						LINKS_UNLOCKED_BY_SUBSCRIBE: 5,
-						LINKS_UNLOCKED_BY_DAILY: 3,
-						AD_UNLOCK_DURATION: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-						DAILY_REWARD_COOLDOWN: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-					};
+		</div>
+	</div>
+	
+	<!-- Toast notifications container -->
+	<div class="toast-container" id="toastContainer">
+		<!-- Toasts will be added here -->
+	</div>
+	
+	<div style="z-index: -998">
+		<div style="z-index: -998; position: fixed" class="blob"></div>
+		<div style="z-index: -998; position: fixed" class="blobbig"></div>
+		<div style="z-index: -998; position: fixed" class="blobsmall"></div>
+		<div style="z-index: -998; position: fixed" class="blobtop"></div>
+		<div style="z-index: -999; position: fixed" id="particles-js"></div>
+	</div>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			// Configuration
+			const CONFIG = {
+				FREE_LINKS_COUNT: 6, // Increased from 3 to 6
+				POINTS_PER_VISIT: 5,
+				POINTS_PER_LINK_CLICK: 2,
+				POINTS_PER_SUBMIT: 10,
+				LINKS_UNLOCKED_BY_SUBSCRIBE: 5,
+				LINKS_UNLOCKED_BY_DAILY: 3,
+				DAILY_REWARD_COOLDOWN: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+			};
 
-					// Elements
-					const linksContent = document.getElementById('linksContent');
-					const searchInput = document.getElementById('searchInput');
-					const clearSearchBtn = document.getElementById('clearSearch');
-					const filterButtons = document.getElementById('filterButtons');
-					const submitLinkButton = document.getElementById('submitLinkButton');
-					const submitLinkModal = document.getElementById('submitLinkModal');
-					const submitLinkForm = document.getElementById('submitLinkForm');
-					const categorySelect = document.getElementById('categorySelect');
-					const submitSuccessMessage = document.getElementById('submitSuccessMessage');
-					const submitErrorMessage = document.getElementById('submitErrorMessage');
-					const loginAlert = document.getElementById('loginAlert');
-					const submitBtn = submitLinkForm.querySelector('.submit-btn');
-					const savedLinksButton = document.getElementById('savedLinksButton');
-					const savedLinksModal = document.getElementById('savedLinksModal');
-					const savedLinksList = document.getElementById('savedLinksList');
-					const noSavedLinks = document.getElementById('noSavedLinks');
-					const unlockOptionsModal = document.getElementById('unlockOptionsModal');
-					const loginOption = document.getElementById('loginOption');
-					const subscribeOption = document.getElementById('subscribeOption');
-					const adOption = document.getElementById('adOption');
-					const unlockedLinksCount = document.getElementById('unlockedLinksCount');
-					const totalLinksPerCategory = document.getElementById('totalLinksPerCategory');
-					const unlockedProgressBar = document.getElementById('unlockedProgressBar');
-					const pointsDisplay = document.getElementById('pointsDisplay');
-					const userPoints = document.getElementById('userPoints');
-					const savedLinksCount = document.getElementById('savedLinksCount');
-					const toastContainer = document.getElementById('toastContainer');
-					const welcomeBanner = document.getElementById('welcomeBanner');
-					const closeWelcomeBanner = document.getElementById('closeWelcomeBanner');
-					const dailyRewardButton = document.getElementById('dailyRewardButton');
-					const dailyRewardModal = document.getElementById('dailyRewardModal');
-					const claimRewardButton = document.getElementById('claimRewardButton');
-					const closeDailyRewardModal = document.getElementById('closeDailyRewardModal');
-					const rewardIndicator = document.getElementById('rewardIndicator');
+			// Elements
+			const linksContent = document.getElementById('linksContent');
+			const searchInput = document.getElementById('searchInput');
+			const clearSearchBtn = document.getElementById('clearSearch');
+			const filterButtons = document.getElementById('filterButtons');
+			const submitLinkButton = document.getElementById('submitLinkButton');
+			const submitLinkModal = document.getElementById('submitLinkModal');
+			const submitLinkForm = document.getElementById('submitLinkForm');
+			const categorySelect = document.getElementById('categorySelect');
+			const submitSuccessMessage = document.getElementById('submitSuccessMessage');
+			const submitErrorMessage = document.getElementById('submitErrorMessage');
+			const loginAlert = document.getElementById('loginAlert');
+			const submitBtn = submitLinkForm.querySelector('.submit-btn');
+			const savedLinksButton = document.getElementById('savedLinksButton');
+			const savedLinksModal = document.getElementById('savedLinksModal');
+			const savedLinksList = document.getElementById('savedLinksList');
+			const noSavedLinks = document.getElementById('noSavedLinks');
+			const unlockOptionsModal = document.getElementById('unlockOptionsModal');
+			const loginOption = document.getElementById('loginOption');
+			const subscribeOption = document.getElementById('subscribeOption');
+			const unlockedLinksCount = document.getElementById('unlockedLinksCount');
+			const totalLinksPerCategory = document.getElementById('totalLinksPerCategory');
+			const unlockedProgressBar = document.getElementById('unlockedProgressBar');
+			const pointsDisplay = document.getElementById('pointsDisplay');
+			const userPoints = document.getElementById('userPoints');
+			const savedLinksCount = document.getElementById('savedLinksCount');
+			const toastContainer = document.getElementById('toastContainer');
+			const welcomeBanner = document.getElementById('welcomeBanner');
+			const closeWelcomeBanner = document.getElementById('closeWelcomeBanner');
+			const dailyRewardButton = document.getElementById('dailyRewardButton');
+			const dailyRewardModal = document.getElementById('dailyRewardModal');
+			const claimRewardButton = document.getElementById('claimRewardButton');
+			const closeDailyRewardModal = document.getElementById('closeDailyRewardModal');
+			const rewardIndicator = document.getElementById('rewardIndicator');
 
-					// Statistics elements
-					const totalLinksCountEl = document.getElementById('totalLinksCount');
-					const categoriesCountEl = document.getElementById('categoriesCount');
-					const workingLinksCountEl = document.getElementById('workingLinksCount');
+			// Statistics elements
+			const totalLinksCountEl = document.getElementById('totalLinksCount');
+			const categoriesCountEl = document.getElementById('categoriesCount');
+			const workingLinksCountEl = document.getElementById('workingLinksCount');
 
-					// Submission cooldown tracking
-					let isSubmitting = false;
-					let lastSubmissionTime = 0;
-					const SUBMISSION_COOLDOWN = 60000; // 60 seconds cooldown
+			// Submission cooldown tracking
+			let isSubmitting = false;
+			let lastSubmissionTime = 0;
+			const SUBMISSION_COOLDOWN = 60000; // 60 seconds cooldown
 
-					// Initialize the toast container
-					let activeSortOption = 'newest';
+			// Initialize the toast container
+			let activeSortOption = 'newest';
 
-					// User state management
-					const userState = {
-						points: 0,
-						savedLinks: [],
-						unlockedCategories: {},
-						adUnlockExpiry: 0,
-						dailyRewardClaimed: 0,
-						lastVisit: 0,
-						subscribedToYouTube: false,
-						unlockProgress: {
-							byLogin: false,
-							byAd: false,
-							bySubscribe: false,
-							byDaily: false
+			// User state management
+			const userState = {
+				points: 0,
+				savedLinks: [],
+				unlockedCategories: {},
+				dailyRewardClaimed: 0,
+				lastVisit: 0,
+				subscribedToYouTube: false,
+				unlockProgress: {
+					byLogin: false,
+					bySubscribe: false,
+					byDaily: false
+				}
+			};
+
+			// Initialize modals
+			submitLinkModal.style.display = "none";
+			savedLinksModal.style.display = "none";
+			unlockOptionsModal.style.display = "none";
+			dailyRewardModal.style.display = "none";
+
+			// Load user state from localStorage
+			function loadUserState() {
+				try {
+					const savedState = localStorage.getItem('flameFPUserState');
+					if (savedState) {
+						const parsedState = JSON.parse(savedState);
+						Object.assign(userState, parsedState);
+
+						// Check if it's a new day since last visit
+						const now = Date.now();
+						const lastVisit = userState.lastVisit || 0;
+						const isNewDay = new Date(now).setHours(0, 0, 0, 0) > new Date(lastVisit).setHours(0, 0, 0, 0);
+
+						if (isNewDay) {
+							// Reset daily reward if it's a new day
+							userState.dailyRewardClaimed = 0;
+							showToast('Welcome back!', 'Daily reward is available.', 'info');
 						}
-					};
 
-					// Initialize modals
-					submitLinkModal.style.display = "none";
-					savedLinksModal.style.display = "none";
-					unlockOptionsModal.style.display = "none";
-					dailyRewardModal.style.display = "none";
-
-					// Load user state from localStorage
-					function loadUserState() {
-						try {
-							const savedState = localStorage.getItem('flameFPUserState');
-							if (savedState) {
-								const parsedState = JSON.parse(savedState);
-								Object.assign(userState, parsedState);
-
-								// Check if it's a new day since last visit
-								const now = Date.now();
-								const lastVisit = userState.lastVisit || 0;
-								const isNewDay = new Date(now).setHours(0, 0, 0, 0) > new Date(lastVisit).setHours(0, 0, 0, 0);
-
-								if (isNewDay) {
-									// Reset daily reward if it's a new day
-									userState.dailyRewardClaimed = 0;
-									showToast('Welcome back!', 'Daily reward is available.', 'info');
-								}
-
-								// Show welcome banner for returning users
-								if (now - lastVisit > 1000 * 60 * 60) { // If last visit was more than an hour ago
-									welcomeBanner.style.display = 'flex';
-								} else {
-									welcomeBanner.style.display = 'none';
-								}
-
-								// Update last visit time
-								userState.lastVisit = now;
-								saveUserState();
-
-								// Award points for returning
-								addPoints(CONFIG.POINTS_PER_VISIT, 'Returning to the site');
-
-								// Update points display and saved links count
-								updatePointsDisplay();
-								updateSavedLinksCount();
-								updateDailyRewardButton();
-							} else {
-								// First time user
-								userState.lastVisit = Date.now();
-								saveUserState();
-								welcomeBanner.style.display = 'none';
-
-								// Show first time user notification
-								showToast('Welcome to FlamePass!', 'Explore our collection of proxy links.', 'info');
-							}
-						} catch (error) {
-							console.error('Error loading user state:', error);
+						// Show welcome banner for returning users only if not logged in
+						if (now - lastVisit > 1000 * 60 * 60 && !(typeof isLoggedIn === 'function' && isLoggedIn())) {
+							welcomeBanner.style.display = 'flex';
+						} else {
 							welcomeBanner.style.display = 'none';
 						}
-					}
 
-					// Save user state to localStorage
-					function saveUserState() {
-						try {
-							localStorage.setItem('flameFPUserState', JSON.stringify(userState));
-						} catch (error) {
-							console.error('Error saving user state:', error);
-						}
-					}
-
-					// Add points to user account
-					function addPoints(amount, reason) {
-						userState.points += amount;
+						// Update last visit time
+						userState.lastVisit = now;
 						saveUserState();
+
+						// Award points for returning
+						addPoints(CONFIG.POINTS_PER_VISIT, 'Returning to the site');
+
+						// Update points display and saved links count
 						updatePointsDisplay();
-
-						if (amount > 0) {
-							showToast('Points Added', `+${amount} points: ${reason}`, 'success');
-						}
-					}
-
-					// Update points display
-					function updatePointsDisplay() {
-						if (typeof isLoggedIn === 'function' && isLoggedIn()) {
-							pointsDisplay.style.display = 'flex';
-							userPoints.textContent = userState.points;
-						} else {
-							pointsDisplay.style.display = 'none';
-						}
-					}
-
-					// Update saved links count badge
-					function updateSavedLinksCount() {
-						const count = userState.savedLinks.length;
-						savedLinksCount.textContent = count;
-
-						if (count > 0) {
-							savedLinksCount.style.display = 'inline-block';
-						} else {
-							savedLinksCount.style.display = 'none';
-						}
-					}
-
-					// Save a link
-					function saveLink(linkUrl, categoryName) {
-						// Check if already saved
-						const existingIndex = userState.savedLinks.findIndex(link => link.url === linkUrl);
-
-						if (existingIndex >= 0) {
-							// Remove if already saved (toggle functionality)
-							userState.savedLinks.splice(existingIndex, 1);
-							showToast('Link Removed', 'Link removed from saved links', 'info');
-						} else {
-							// Add to saved links
-							userState.savedLinks.push({
-								url: linkUrl,
-								category: categoryName,
-								savedAt: Date.now()
-							});
-							showToast('Link Saved', 'Link added to saved links', 'success');
-						}
-
-						saveUserState();
 						updateSavedLinksCount();
-						return existingIndex < 0; // Return true if link was saved, false if removed
-					}
-
-					// Check if a link is saved
-					function isLinkSaved(linkUrl) {
-						return userState.savedLinks.some(link => link.url === linkUrl);
-					}
-
-					// Update unlock progress display
-					function updateUnlockProgress() {
-						let unlockedCount = CONFIG.FREE_LINKS_COUNT;
-
-						// Add unlocks based on user status
-						if (typeof isLoggedIn === 'function' && isLoggedIn()) {
-							unlockedCount = 1000; // Unlimited for logged in users
-							userState.unlockProgress.byLogin = true;
-						} else {
-							if (userState.unlockProgress.byAd && Date.now() < userState.adUnlockExpiry) {
-								unlockedCount += CONFIG.LINKS_UNLOCKED_BY_AD;
-							} else {
-								userState.unlockProgress.byAd = false;
-							}
-
-							if (userState.unlockProgress.bySubscribe) {
-								unlockedCount += CONFIG.LINKS_UNLOCKED_BY_SUBSCRIBE;
-							}
-
-							if (userState.unlockProgress.byDaily && userState.dailyRewardClaimed > 0 &&
-								Date.now() < userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN) {
-								unlockedCount += CONFIG.LINKS_UNLOCKED_BY_DAILY;
-							} else {
-								userState.unlockProgress.byDaily = false;
-							}
-						}
-
-						// Update the UI
-						unlockedLinksCount.textContent = unlockedCount;
-
-						// Assume 20 links total per category for progress bar
-						const progressPercent = Math.min(100, (unlockedCount / 20) * 100);
-						unlockedProgressBar.style.width = `${progressPercent}%`;
-
+						updateDailyRewardButton();
+					} else {
+						// First time user
+						userState.lastVisit = Date.now();
 						saveUserState();
-						return unlockedCount;
+						welcomeBanner.style.display = 'none';
+
+						// Show first time user notification
+						showToast('Welcome to FlamePass!', 'Explore our collection of proxy links.', 'info');
+					}
+				} catch (error) {
+					console.error('Error loading user state:', error);
+					welcomeBanner.style.display = 'none';
+				}
+
+				// Handle display of elements based on login status
+				updateUIForLoginStatus();
+			}
+
+			// Update UI elements based on login status
+			function updateUIForLoginStatus() {
+				const isUserLoggedIn = typeof isLoggedIn === 'function' && isLoggedIn();
+
+				// Hide daily reward button for logged in users
+				dailyRewardButton.style.display = isUserLoggedIn ? 'none' : 'flex';
+
+				// Hide welcome banner for logged in users
+				if (isUserLoggedIn) {
+					welcomeBanner.style.display = 'none';
+				}
+			}
+
+			// Save user state to localStorage
+			function saveUserState() {
+				try {
+					localStorage.setItem('flameFPUserState', JSON.stringify(userState));
+				} catch (error) {
+					console.error('Error saving user state:', error);
+				}
+			}
+
+			// Add points to user account
+			function addPoints(amount, reason) {
+				userState.points += amount;
+				saveUserState();
+				updatePointsDisplay();
+
+				if (amount > 0) {
+					showToast('Points Added', `+${amount} points: ${reason}`, 'success');
+				}
+			}
+
+			// Update points display
+			function updatePointsDisplay() {
+				if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+					pointsDisplay.style.display = 'none';
+					userPoints.textContent = userState.points;
+				} else {
+					pointsDisplay.style.display = 'none';
+				}
+			}
+
+			// Update saved links count badge
+			function updateSavedLinksCount() {
+				const count = userState.savedLinks.length;
+				savedLinksCount.textContent = count;
+
+				if (count > 0) {
+					savedLinksCount.style.display = 'inline-block';
+				} else {
+					savedLinksCount.style.display = 'none';
+				}
+			}
+
+			// Save a link
+			function saveLink(linkUrl, categoryName) {
+				// Check if already saved
+				const existingIndex = userState.savedLinks.findIndex(link => link.url === linkUrl);
+
+				if (existingIndex >= 0) {
+					// Remove if already saved (toggle functionality)
+					userState.savedLinks.splice(existingIndex, 1);
+					showToast('Link Removed', 'Link removed from saved links', 'info');
+				} else {
+					// Add to saved links
+					userState.savedLinks.push({
+						url: linkUrl,
+						category: categoryName,
+						savedAt: Date.now()
+					});
+					showToast('Link Saved', 'Link added to saved links', 'success');
+				}
+
+				saveUserState();
+				updateSavedLinksCount();
+				return existingIndex < 0; // Return true if link was saved, false if removed
+			}
+
+			// Check if a link is saved
+			function isLinkSaved(linkUrl) {
+				return userState.savedLinks.some(link => link.url === linkUrl);
+			}
+
+			// Update unlock progress display
+			function updateUnlockProgress() {
+				let unlockedCount = CONFIG.FREE_LINKS_COUNT;
+
+				// Add unlocks based on user status
+				if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+					unlockedCount = 1000; // Unlimited for logged in users
+					userState.unlockProgress.byLogin = true;
+				} else {
+					if (userState.unlockProgress.bySubscribe) {
+						unlockedCount += CONFIG.LINKS_UNLOCKED_BY_SUBSCRIBE;
 					}
 
-					// Show unlock options modal
-					function showUnlockOptions() {
-						unlockOptionsModal.style.display = 'flex';
-						updateUnlockProgress();
+					if (userState.unlockProgress.byDaily && userState.dailyRewardClaimed > 0 &&
+						Date.now() < userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN) {
+						unlockedCount += CONFIG.LINKS_UNLOCKED_BY_DAILY;
+					} else {
+						userState.unlockProgress.byDaily = false;
 					}
+				}
 
-					// Update daily reward button status
-					function updateDailyRewardButton() {
-						const now = Date.now();
-						const rewardAvailable = userState.dailyRewardClaimed === 0 ||
-							now > userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+				// Update the UI
+				unlockedLinksCount.textContent = unlockedCount;
 
-						if (rewardAvailable) {
-							rewardIndicator.style.display = 'block';
-						} else {
-							rewardIndicator.style.display = 'none';
-						}
+				// Assume 20 links total per category for progress bar
+				const progressPercent = Math.min(100, (unlockedCount / 20) * 100);
+				unlockedProgressBar.style.width = `${progressPercent}%`;
+
+				saveUserState();
+				return unlockedCount;
+			}
+
+			// Show unlock options modal
+			function showUnlockOptions() {
+				unlockOptionsModal.style.display = 'flex';
+				updateUnlockProgress();
+			}
+
+			// Update daily reward button status
+			function updateDailyRewardButton() {
+				const now = Date.now();
+				const rewardAvailable = userState.dailyRewardClaimed === 0 ||
+					now > userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+
+				if (rewardAvailable) {
+					rewardIndicator.style.display = 'block';
+				} else {
+					rewardIndicator.style.display = 'none';
+				}
+
+				// Hide daily reward button for logged in users
+				if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+					dailyRewardButton.style.display = 'none';
+				}
+			}
+
+			// Show toast notification
+			function showToast(title, message, type = 'info') {
+				const toast = document.createElement('div');
+				toast.className = `toast toast-${type}`;
+				toast.innerHTML = `
+				          <div class="toast-icon">
+				            <i class="fa-solid ${type === 'success' ? 'fa-check-circle' :
+						type === 'error' ? 'fa-triangle-exclamation' :
+							type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+				          </div>
+				          <div class="toast-content">
+				            <div class="toast-title">${title}</div>
+				            <div class="toast-message">${message}</div>
+				          </div>
+				        `;
+
+				toastContainer.appendChild(toast);
+
+				// Trigger animation
+				setTimeout(() => {
+					toast.classList.add('show');
+				}, 10);
+
+				// Remove after 5 seconds
+				setTimeout(() => {
+					toast.classList.remove('show');
+					setTimeout(() => {
+						toastContainer.removeChild(toast);
+					}, 500);
+				}, 5000);
+			}
+
+			// Load links from external JSON file
+			async function loadLinksData() {
+				try {
+					const response = await fetch('/json/links.json');
+					if (!response.ok) {
+						throw new Error('Failed to load links data');
 					}
+					return await response.json();
+				} catch (error) {
+					console.error('Error loading links:', error);
+					showToast('Error', 'Failed to load links data. Please refresh the page.', 'error');
+					// Return a minimal structure to prevent errors
+					return {
+						categories: []
+					};
+				}
+			}
 
-					// Show toast notification
-					function showToast(title, message, type = 'info') {
-						const toast = document.createElement('div');
-						toast.className = `toast toast-${type}`;
-						toast.innerHTML = `
-			          <div class="toast-icon">
-			            <i class="fa-solid ${type === 'success' ? 'fa-check-circle' :
-								type === 'error' ? 'fa-triangle-exclamation' :
-									type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-			          </div>
-			          <div class="toast-content">
-			            <div class="toast-title">${title}</div>
-			            <div class="toast-message">${message}</div>
-			          </div>
-			        `;
+			// Add filter buttons
+			function addFilterButtons(categories) {
+				// Clear existing buttons
+				filterButtons.innerHTML = '';
 
-						toastContainer.appendChild(toast);
+				// Add All button
+				const allButton = document.createElement('button');
+				allButton.className = 'filter-btn active';
+				allButton.innerHTML = 'All <span class="filter-count">0</span>';
+				allButton.dataset.filter = 'all';
+				filterButtons.appendChild(allButton);
 
-						// Trigger animation
-						setTimeout(() => {
-							toast.classList.add('show');
-						}, 10);
+				// Count total links
+				let totalLinks = 0;
+				categories.forEach(category => {
+					totalLinks += category.links.length;
+				});
+				allButton.querySelector('.filter-count').textContent = totalLinks;
 
-						// Remove after 5 seconds
-						setTimeout(() => {
-							toast.classList.remove('show');
-							setTimeout(() => {
-								toastContainer.removeChild(toast);
-							}, 500);
-						}, 5000);
+				// Add status filter buttons
+				const statuses = [
+					{ name: 'Flourishing', icon: 'fa-solid fa-check-circle status-flourishing' },
+					{ name: 'Stable', icon: 'fa-solid fa-circle-check status-stable' },
+					{ name: 'Unstable', icon: 'fa-solid fa-triangle-exclamation status-unstable' },
+					{ name: 'Fresh', icon: 'fa-solid fa-sparkles status-fresh' }
+				];
+
+				// Create status count map
+				const statusCounts = {};
+				categories.forEach(category => {
+					const status = category.status;
+					if (!statusCounts[status]) {
+						statusCounts[status] = 0;
 					}
+					statusCounts[status] += category.links.length;
+				});
 
-					// Load links from external JSON file
-					async function loadLinksData() {
-						try {
-							const response = await fetch('/json/links.json');
-							if (!response.ok) {
-								throw new Error('Failed to load links data');
-							}
-							return await response.json();
-						} catch (error) {
-							console.error('Error loading links:', error);
-							showToast('Error', 'Failed to load links data. Please refresh the page.', 'error');
-							// Return a minimal structure to prevent errors
-							return {
-								categories: []
-							};
-						}
-					}
+				statuses.forEach(status => {
+					const statusKey = status.name.toLowerCase();
+					const button = document.createElement('button');
+					button.className = 'filter-btn';
+					button.innerHTML = `<i class="${status.icon}"></i> ${status.name} <span class="filter-count">${statusCounts[statusKey] || 0}</span>`;
+					button.dataset.filter = statusKey;
+					filterButtons.appendChild(button);
+				});
 
-					// Add filter buttons
-					function addFilterButtons(categories) {
-						// Clear existing buttons
-						filterButtons.innerHTML = '';
+				// Add category filter buttons for 3 largest categories
+				const topCategories = [...categories]
+					.sort((a, b) => b.links.length - a.links.length)
+					.slice(0, 3);
 
-						// Add All button
-						const allButton = document.createElement('button');
-						allButton.className = 'filter-btn active';
-						allButton.innerHTML = 'All <span class="filter-count">0</span>';
-						allButton.dataset.filter = 'all';
-						filterButtons.appendChild(allButton);
+				topCategories.forEach(category => {
+					const button = document.createElement('button');
+					button.className = 'filter-btn';
+					button.innerHTML = `<i class="${category.icon}"></i> ${category.name} <span class="filter-count">${category.links.length}</span>`;
+					button.dataset.filter = `category-${category.name.toLowerCase().replace(/\s+/g, '-')}`;
+					filterButtons.appendChild(button);
+				});
 
-						// Count total links
-						let totalLinks = 0;
-						categories.forEach(category => {
-							totalLinks += category.links.length;
-						});
-						allButton.querySelector('.filter-count').textContent = totalLinks;
+				// Add event listeners
+				document.querySelectorAll('.filter-btn').forEach(btn => {
+					btn.addEventListener('click', () => {
+						document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+						btn.classList.add('active');
+						filterLinks(btn.dataset.filter);
+					});
+				});
+			}
 
-						// Add status filter buttons
-						const statuses = [
-							{ name: 'Flourishing', icon: 'fa-solid fa-check-circle status-flourishing' },
-							{ name: 'Stable', icon: 'fa-solid fa-circle-check status-stable' },
-							{ name: 'Unstable', icon: 'fa-solid fa-triangle-exclamation status-unstable' },
-							{ name: 'Fresh', icon: 'fa-solid fa-sparkles status-fresh' }
-						];
-
-						// Create status count map
-						const statusCounts = {};
-						categories.forEach(category => {
-							const status = category.status;
-							if (!statusCounts[status]) {
-								statusCounts[status] = 0;
-							}
-							statusCounts[status] += category.links.length;
-						});
-
-						statuses.forEach(status => {
-							const statusKey = status.name.toLowerCase();
-							const button = document.createElement('button');
-							button.className = 'filter-btn';
-							button.innerHTML = `<i class="${status.icon}"></i> ${status.name} <span class="filter-count">${statusCounts[statusKey] || 0}</span>`;
-							button.dataset.filter = statusKey;
-							filterButtons.appendChild(button);
-						});
-
-						// Add category filter buttons for 3 largest categories
-						const topCategories = [...categories]
-							.sort((a, b) => b.links.length - a.links.length)
-							.slice(0, 3);
-
-						topCategories.forEach(category => {
-							const button = document.createElement('button');
-							button.className = 'filter-btn';
-							button.innerHTML = `<i class="${category.icon}"></i> ${category.name} <span class="filter-count">${category.links.length}</span>`;
-							button.dataset.filter = `category-${category.name.toLowerCase().replace(/\s+/g, '-')}`;
-							filterButtons.appendChild(button);
-						});
-
-						// Add event listeners
-						document.querySelectorAll('.filter-btn').forEach(btn => {
-							btn.addEventListener('click', () => {
-								document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-								btn.classList.add('active');
-								filterLinks(btn.dataset.filter);
-							});
-						});
-					}
-
-					// Create and display categories and links
-					async function displayLinks() {
-						// Show loading state
-						linksContent.innerHTML = `
+			// Create and display categories and links
+			async function displayLinks() {
+				// Show loading state
+				linksContent.innerHTML = `
 			          <div class="skeleton-category">
 			            <div class="skeleton-header">
 			              <div class="skeleton-title-wrapper">
@@ -2528,105 +2538,109 @@
 			          </div>
 			        `;
 
-						// Load links data
-						const linksData = await loadLinksData();
-						const categories = linksData.categories || [];
+				// Load links data
+				const linksData = await loadLinksData();
+				const categories = linksData.categories || [];
 
-						// Add Flamepass category at the top if it doesn't exist
-						if (!categories.find(cat => cat.name === "Flamepass")) {
-							categories.unshift({
-								name: "Flamepass",
-								icon: "fa-solid fa-fire",
-								status: "flourishing",
-								description: "FlamePass Exclusive Proxies",
-								links: [
-									"https://spiral-lyrical-sailboat.glitch.me/dashboard/",
-									"https://flamepass.github.io/",
-									"https://blp-kosher-fan-1.pages.dev/",
-									"https://api-regex-backend.pages.dev/",
-									"https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/jinjinjojo/home@6589b138299bc5b355e93ee19cb6fccc26dae4a6/page.xml&container=ig",
-									"https://youtube-study.vercel.app/",
-									"https://penis6000.vercel.app/"
-								]
-							});
-						}
+				// Add Flamepass category at the top if it doesn't exist
+				if (!categories.find(cat => cat.name === "Flamepass")) {
+					categories.unshift({
+						name: "Flamepass",
+						icon: "fa-solid fa-fire",
+						status: "flourishing",
+						description: "FlamePass Exclusive Proxies",
+						links: [
+							"https://spiral-lyrical-sailboat.glitch.me/dashboard/",
+							"https://flamepass.github.io/",
+							"https://blp-kosher-fan-1.pages.dev/",
+							"https://api-regex-backend.pages.dev/",
+							"https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/jinjinjojo/home@6589b138299bc5b355e93ee19cb6fccc26dae4a6/page.xml&container=ig",
+							"https://youtube-study.vercel.app/",
+							"https://penis6000.vercel.app/"
+						]
+					});
+				}
 
-						// Remove 'ghosted' category if it exists
-						const filteredCategories = categories.filter(category => category.status !== 'ghosted');
+				// Remove 'ghosted' category if it exists
+				const filteredCategories = categories.filter(category => category.status !== 'ghosted');
 
-						// Clear content area
-						linksContent.innerHTML = '';
+				// Clear content area
+				linksContent.innerHTML = '';
 
-						// Update statistics
-						let totalLinksCount = 0;
-						let workingLinksCount = 0;
+				// Update statistics
+				let totalLinksCount = 0;
+				let workingLinksCount = 0;
 
-						filteredCategories.forEach(category => {
-							totalLinksCount += category.links.length;
+				filteredCategories.forEach(category => {
+					totalLinksCount += category.links.length;
 
-							// Estimate working links - assume all flourishing and stable links work
-							if (category.status === 'flourishing') {
-								workingLinksCount += category.links.length;
-							} else if (category.status === 'stable') {
-								workingLinksCount += Math.floor(category.links.length * 0.9); // 90% for stable
-							} else if (category.status === 'unstable') {
-								workingLinksCount += Math.floor(category.links.length * 0.7); // 70% for unstable
-							} else if (category.status === 'fresh') {
-								workingLinksCount += Math.floor(category.links.length * 0.8); // 80% for fresh
-							}
-						});
+					// Estimate working links - assume all flourishing and stable links work
+					if (category.status === 'flourishing') {
+						workingLinksCount += category.links.length;
+					} else if (category.status === 'stable') {
+						workingLinksCount += Math.floor(category.links.length * 0.9); // 90% for stable
+					} else if (category.status === 'unstable') {
+						workingLinksCount += Math.floor(category.links.length * 0.7); // 70% for unstable
+					} else if (category.status === 'fresh') {
+						workingLinksCount += Math.floor(category.links.length * 0.8); // 80% for fresh
+					}
+				});
 
-						totalLinksCountEl.textContent = totalLinksCount;
-						categoriesCountEl.textContent = filteredCategories.length;
-						workingLinksCountEl.textContent = workingLinksCount;
+				totalLinksCountEl.textContent = totalLinksCount;
+				categoriesCountEl.textContent = filteredCategories.length;
+				workingLinksCountEl.textContent = workingLinksCount;
 
-						// Add filter buttons
-						addFilterButtons(filteredCategories);
+				// Add filter buttons
+				addFilterButtons(filteredCategories);
 
-						// Calculate how many links should be displayed
-						const unlockedCount = updateUnlockProgress();
+				// Calculate how many links should be displayed
+				const unlockedCount = updateUnlockProgress();
 
-						// Create each category section
-						filteredCategories.forEach(category => {
-							const categoryEl = document.createElement('div');
-							categoryEl.className = 'category';
-							if (category.name === "Flamepass") {
-								categoryEl.classList.add('flamepass-category');
-							}
-							categoryEl.dataset.status = category.status;
-							categoryEl.dataset.category = category.name.toLowerCase().replace(/\s+/g, '-');
+				// Create each category section
+				filteredCategories.forEach((category, index) => {
+					const categoryEl = document.createElement('div');
+					categoryEl.className = 'category';
+					// Add collapsed class by default to all categories except Flamepass
+					if (category.name !== "Flamepass") {
+						categoryEl.classList.add('collapsed');
+					}
+					if (category.name === "Flamepass") {
+						categoryEl.classList.add('flamepass-category');
+					}
+					categoryEl.dataset.status = category.status;
+					categoryEl.dataset.category = category.name.toLowerCase().replace(/\s+/g, '-');
 
-							// Generate status information
-							let statusIcon, statusClass, statusText;
-							switch (category.status) {
-								case 'flourishing':
-									statusIcon = 'fa-check-circle';
-									statusClass = 'status-flourishing';
-									statusText = 'Flourishing';
-									break;
-								case 'stable':
-									statusIcon = 'fa-circle-check';
-									statusClass = 'status-stable';
-									statusText = 'Stable';
-									break;
-								case 'unstable':
-									statusIcon = 'fa-triangle-exclamation';
-									statusClass = 'status-unstable';
-									statusText = 'Unstable';
-									break;
-								case 'fresh':
-									statusIcon = 'fa-sparkles';
-									statusClass = 'status-fresh';
-									statusText = 'Fresh';
-									break;
-								default:
-									statusIcon = 'fa-circle-info';
-									statusClass = '';
-									statusText = 'Unknown';
-							}
+					// Generate status information
+					let statusIcon, statusClass, statusText;
+					switch (category.status) {
+						case 'flourishing':
+							statusIcon = 'fa-check-circle';
+							statusClass = 'status-flourishing';
+							statusText = 'Flourishing';
+							break;
+						case 'stable':
+							statusIcon = 'fa-circle-check';
+							statusClass = 'status-stable';
+							statusText = 'Stable';
+							break;
+						case 'unstable':
+							statusIcon = 'fa-triangle-exclamation';
+							statusClass = 'status-unstable';
+							statusText = 'Unstable';
+							break;
+						case 'fresh':
+							statusIcon = 'fa-sparkles';
+							statusClass = 'status-fresh';
+							statusText = 'Fresh';
+							break;
+						default:
+							statusIcon = 'fa-circle-info';
+							statusClass = '';
+							statusText = 'Unknown';
+					}
 
-							// Create category HTML structure
-							categoryEl.innerHTML = `
+					// Create category HTML structure
+					categoryEl.innerHTML = `
             <div class="category-header">
               <div class="category-title-wrapper">
                 <div class="category-icon">
@@ -2660,42 +2674,42 @@
             </div>
           `;
 
-							linksContent.appendChild(categoryEl);
+					linksContent.appendChild(categoryEl);
 
-							// Make category header collapsible
-							const categoryHeader = categoryEl.querySelector('.category-header');
-							categoryHeader.addEventListener('click', () => {
-								categoryEl.classList.toggle('collapsed');
+					// Make category header collapsible
+					const categoryHeader = categoryEl.querySelector('.category-header');
+					categoryHeader.addEventListener('click', () => {
+						categoryEl.classList.toggle('collapsed');
 
-								// If expanding a category, scroll it into view
-								if (!categoryEl.classList.contains('collapsed')) {
-									setTimeout(() => {
-										categoryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-									}, 100);
-								}
-							});
+						// If expanding a category, scroll it into view
+						if (!categoryEl.classList.contains('collapsed')) {
+							setTimeout(() => {
+								categoryEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							}, 100);
+						}
+					});
 
-							const linksGrid = categoryEl.querySelector('.links-grid');
+					const linksGrid = categoryEl.querySelector('.links-grid');
 
-							// Add links to the grid
-							category.links.forEach((link, index) => {
-								// Check if this link should be locked or free
-								const shouldBeLocked = index >= unlockedCount && !(typeof isLoggedIn === 'function' && isLoggedIn());
+					// Add links to the grid
+					category.links.forEach((link, index) => {
+						// Check if this link should be locked or free
+						const shouldBeLocked = index >= unlockedCount && !(typeof isLoggedIn === 'function' && isLoggedIn());
 
-								if (shouldBeLocked) {
-									// Create locked link preview
-									const lockedContainer = document.createElement('div');
-									lockedContainer.className = 'locked-link-container';
-									lockedContainer.dataset.originalLink = link;
+						if (shouldBeLocked) {
+							// Create locked link preview
+							const lockedContainer = document.createElement('div');
+							lockedContainer.className = 'locked-link-container';
+							lockedContainer.dataset.originalLink = link;
 
-									// Random domain for display
-									const fakeDomains = [
-										'example.com', 'proxy-site.org', 'unblocked.edu',
-										'gameshub.net', 'proxyserver.io', 'unblocker.app'
-									];
-									const randomDomain = fakeDomains[Math.floor(Math.random() * fakeDomains.length)];
+							// Random domain for display
+							const fakeDomains = [
+								'example.com', 'proxy-site.org', 'unblocked.edu',
+								'gameshub.net', 'proxyserver.io', 'unblocker.app'
+							];
+							const randomDomain = fakeDomains[Math.floor(Math.random() * fakeDomains.length)];
 
-									lockedContainer.innerHTML = `
+							lockedContainer.innerHTML = `
                 <div class="locked-preview">
                   <i class="fa-solid fa-link link-icon"></i>
                   <span>https://${randomDomain}/proxy${Math.floor(Math.random() * 1000)}</span>
@@ -2708,28 +2722,28 @@
                 </div>
               `;
 
-									// Show unlock options when clicked
-									lockedContainer.addEventListener('click', (e) => {
-										showUnlockOptions();
-									});
+							// Show unlock options when clicked
+							lockedContainer.addEventListener('click', (e) => {
+								showUnlockOptions();
+							});
 
-									linksGrid.appendChild(lockedContainer);
-								} else {
-									// Create normal link item
-									const linkItem = document.createElement('div');
-									linkItem.className = 'link-item';
+							linksGrid.appendChild(lockedContainer);
+						} else {
+							// Create normal link item
+							const linkItem = document.createElement('div');
+							linkItem.className = 'link-item';
 
-									// Generate link tags based on the URL characteristics
-									const tags = [];
-									if (link.includes('vercel.app')) tags.push('Vercel');
-									if (link.includes('pages.dev')) tags.push('Cloudflare');
-									if (link.includes('github.io')) tags.push('GitHub');
-									if (link.includes('glitch')) tags.push('Glitch');
+							// Generate link tags based on the URL characteristics
+							const tags = [];
+							if (link.includes('vercel.app')) tags.push('Vercel');
+							if (link.includes('pages.dev')) tags.push('Cloudflare');
+							if (link.includes('github.io')) tags.push('GitHub');
+							if (link.includes('glitch')) tags.push('Glitch');
 
-									// Is this link saved?
-									const isSaved = isLinkSaved(link);
+							// Is this link saved?
+							const isSaved = isLinkSaved(link);
 
-									linkItem.innerHTML = `
+							linkItem.innerHTML = `
                 <i class="fa-solid fa-link link-icon"></i>
                 <div class="link-text-wrapper">
                   <span class="link-text">${link}</span>
@@ -2753,265 +2767,259 @@
                 </div>
               `;
 
-									linksGrid.appendChild(linkItem);
+							linksGrid.appendChild(linkItem);
 
-									// Add save functionality
-									const saveBtn = linkItem.querySelector('.save-btn');
-									saveBtn.addEventListener('click', (e) => {
-										e.stopPropagation();
-										const linkToSave = saveBtn.dataset.link;
-										const isSaved = saveLink(linkToSave, category.name);
+							// Add save functionality
+							const saveBtn = linkItem.querySelector('.save-btn');
+							saveBtn.addEventListener('click', (e) => {
+								e.stopPropagation();
+								const linkToSave = saveBtn.dataset.link;
+								const isSaved = saveLink(linkToSave, category.name);
 
-										// Update button appearance
-										saveBtn.classList.toggle('saved', isSaved);
-										saveBtn.querySelector('i').className = isSaved ?
-											'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
-										saveBtn.querySelector('.button-tooltip').textContent =
-											isSaved ? 'Remove bookmark' : 'Bookmark link';
-									});
-
-									// Add copy functionality
-									const copyBtn = linkItem.querySelector('.copy-btn');
-									copyBtn.addEventListener('click', (e) => {
-										e.stopPropagation();
-										const linkToCopy = copyBtn.dataset.link;
-										navigator.clipboard.writeText(linkToCopy)
-											.then(() => {
-												showToast('Copied!', 'Link copied to clipboard', 'success');
-											})
-											.catch(err => {
-												console.error('Failed to copy: ', err);
-												showToast('Error', 'Failed to copy link', 'error');
-											});
-									});
-
-									// Make entire item clickable to open link
-									linkItem.addEventListener('click', (e) => {
-										if (!e.target.closest('.action-btn')) {
-											const linkToOpen = linkItem.querySelector('.link-text').textContent;
-
-											// Add points for clicking a link
-											addPoints(CONFIG.POINTS_PER_LINK_CLICK, 'Clicking a link');
-
-											window.open(linkToOpen, '_blank');
-										}
-									});
-								}
-							});
-						});
-
-						// Populate the category select dropdown in the submission form
-						populateCategoryDropdown(filteredCategories);
-
-						// Fix first and last categories to make them expanded by default
-						const firstCategory = document.querySelector('.category');
-						if (firstCategory) {
-							firstCategory.classList.remove('collapsed');
-						}
-					}
-
-					// Populate category dropdown from existing categories
-					function populateCategoryDropdown(categories) {
-						// Clear existing options except the first one
-						while (categorySelect.options.length > 1) {
-							categorySelect.remove(1);
-						}
-
-						// Add options to select dropdown
-						categories.forEach(category => {
-							const option = document.createElement('option');
-							option.value = category.name;
-							option.textContent = category.name;
-							categorySelect.appendChild(option);
-						});
-
-						// Add "Game Sites" and "Other" options if they don't already exist
-						const existingCategories = Array.from(categorySelect.options).map(opt => opt.value);
-
-						if (!existingCategories.includes("Game Sites")) {
-							const gameOption = document.createElement('option');
-							gameOption.value = "Game Sites";
-							gameOption.textContent = "Game Sites";
-							categorySelect.appendChild(gameOption);
-						}
-
-						if (!existingCategories.includes("Other")) {
-							const otherOption = document.createElement('option');
-							otherOption.value = "Other";
-							otherOption.textContent = "Other";
-							categorySelect.appendChild(otherOption);
-						}
-
-						// Remember the selected category for approval process
-						categorySelect.addEventListener('change', function () {
-							localStorage.setItem('approvalCategory', this.value);
-						});
-					}
-
-					// Filter links based on search input
-					function searchLinks() {
-						const searchTerm = searchInput.value.toLowerCase();
-						let hasResults = false;
-
-						// Clear the "No Results" message if it exists
-						const existingNoResults = document.querySelector('.no-results');
-						if (existingNoResults) {
-							existingNoResults.remove();
-						}
-
-						document.querySelectorAll('.category').forEach(category => {
-							let categoryHasResults = false;
-							const linksGrid = category.querySelector('.links-grid');
-							const links = linksGrid.querySelectorAll('.link-item, .locked-link-container');
-
-							links.forEach(link => {
-								let linkText;
-								if (link.classList.contains('link-item')) {
-									linkText = link.querySelector('.link-text').textContent.toLowerCase();
-								} else {
-									// For locked links, use the original link data
-									linkText = link.dataset.originalLink ? link.dataset.originalLink.toLowerCase() : '';
-								}
-
-								if (linkText.includes(searchTerm)) {
-									link.style.display = 'flex';
-									categoryHasResults = true;
-									hasResults = true;
-								} else {
-									link.style.display = 'none';
-								}
+								// Update button appearance
+								saveBtn.classList.toggle('saved', isSaved);
+								saveBtn.querySelector('i').className = isSaved ?
+									'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+								saveBtn.querySelector('.button-tooltip').textContent =
+									isSaved ? 'Remove bookmark' : 'Bookmark link';
 							});
 
-							// Show/hide category based on results
-							category.style.display = categoryHasResults ? 'block' : 'none';
-						});
+							// Add copy functionality
+							const copyBtn = linkItem.querySelector('.copy-btn');
+							copyBtn.addEventListener('click', (e) => {
+								e.stopPropagation();
+								const linkToCopy = copyBtn.dataset.link;
+								navigator.clipboard.writeText(linkToCopy)
+									.then(() => {
+										showToast('Copied!', 'Link copied to clipboard', 'success');
+									})
+									.catch(err => {
+										console.error('Failed to copy: ', err);
+										showToast('Error', 'Failed to copy link', 'error');
+									});
+							});
 
-						// Show no results message if needed
-						if (!hasResults && searchTerm !== '') {
-							const noResults = document.createElement('div');
-							noResults.className = 'no-results';
-							noResults.innerHTML = `
+							// Make entire item clickable to open link
+							linkItem.addEventListener('click', (e) => {
+								if (!e.target.closest('.action-btn')) {
+									const linkToOpen = linkItem.querySelector('.link-text').textContent;
+
+									// Add points for clicking a link
+									addPoints(CONFIG.POINTS_PER_LINK_CLICK, 'Clicking a link');
+
+									window.open(linkToOpen, '_blank');
+								}
+							});
+						}
+					});
+				});
+
+				// Populate the category select dropdown in the submission form
+				populateCategoryDropdown(filteredCategories);
+			}
+
+			// Populate category dropdown from existing categories
+			function populateCategoryDropdown(categories) {
+				// Clear existing options except the first one
+				while (categorySelect.options.length > 1) {
+					categorySelect.remove(1);
+				}
+
+				// Add options to select dropdown
+				categories.forEach(category => {
+					const option = document.createElement('option');
+					option.value = category.name;
+					option.textContent = category.name;
+					categorySelect.appendChild(option);
+				});
+
+				// Add "Game Sites" and "Other" options if they don't already exist
+				const existingCategories = Array.from(categorySelect.options).map(opt => opt.value);
+
+				if (!existingCategories.includes("Game Sites")) {
+					const gameOption = document.createElement('option');
+					gameOption.value = "Game Sites";
+					gameOption.textContent = "Game Sites";
+					categorySelect.appendChild(gameOption);
+				}
+
+				if (!existingCategories.includes("Other")) {
+					const otherOption = document.createElement('option');
+					otherOption.value = "Other";
+					otherOption.textContent = "Other";
+					categorySelect.appendChild(otherOption);
+				}
+
+				// Remember the selected category for approval process
+				categorySelect.addEventListener('change', function () {
+					localStorage.setItem('approvalCategory', this.value);
+				});
+			}
+
+			// Filter links based on search input
+			function searchLinks() {
+				const searchTerm = searchInput.value.toLowerCase();
+				let hasResults = false;
+
+				// Clear the "No Results" message if it exists
+				const existingNoResults = document.querySelector('.no-results');
+				if (existingNoResults) {
+					existingNoResults.remove();
+				}
+
+				document.querySelectorAll('.category').forEach(category => {
+					let categoryHasResults = false;
+					const linksGrid = category.querySelector('.links-grid');
+					const links = linksGrid.querySelectorAll('.link-item, .locked-link-container');
+
+					links.forEach(link => {
+						let linkText;
+						if (link.classList.contains('link-item')) {
+							linkText = link.querySelector('.link-text').textContent.toLowerCase();
+						} else {
+							// For locked links, use the original link data
+							linkText = link.dataset.originalLink ? link.dataset.originalLink.toLowerCase() : '';
+						}
+
+						if (linkText.includes(searchTerm)) {
+							link.style.display = 'flex';
+							categoryHasResults = true;
+							hasResults = true;
+						} else {
+							link.style.display = 'none';
+						}
+					});
+
+					// Show/hide category based on results
+					category.style.display = categoryHasResults ? 'block' : 'none';
+				});
+
+				// Show no results message if needed
+				if (!hasResults && searchTerm !== '') {
+					const noResults = document.createElement('div');
+					noResults.className = 'no-results';
+					noResults.innerHTML = `
             <i class="fa-solid fa-search"></i>
             <p>No matching links found for "${searchTerm}"</p>
             <p>Try a different search term or check out our other categories.</p>
           `;
-							linksContent.appendChild(noResults);
-						}
+					linksContent.appendChild(noResults);
+				}
 
-						// Show clear button if search has content
-						if (searchTerm.length > 0) {
-							clearSearchBtn.style.opacity = '1';
-						} else {
-							clearSearchBtn.style.opacity = '0';
-						}
-					}
+				// Show clear button if search has content
+				if (searchTerm.length > 0) {
+					clearSearchBtn.style.opacity = '1';
+				} else {
+					clearSearchBtn.style.opacity = '0';
+				}
+			}
 
-					// Filter links based on status or category
-					function filterLinks(filter) {
-						document.querySelectorAll('.category').forEach(category => {
-							if (filter === 'all') {
-								category.style.display = 'block';
-							} else if (filter.startsWith('category-')) {
-								// Filter by specific category
-								const categoryName = filter.replace('category-', '');
-								if (category.dataset.category === categoryName) {
-									category.style.display = 'block';
-									if (category.classList.contains('collapsed')) {
-										category.classList.remove('collapsed');
-									}
-								} else {
-									category.style.display = 'none';
-								}
-							} else if (category.dataset.status === filter) {
-								// Filter by status
-								category.style.display = 'block';
-							} else {
-								category.style.display = 'none';
+			// Filter links based on status or category
+			function filterLinks(filter) {
+				document.querySelectorAll('.category').forEach(category => {
+					if (filter === 'all') {
+						category.style.display = 'block';
+					} else if (filter.startsWith('category-')) {
+						// Filter by specific category
+						const categoryName = filter.replace('category-', '');
+						if (category.dataset.category === categoryName) {
+							category.style.display = 'block';
+							if (category.classList.contains('collapsed')) {
+								category.classList.remove('collapsed');
 							}
-						});
-
-						// Clear search when filtering
-						searchInput.value = '';
-						clearSearchBtn.style.opacity = '0';
+						} else {
+							category.style.display = 'none';
+						}
+					} else if (category.dataset.status === filter) {
+						// Filter by status
+						category.style.display = 'block';
+					} else {
+						category.style.display = 'none';
 					}
+				});
 
-					// Function to validate URL
-					function isValidUrl(url) {
-						// Ensure URL has a protocol, add https:// if missing
-						let processedUrl = url.trim();
-						if (!processedUrl.match(/^https?:\/\//i)) {
-							processedUrl = 'https://' + processedUrl;
-						}
+				// Clear search when filtering
+				searchInput.value = '';
+				clearSearchBtn.style.opacity = '0';
+			}
 
-						try {
-							new URL(processedUrl);
-							return processedUrl;
-						} catch (e) {
-							return false;
-						}
-					}
+			// Function to validate URL
+			function isValidUrl(url) {
+				// Ensure URL has a protocol, add https:// if missing
+				let processedUrl = url.trim();
+				if (!processedUrl.match(/^https?:\/\//i)) {
+					processedUrl = 'https://' + processedUrl;
+				}
 
-					// Function to disable submit button during submission
-					function disableSubmitButton() {
-						if (submitBtn) {
-							submitBtn.disabled = true;
-							submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
-						}
-					}
+				try {
+					new URL(processedUrl);
+					return processedUrl;
+				} catch (e) {
+					return false;
+				}
+			}
 
-					// Function to re-enable submit button
-					function enableSubmitButton() {
-						if (submitBtn) {
-							submitBtn.disabled = false;
-							submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Link';
-						}
-					}
+			// Function to disable submit button during submission
+			function disableSubmitButton() {
+				if (submitBtn) {
+					submitBtn.disabled = true;
+					submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
+				}
+			}
 
-					// Check if submission is allowed based on cooldown
-					function canSubmit() {
-						const now = Date.now();
-						if (isSubmitting) {
-							return false;
-						}
+			// Function to re-enable submit button
+			function enableSubmitButton() {
+				if (submitBtn) {
+					submitBtn.disabled = false;
+					submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Link';
+				}
+			}
 
-						if (now - lastSubmissionTime < SUBMISSION_COOLDOWN) {
-							const secondsLeft = Math.ceil((SUBMISSION_COOLDOWN - (now - lastSubmissionTime)) / 1000);
-							showToast('Please wait', `Try again in ${secondsLeft} seconds`, 'warning');
-							return false;
-						}
+			// Check if submission is allowed based on cooldown
+			function canSubmit() {
+				const now = Date.now();
+				if (isSubmitting) {
+					return false;
+				}
 
-						return true;
-					}
+				if (now - lastSubmissionTime < SUBMISSION_COOLDOWN) {
+					const secondsLeft = Math.ceil((SUBMISSION_COOLDOWN - (now - lastSubmissionTime)) / 1000);
+					showToast('Please wait', `Try again in ${secondsLeft} seconds`, 'warning');
+					return false;
+				}
 
-					// Refresh saved links list display
-					function refreshSavedLinksList() {
-						if (userState.savedLinks.length === 0) {
-							savedLinksList.style.display = 'none';
-							noSavedLinks.style.display = 'block';
-							return;
-						}
+				return true;
+			}
 
-						savedLinksList.style.display = 'flex';
-						noSavedLinks.style.display = 'none';
-						savedLinksList.innerHTML = '';
+			// Refresh saved links list display
+			function refreshSavedLinksList() {
+				if (userState.savedLinks.length === 0) {
+					savedLinksList.style.display = 'none';
+					noSavedLinks.style.display = 'block';
+					return;
+				}
 
-						// Sort links based on the active sort option
-						let sortedLinks = [...userState.savedLinks];
+				savedLinksList.style.display = 'flex';
+				noSavedLinks.style.display = 'none';
+				savedLinksList.innerHTML = '';
 
-						if (activeSortOption === 'newest') {
-							sortedLinks.sort((a, b) => b.savedAt - a.savedAt);
-						} else if (activeSortOption === 'oldest') {
-							sortedLinks.sort((a, b) => a.savedAt - b.savedAt);
-						} else if (activeSortOption === 'alphabetical') {
-							sortedLinks.sort((a, b) => a.url.localeCompare(b.url));
-						}
+				// Sort links based on the active sort option
+				let sortedLinks = [...userState.savedLinks];
 
-						// Create the sorted list
-						sortedLinks.forEach(link => {
-							const savedLinkItem = document.createElement('div');
-							savedLinkItem.className = 'saved-link-item';
+				if (activeSortOption === 'newest') {
+					sortedLinks.sort((a, b) => b.savedAt - a.savedAt);
+				} else if (activeSortOption === 'oldest') {
+					sortedLinks.sort((a, b) => a.savedAt - b.savedAt);
+				} else if (activeSortOption === 'alphabetical') {
+					sortedLinks.sort((a, b) => a.url.localeCompare(b.url));
+				}
 
-							savedLinkItem.innerHTML = `
+				// Create the sorted list
+				sortedLinks.forEach(link => {
+					const savedLinkItem = document.createElement('div');
+					savedLinkItem.className = 'saved-link-item';
+
+					savedLinkItem.innerHTML = `
             <i class="fa-solid fa-link saved-link-icon"></i>
             <span class="saved-link-text">${link.url}</span>
             <span class="saved-link-category">${link.category}</span>
@@ -3031,477 +3039,462 @@
             </div>
           `;
 
-							savedLinksList.appendChild(savedLinkItem);
+					savedLinksList.appendChild(savedLinkItem);
 
-							// Add event listeners for each action button
-							const actionButtons = savedLinkItem.querySelectorAll('.saved-link-action');
-							actionButtons.forEach(button => {
-								button.addEventListener('click', (e) => {
-									e.stopPropagation();
-									const action = button.dataset.action;
-									const url = button.dataset.url;
+					// Add event listeners for each action button
+					const actionButtons = savedLinkItem.querySelectorAll('.saved-link-action');
+					actionButtons.forEach(button => {
+						button.addEventListener('click', (e) => {
+							e.stopPropagation();
+							const action = button.dataset.action;
+							const url = button.dataset.url;
 
-									if (action === 'open') {
-										window.open(url, '_blank');
-									} else if (action === 'copy') {
-										navigator.clipboard.writeText(url)
-											.then(() => {
-												showToast('Copied!', 'Link copied to clipboard', 'success');
-											})
-											.catch(err => {
-												showToast('Error', 'Failed to copy link', 'error');
-											});
-									} else if (action === 'remove') {
-										saveLink(url); // Toggle function will remove it
-										refreshSavedLinksList();
-									}
-								});
-							});
-
-							// Make entire item clickable to open link
-							savedLinkItem.addEventListener('click', (e) => {
-								if (!e.target.closest('.saved-link-action')) {
-									window.open(link.url, '_blank');
-								}
-							});
+							if (action === 'open') {
+								window.open(url, '_blank');
+							} else if (action === 'copy') {
+								navigator.clipboard.writeText(url)
+									.then(() => {
+										showToast('Copied!', 'Link copied to clipboard', 'success');
+									})
+									.catch(err => {
+										showToast('Error', 'Failed to copy link', 'error');
+									});
+							} else if (action === 'remove') {
+								saveLink(url); // Toggle function will remove it
+								refreshSavedLinksList();
+							}
 						});
-					}
-
-					// Handle form submission
-					submitLinkForm.addEventListener('submit', async (e) => {
-						e.preventDefault();
-
-						// Check if submission is allowed
-						if (!canSubmit()) {
-							return;
-						}
-
-						// First check if user is logged in using auth-controller.min.js
-						if (typeof isLoggedIn !== 'function' || !isLoggedIn()) {
-							loginAlert.style.display = 'block';
-							submitSuccessMessage.style.display = 'none';
-							submitErrorMessage.style.display = 'none';
-							return;
-						}
-
-						const category = categorySelect.value;
-						const linkInput = document.getElementById('linkInput').value.trim();
-						const notes = document.getElementById('notesInput').value.trim();
-
-						// Validate inputs
-						if (!category) {
-							showToast('Error', 'Please select a category', 'error');
-							return;
-						}
-
-						// Process and validate URL
-						const validatedUrl = isValidUrl(linkInput);
-						if (!validatedUrl) {
-							showToast('Error', 'Please enter a valid URL', 'error');
-							return;
-						}
-
-						// Set submission status and disable button
-						isSubmitting = true;
-						disableSubmitButton();
-
-						try {
-							// Create JSON for updating links.json
-							const linksData = await loadLinksData();
-							const categories = linksData.categories || [];
-
-							// Find the category
-							let categoryExists = false;
-							for (let cat of categories) {
-								if (cat.name === category) {
-									categoryExists = true;
-									// Add the new link if it doesn't already exist
-									if (!cat.links.includes(validatedUrl)) {
-										cat.links.unshift(validatedUrl);
-									} else {
-										// If link already exists, move it to the top
-										const linkIndex = cat.links.indexOf(validatedUrl);
-										if (linkIndex !== -1) {
-											cat.links.splice(linkIndex, 1);
-											cat.links.unshift(validatedUrl);
-										}
-									}
-									break;
-								}
-							}
-
-							// If category doesn't exist, create it
-							if (!categoryExists) {
-								let icon = "fa-solid fa-gamepad";
-								let status = "fresh";
-								let description = "User submitted links";
-
-								if (category === "Other") {
-									icon = "fa-solid fa-link";
-								} else if (category === "Game Sites") {
-									icon = "fa-solid fa-gamepad";
-									description = "Gaming websites";
-								}
-
-								categories.push({
-									name: category,
-									icon: icon,
-									status: status,
-									description: description,
-									links: [validatedUrl]
-								});
-							}
-
-							// Generate updated JSON content
-							const updatedJsonData = JSON.stringify({ categories: categories }, null, 2);
-
-							// Set up data for Discord webhook
-							const webhookUrl = 'https://discord.com/api/webhooks/1350269659315835012/u3j0Txmtfb5dxaJYOoFQBW5fxbvyMS_OUffyBAekf1vtd_SfeQ_HdJJ37pvfiqGWwcp0';
-
-							// Create approval link
-							const approveLink = `${window.location.origin}/ultimate-links.html?approvelink=${encodeURIComponent(validatedUrl)}`;
-
-							// Send to Discord webhook
-							const response = await fetch(webhookUrl, {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								},
-								body: JSON.stringify({
-									content: `<@635187446232907852>\n\n🔔 **New Link Submission** 🔔\n\n📁 **Category:** ${category}\n🔗 **Link:** ${validatedUrl}\n📝 **Notes:** ${notes || 'No additional notes'}\n\n✅ **Approve:** ${approveLink}\n🔍 **Test Link:** ${validatedUrl}\n\n⏰ Submitted at: ${new Date().toLocaleString()}`
-								})
-							});
-
-							if (response.ok) {
-								// Hide form, login alert, and error message
-								loginAlert.style.display = 'none';
-								submitErrorMessage.style.display = 'none';
-
-								// Show success message
-								submitSuccessMessage.style.display = 'block';
-
-								// Add points for submitting a link
-								addPoints(CONFIG.POINTS_PER_SUBMIT, 'Submitting a new link');
-
-								// Update last submission time
-								lastSubmissionTime = Date.now();
-
-								// Show toast notification
-								showToast('Link Submitted', 'Your link has been submitted for review', 'success');
-
-								// Reset form
-								submitLinkForm.reset();
-
-								// Close modal after 2 seconds
-								setTimeout(() => {
-									submitLinkModal.style.display = 'none';
-								}, 2000);
-							} else {
-								throw new Error('Failed to send webhook');
-							}
-						} catch (error) {
-							console.error('Submission error:', error);
-							submitErrorMessage.style.display = 'block';
-							submitSuccessMessage.style.display = 'none';
-							loginAlert.style.display = 'none';
-							showToast('Error', 'Failed to submit link. Please try again.', 'error');
-						} finally {
-							// Re-enable submit button and reset submission status
-							enableSubmitButton();
-							isSubmitting = false;
-						}
 					});
 
-					// Update saved links from all link items
-					function updateAllSaveButtons() {
-						document.querySelectorAll('.link-item').forEach(linkItem => {
-							const saveBtn = linkItem.querySelector('.save-btn');
-							if (saveBtn) {
-								const linkUrl = saveBtn.dataset.link;
-								const isSaved = isLinkSaved(linkUrl);
+					// Make entire item clickable to open link
+					savedLinkItem.addEventListener('click', (e) => {
+						if (!e.target.closest('.saved-link-action')) {
+							window.open(link.url, '_blank');
+						}
+					});
+				});
+			}
 
-								saveBtn.classList.toggle('saved', isSaved);
-								saveBtn.querySelector('i').className = isSaved ?
-									'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
-								saveBtn.querySelector('.button-tooltip').textContent =
-									isSaved ? 'Remove bookmark' : 'Bookmark link';
+			// Handle form submission
+			submitLinkForm.addEventListener('submit', async (e) => {
+				e.preventDefault();
+
+				// Check if submission is allowed
+				if (!canSubmit()) {
+					return;
+				}
+
+				// First check if user is logged in using auth-controller.min.js
+				if (typeof isLoggedIn !== 'function' || !isLoggedIn()) {
+					loginAlert.style.display = 'block';
+					submitSuccessMessage.style.display = 'none';
+					submitErrorMessage.style.display = 'none';
+					return;
+				}
+
+				const category = categorySelect.value;
+				const linkInput = document.getElementById('linkInput').value.trim();
+				const notes = document.getElementById('notesInput').value.trim();
+
+				// Validate inputs
+				if (!category) {
+					showToast('Error', 'Please select a category', 'error');
+					return;
+				}
+
+				// Process and validate URL
+				const validatedUrl = isValidUrl(linkInput);
+				if (!validatedUrl) {
+					showToast('Error', 'Please enter a valid URL', 'error');
+					return;
+				}
+
+				// Set submission status and disable button
+				isSubmitting = true;
+				disableSubmitButton();
+
+				try {
+					// Create JSON for updating links.json
+					const linksData = await loadLinksData();
+					const categories = linksData.categories || [];
+
+					// Find the category
+					let categoryExists = false;
+					for (let cat of categories) {
+						if (cat.name === category) {
+							categoryExists = true;
+							// Add the new link if it doesn't already exist
+							if (!cat.links.includes(validatedUrl)) {
+								cat.links.unshift(validatedUrl);
+							} else {
+								// If link already exists, move it to the top
+								const linkIndex = cat.links.indexOf(validatedUrl);
+								if (linkIndex !== -1) {
+									cat.links.splice(linkIndex, 1);
+									cat.links.unshift(validatedUrl);
+								}
 							}
+							break;
+						}
+					}
+
+					// If category doesn't exist, create it
+					if (!categoryExists) {
+						let icon = "fa-solid fa-gamepad";
+						let status = "fresh";
+						let description = "User submitted links";
+
+						if (category === "Other") {
+							icon = "fa-solid fa-link";
+						} else if (category === "Game Sites") {
+							icon = "fa-solid fa-gamepad";
+							description = "Gaming websites";
+						}
+
+						categories.push({
+							name: category,
+							icon: icon,
+							status: status,
+							description: description,
+							links: [validatedUrl]
 						});
 					}
 
-					// Function to check for approvelink parameter in URL
-					async function checkForApproveLink() {
-						const urlParams = new URLSearchParams(window.location.search);
-						const approveLink = urlParams.get('approvelink');
+					// Generate updated JSON content
+					const updatedJsonData = JSON.stringify({ categories: categories }, null, 2);
 
-						if (approveLink) {
-							try {
-								// Load the current links data
-								const response = await fetch('/json/links.json');
-								if (!response.ok) {
-									throw new Error('Failed to load links data');
-								}
+					// Set up data for Discord webhook
+					const webhookUrl = 'https://discord.com/api/webhooks/1350269659315835012/u3j0Txmtfb5dxaJYOoFQBW5fxbvyMS_OUffyBAekf1vtd_SfeQ_HdJJ37pvfiqGWwcp0';
 
-								const linksData = await response.json();
-								const categories = linksData.categories;
+					// Create approval link
+					const approveLink = `${window.location.origin}/ultimate-links.html?approvelink=${encodeURIComponent(validatedUrl)}`;
 
-								// Get the currently selected category from local storage if available
-								// Otherwise use a default category (e.g., "Other")
-								const selectedCategory = localStorage.getItem('approvalCategory') || "Other";
+					// Send to Discord webhook
+					const response = await fetch(webhookUrl, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							content: `<@635187446232907852>\n\n🔔 **New Link Submission** 🔔\n\n📁 **Category:** ${category}\n🔗 **Link:** ${validatedUrl}\n📝 **Notes:** ${notes || 'No additional notes'}\n\n✅ **Approve:** ${approveLink}\n🔍 **Test Link:** ${validatedUrl}\n\n⏰ Submitted at: ${new Date().toLocaleString()}`
+						})
+					});
 
-								// Find the selected category in the links data
-								let categoryFound = false;
-								for (const category of categories) {
-									if (category.name === selectedCategory) {
-										// Check if link already exists in this category
-										if (!category.links.includes(approveLink)) {
-											// Add link to the beginning of the array instead of the end
-											category.links.unshift(approveLink);
-										} else {
-											// If link exists, remove it and add it to the beginning
-											const linkIndex = category.links.indexOf(approveLink);
-											if (linkIndex !== -1) {
-												category.links.splice(linkIndex, 1);
-												category.links.unshift(approveLink);
-											}
-										}
-										categoryFound = true;
-										break;
-									}
-								}
-
-								// If category doesn't exist, create it
-								if (!categoryFound) {
-									let icon = "fa-solid fa-link";
-									let status = "fresh";
-									let description = "User submitted links";
-
-									// Set specific properties for known categories
-									if (selectedCategory === "Game Sites") {
-										icon = "fa-solid fa-gamepad";
-										description = "Gaming websites";
-									}
-
-									categories.push({
-										name: selectedCategory,
-										icon: icon,
-										status: status,
-										description: description,
-										links: [approveLink] // Add as the first item in a new array
-									});
-								}
-
-								// Create the updated JSON
-								const updatedJson = JSON.stringify({ categories: categories }, null, 2);
-
-								// Copy the updated JSON to clipboard
-								await navigator.clipboard.writeText(updatedJson);
-
-								// Show success toast
-								showToast('Link Approved', 'Updated JSON has been copied to clipboard', 'success');
-
-							} catch (error) {
-								console.error('Error handling approval link:', error);
-								// Show error toast
-								showToast('Error', 'Failed to process approval link', 'error');
-							}
-						}
-					}
-
-					// Event Listeners
-					// Show the submit link modal when the button is clicked
-					submitLinkButton.addEventListener('click', () => {
-						submitLinkModal.style.display = 'flex';
-						submitSuccessMessage.style.display = 'none';
+					if (response.ok) {
+						// Hide form, login alert, and error message
+						loginAlert.style.display = 'none';
 						submitErrorMessage.style.display = 'none';
 
-						// Show login alert if not logged in
-						if (typeof isLoggedIn !== 'function' || !isLoggedIn()) {
-							loginAlert.style.display = 'block';
-						} else {
-							loginAlert.style.display = 'none';
-						}
+						// Show success message
+						submitSuccessMessage.style.display = 'block';
+
+						// Add points for submitting a link
+						addPoints(CONFIG.POINTS_PER_SUBMIT, 'Submitting a new link');
+
+						// Update last submission time
+						lastSubmissionTime = Date.now();
+
+						// Show toast notification
+						showToast('Link Submitted', 'Your link has been submitted for review', 'success');
 
 						// Reset form
 						submitLinkForm.reset();
 
-						// Always enable the button when opening the modal
-						enableSubmitButton();
-					});
+						// Close modal after 2 seconds
+						setTimeout(() => {
+							submitLinkModal.style.display = 'none';
+						}, 2000);
+					} else {
+						throw new Error('Failed to send webhook');
+					}
+				} catch (error) {
+					console.error('Submission error:', error);
+					submitErrorMessage.style.display = 'block';
+					submitSuccessMessage.style.display = 'none';
+					loginAlert.style.display = 'none';
+					showToast('Error', 'Failed to submit link. Please try again.', 'error');
+				} finally {
+					// Re-enable submit button and reset submission status
+					enableSubmitButton();
+					isSubmitting = false;
+				}
+			});
 
-					// Show saved links modal
-					savedLinksButton.addEventListener('click', () => {
-						savedLinksModal.style.display = 'flex';
-						refreshSavedLinksList();
-					});
+			// Update saved links from all link items
+			function updateAllSaveButtons() {
+				document.querySelectorAll('.link-item').forEach(linkItem => {
+					const saveBtn = linkItem.querySelector('.save-btn');
+					if (saveBtn) {
+						const linkUrl = saveBtn.dataset.link;
+						const isSaved = isLinkSaved(linkUrl);
 
-					// Close modals when close button is clicked
-					document.getElementById('closeSubmitModal').addEventListener('click', () => {
-						submitLinkModal.style.display = 'none';
-					});
+						saveBtn.classList.toggle('saved', isSaved);
+						saveBtn.querySelector('i').className = isSaved ?
+							'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+						saveBtn.querySelector('.button-tooltip').textContent =
+							isSaved ? 'Remove bookmark' : 'Bookmark link';
+					}
+				});
+			}
 
-					document.getElementById('closeSavedLinksModal').addEventListener('click', () => {
-						savedLinksModal.style.display = 'none';
-					});
+			// Function to check for approvelink parameter in URL
+			async function checkForApproveLink() {
+				const urlParams = new URLSearchParams(window.location.search);
+				const approveLink = urlParams.get('approvelink');
 
-					document.getElementById('closeUnlockModal').addEventListener('click', () => {
-						unlockOptionsModal.style.display = 'none';
-					});
-
-					closeWelcomeBanner.addEventListener('click', () => {
-						welcomeBanner.style.display = 'none';
-					});
-
-					closeDailyRewardModal.addEventListener('click', () => {
-						dailyRewardModal.style.display = 'none';
-					});
-
-					// Daily reward button click
-					dailyRewardButton.addEventListener('click', () => {
-						const now = Date.now();
-						const rewardAvailable = userState.dailyRewardClaimed === 0 ||
-							now > userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
-
-						if (rewardAvailable) {
-							dailyRewardModal.style.display = 'flex';
-						} else {
-							// Calculate time until next reward
-							const nextRewardTime = userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
-							const timeUntilNextReward = nextRewardTime - now;
-
-							const hours = Math.floor(timeUntilNextReward / (1000 * 60 * 60));
-							const minutes = Math.floor((timeUntilNextReward % (1000 * 60 * 60)) / (1000 * 60));
-
-							showToast('Reward Not Available', `Next reward available in ${hours}h ${minutes}m`, 'info');
+				if (approveLink) {
+					try {
+						// Load the current links data
+						const response = await fetch('/json/links.json');
+						if (!response.ok) {
+							throw new Error('Failed to load links data');
 						}
-					});
 
-					// Claim reward button click
-					claimRewardButton.addEventListener('click', () => {
-						userState.dailyRewardClaimed = Date.now();
-						userState.unlockProgress.byDaily = true;
+						const linksData = await response.json();
+						const categories = linksData.categories;
 
+						// Get the currently selected category from local storage if available
+						// Otherwise use a default category (e.g., "Other")
+						const selectedCategory = localStorage.getItem('approvalCategory') || "Other";
+
+						// Find the selected category in the links data
+						let categoryFound = false;
+						for (const category of categories) {
+							if (category.name === selectedCategory) {
+								// Check if link already exists in this category
+								if (!category.links.includes(approveLink)) {
+									// Add link to the beginning of the array instead of the end
+									category.links.unshift(approveLink);
+								} else {
+									// If link exists, remove it and add it to the beginning
+									const linkIndex = category.links.indexOf(approveLink);
+									if (linkIndex !== -1) {
+										category.links.splice(linkIndex, 1);
+										category.links.unshift(approveLink);
+									}
+								}
+								categoryFound = true;
+								break;
+							}
+						}
+
+						// If category doesn't exist, create it
+						if (!categoryFound) {
+							let icon = "fa-solid fa-link";
+							let status = "fresh";
+							let description = "User submitted links";
+
+							// Set specific properties for known categories
+							if (selectedCategory === "Game Sites") {
+								icon = "fa-solid fa-gamepad";
+								description = "Gaming websites";
+							}
+
+							categories.push({
+								name: selectedCategory,
+								icon: icon,
+								status: status,
+								description: description,
+								links: [approveLink] // Add as the first item in a new array
+							});
+						}
+
+						// Create the updated JSON
+						const updatedJson = JSON.stringify({ categories: categories }, null, 2);
+
+						// Copy the updated JSON to clipboard
+						await navigator.clipboard.writeText(updatedJson);
+
+						// Show success toast
+						showToast('Link Approved', 'Updated JSON has been copied to clipboard', 'success');
+
+					} catch (error) {
+						console.error('Error handling approval link:', error);
+						// Show error toast
+						showToast('Error', 'Failed to process approval link', 'error');
+					}
+				}
+			}
+
+			// Event Listeners
+			// Show the submit link modal when the button is clicked
+			submitLinkButton.addEventListener('click', () => {
+				submitLinkModal.style.display = 'flex';
+				submitSuccessMessage.style.display = 'none';
+				submitErrorMessage.style.display = 'none';
+
+				// Show login alert if not logged in
+				if (typeof isLoggedIn !== 'function' || !isLoggedIn()) {
+					loginAlert.style.display = 'block';
+				} else {
+					loginAlert.style.display = 'none';
+				}
+
+				// Reset form
+				submitLinkForm.reset();
+
+				// Always enable the button when opening the modal
+				enableSubmitButton();
+			});
+
+			// Show saved links modal
+			savedLinksButton.addEventListener('click', () => {
+				savedLinksModal.style.display = 'flex';
+				refreshSavedLinksList();
+			});
+
+			// Close modals when close button is clicked
+			document.getElementById('closeSubmitModal').addEventListener('click', () => {
+				submitLinkModal.style.display = 'none';
+			});
+
+			document.getElementById('closeSavedLinksModal').addEventListener('click', () => {
+				savedLinksModal.style.display = 'none';
+			});
+
+			document.getElementById('closeUnlockModal').addEventListener('click', () => {
+				unlockOptionsModal.style.display = 'none';
+			});
+
+			closeWelcomeBanner.addEventListener('click', () => {
+				welcomeBanner.style.display = 'none';
+			});
+
+			closeDailyRewardModal.addEventListener('click', () => {
+				dailyRewardModal.style.display = 'none';
+			});
+
+			// Daily reward button click
+			dailyRewardButton.addEventListener('click', () => {
+				const now = Date.now();
+				const rewardAvailable = userState.dailyRewardClaimed === 0 ||
+					now > userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+
+				if (rewardAvailable) {
+					dailyRewardModal.style.display = 'flex';
+				} else {
+					// Calculate time until next reward
+					const nextRewardTime = userState.dailyRewardClaimed + CONFIG.DAILY_REWARD_COOLDOWN;
+					const timeUntilNextReward = nextRewardTime - now;
+
+					const hours = Math.floor(timeUntilNextReward / (1000 * 60 * 60));
+					const minutes = Math.floor((timeUntilNextReward % (1000 * 60 * 60)) / (1000 * 60));
+
+					showToast('Reward Not Available', `Next reward available in ${hours}h ${minutes}m`, 'info');
+				}
+			});
+
+			// Claim reward button click
+			claimRewardButton.addEventListener('click', () => {
+				userState.dailyRewardClaimed = Date.now();
+				userState.unlockProgress.byDaily = true;
+
+				saveUserState();
+				updateUnlockProgress();
+				updateDailyRewardButton();
+
+				// Add points
+				addPoints(20, 'Daily reward claim');
+
+				// Close modal
+				dailyRewardModal.style.display = 'none';
+
+				// Show toast
+				showToast('Reward Claimed!', 'You\'ve unlocked 3 more links for 24 hours!', 'success');
+
+				// Refresh the page to show newly unlocked links
+				setTimeout(() => {
+					location.reload();
+				}, 1500);
+			});
+
+			// Set up unlock options modal handlers
+			loginOption.addEventListener('click', () => {
+				window.location.href = '/login.html';
+			});
+
+			subscribeOption.addEventListener('click', () => {
+				// Don't allow subscribing again if already subscribed
+				if (userState.subscribedToYouTube) {
+					showToast('Already Subscribed', 'You have already unlocked links through YouTube subscription', 'info');
+					return;
+				}
+
+				const subscribeUrl = 'https://www.youtube.com/@flamepass';
+				window.open(subscribeUrl, '_blank');
+
+				// Ask for confirmation
+				setTimeout(() => {
+					if (confirm('Did you subscribe to the YouTube channel?')) {
+						userState.unlockProgress.bySubscribe = true;
+						userState.subscribedToYouTube = true;
 						saveUserState();
 						updateUnlockProgress();
-						updateDailyRewardButton();
+						unlockOptionsModal.style.display = 'none';
 
-						// Add points
-						addPoints(20, 'Daily reward claim');
-
-						// Close modal
-						dailyRewardModal.style.display = 'none';
-
-						// Show toast
-						showToast('Reward Claimed!', 'You\'ve unlocked 3 more links for 24 hours!', 'success');
+						showToast('Thank you!', 'You\'ve unlocked 5 more links', 'success');
 
 						// Refresh the page to show newly unlocked links
 						setTimeout(() => {
 							location.reload();
 						}, 1500);
-					});
+					}
+				}, 3000);
+			});
 
-					// Set up unlock options modal handlers
-					loginOption.addEventListener('click', () => {
-						window.location.href = '/login.html';
-					});
+			// Clear search button
+			clearSearchBtn.addEventListener('click', () => {
+				searchInput.value = '';
+				searchLinks();
+				clearSearchBtn.style.opacity = '0';
+			});
 
-					subscribeOption.addEventListener('click', () => {
-						const subscribeUrl = 'https://www.youtube.com/@flamepass';
-						window.open(subscribeUrl, '_blank');
+			// Close modals when clicking outside
+			window.addEventListener('click', (event) => {
+				if (event.target === submitLinkModal) {
+					submitLinkModal.style.display = 'none';
+				}
+				if (event.target === savedLinksModal) {
+					savedLinksModal.style.display = 'none';
+				}
+				if (event.target === unlockOptionsModal) {
+					unlockOptionsModal.style.display = 'none';
+				}
+				if (event.target === dailyRewardModal) {
+					dailyRewardModal.style.display = 'none';
+				}
+			});
 
-						// Ask for confirmation
-						setTimeout(() => {
-							if (confirm('Did you subscribe to the YouTube channel?')) {
-								userState.unlockProgress.bySubscribe = true;
-								userState.subscribedToYouTube = true;
-								saveUserState();
-								updateUnlockProgress();
-								unlockOptionsModal.style.display = 'none';
+			// Set up search functionality
+			searchInput.addEventListener('input', searchLinks);
 
-								showToast('Thank you!', 'You\'ve unlocked 5 more links', 'success');
+			// Initialize
+			loadUserState();
+			displayLinks();
+			checkForApproveLink();
 
-								// Refresh the page to show newly unlocked links
-								setTimeout(() => {
-									location.reload();
-								}, 1500);
-							}
-						}, 3000);
-					});
+			// Update unlock progress on load
+			updateUnlockProgress();
 
-					adOption.addEventListener('click', () => {
-						// Simulate ad viewing
-						showToast('Loading Ad', 'Please wait...', 'info');
-
-						setTimeout(() => {
-							// Set ad unlock expiry
-							userState.unlockProgress.byAd = true;
-							userState.adUnlockExpiry = Date.now() + CONFIG.AD_UNLOCK_DURATION;
-							saveUserState();
-							updateUnlockProgress();
-							unlockOptionsModal.style.display = 'none';
-
-							showToast('Ad Completed', 'You\'ve unlocked 2 more links for 24 hours', 'success');
-
-							// Refresh the page to show newly unlocked links
-							setTimeout(() => {
-								location.reload();
-							}, 1500);
-						}, 3000);
-					});
-
-					// Clear search button
-					clearSearchBtn.addEventListener('click', () => {
-						searchInput.value = '';
-						searchLinks();
-						clearSearchBtn.style.opacity = '0';
-					});
-
-					// Close modals when clicking outside
-					window.addEventListener('click', (event) => {
-						if (event.target === submitLinkModal) {
-							submitLinkModal.style.display = 'none';
-						}
-						if (event.target === savedLinksModal) {
-							savedLinksModal.style.display = 'none';
-						}
-						if (event.target === unlockOptionsModal) {
-							unlockOptionsModal.style.display = 'none';
-						}
-						if (event.target === dailyRewardModal) {
-							dailyRewardModal.style.display = 'none';
-						}
-					});
-
-					// Set up search functionality
-					searchInput.addEventListener('input', searchLinks);
-
-					// Initialize
-					loadUserState();
-					displayLinks();
-					checkForApproveLink();
-
-					// Update unlock progress on load
-					updateUnlockProgress();
-
-					// Handle scroll to top button
-					const scrollTop = document.querySelector('.scrolltop');
-					scrollTop.addEventListener('click', () => {
-						window.scrollTo({
-							top: 0,
-							behavior: 'smooth'
-						});
-					});
-
-					// Show/hide scroll to top button
-					window.addEventListener('scroll', () => {
-						if (window.scrollY > 300) {
-							scrollTop.style.display = 'flex';
-						} else {
-							scrollTop.style.display = 'none';
-						}
-					});
+			// Handle scroll to top button
+			const scrollTop = document.querySelector('.scrolltop');
+			scrollTop.addEventListener('click', () => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth'
 				});
-  </script>
+			});
+
+			// Show/hide scroll to top button
+			window.addEventListener('scroll', () => {
+				if (window.scrollY > 300) {
+					scrollTop.style.display = 'flex';
+				} else {
+					scrollTop.style.display = 'none';
+				}
+			});
+		});
+</script>
 <script src="/js/localforage.min.js"></script>
 <script src="/js/json-loader.js"></script>
 <script src="/js/c.js"></script>

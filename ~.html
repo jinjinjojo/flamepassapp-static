@@ -211,12 +211,12 @@
 						>Proxy & Browser
 					</li>
 				</a>
-				<!-- <a href="/~.html#ads">
+				<a href="/~.html#ads">
 					<li class="settingItem" data-id="ads">
 						<span class="material-symbols-outlined">ads_click</span
 						>Advertising
 					</li>
-				</a> -->
+				</a>
 				<hr style="margin-bottom: 20px" />
 				<a href="/~.html#account">
 					<li class="settingItem" data-id="account">
@@ -520,88 +520,7 @@
 						</ul>
 					</div>
 				</div>
-				<div class="settingsection settingsection6">
-					<h1>Transport</h1>
-					<p>
-						Transport is the method of how the proxy will transport
-						information
-					</p>
-					<p>
-						Changing the transport may make some proxies perform
-						better, but may also cause issues for others. Transport
-						switching is an advanced feature, not recommended if you
-						dont know what your doing.
-					</p>
-					<div class="dropdown dropdown-memory" id="transport">
-						<button class="dropdown-button dropdown-toggle">
-							<span class="dropdown-selected">Libcurl</span>
-							<span id="arrow" class="material-symbols-outlined"
-								>chevron_right</span
-							>
-						</button>
-						<ul class="dropdown-menu">
-							<li class="hidden">Libcurl</li>
-							<li>Epoxy</li>
-						</ul>
-					</div>
-				</div>
-				<div class="settingsection settingsection6">
-					<h1>Wisp Server</h1>
-					<p>
-						Enter an Alternative Wisp Server to connect to. This url
-						must start with a ws(s):// and end with a /
-					</p>
-					<div class="pgroup">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							class="picon"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="lucide lucide-server"
-						>
-							<rect
-								width="20"
-								height="8"
-								x="2"
-								y="2"
-								rx="2"
-								ry="2"
-							/>
-							<rect
-								width="20"
-								height="8"
-								x="2"
-								y="14"
-								rx="2"
-								ry="2"
-							/>
-							<line x1="6" x2="6.01" y1="6" y2="6" />
-							<line x1="6" x2="6.01" y1="18" y2="18" />
-						</svg>
-
-						<input
-							class="input wisp"
-							placeholder="Enter a wisp server"
-						/>
-					</div>
-					<div style="display: flex; align-items: center; gap: 4px">
-						<button style="width: 300px" class="buttonreg wispSave">
-							Save
-						</button>
-						<button
-							style="width: 300px"
-							class="buttonreg wispReset"
-						>
-							Reset
-						</button>
-					</div>
-				</div>
+				
 				<div class="settingsection settingsection6">
 					<h1>Browser</h1>
 					<p>
@@ -637,7 +556,7 @@
 						<span class="slider round"></span>
 					</label>
 				</div>
-				<div class="settingsection settingsection6">
+				<!-- <div class="settingsection settingsection6">
 					<h1>Modern Page</h1>
 					<p>Display bigger icons and a different style.</p>
 					<p>
@@ -651,30 +570,25 @@
 						/>
 						<span class="slider round"></span>
 					</label>
-				</div>
+				</div> -->
 			</div>
 			<div class="scontent" id="ads">
 				<h1 style="animation: fade-in-left 1s" class="settingsection7">
 					Advertising
 				</h1>
 				<div class="settingsection settingsection7">
-					<h1>Enable Advertising</h1>
+					<h1>Advertising</h1>
 					<p>
-						Toggle advertising on and off with the switch below. If
-						you have ads off this makes us not get revenue and
-						prevents us from upgrading servers, buying domains, etc.
-					</p>
-					<p>
-						If you do keep ads enabled, we thank you. This helps us
-						a lot and contributes financially to our projects and
-						services.
+						Free users without an account will see advertisements. 
+						Ads automatically disappear when logged into an active 
+						Flamepass account.
 					</p>
 					<hr />
-					<p>Toggle Advertising</p>
+					<!-- <p>Toggle Advertising</p>
 					<label class="switch">
 						<input class="checkbox adsYesNo" type="checkbox" />
 						<span class="slider round"></span>
-					</label>
+					</label> -->
 				</div>
 			</div>
 
@@ -775,7 +689,7 @@
 							if (signOutBtn) {
 								signOutBtn.textContent = "Get Started";
 								signOutBtn.onclick = function() {
-									window.location.href = "/login.html";
+									window.location.href = "/signup.html";
 								};
 
 							}
@@ -952,11 +866,10 @@
 						project by Twilight Development Group (TDG) at Night Network. 
 					</p>
 					<p>
-						To join our Discord for updates, uptimes, and links,
-						click
+						To see their original source code click
 						<a
 							target="_blank"
-							href="https://discord.com/invite/gVaXCTqJDq"
+							href="https://github.com/NightProxy/Space"
 							>here</a
 						>.
 					</p>
@@ -971,7 +884,7 @@
 								border-radius: 30px;
 								padding: 1px 7px;
 							"
-							>v1.1.0</span
+							>v1.4.0</span
 						>
 					</p>
 					<p>
@@ -1066,12 +979,35 @@
 					style="animation: fade-in-left 1s"
 					class="settingsection settingsection11"
 				>
-					<h1>Where can I find links?</h1>
+					<h1>What is Flamepass?</h1>
 					<p>
-						You can find links by joining our
-						<a href="https://discord.com/invite/gVaXCTqJDq/">Discord</a>.
-						We have a community links channel, a link bot for
-						dispensing links, and weekly links.
+						"Flamepass" is the all-in-one hub for students that provides tools, games, and resources designed to work on school
+						devices. Our platform includes 3,000+ games that run on school Chromebooks, a complete collection of unblockers
+						(Interstellar, Shadow Browser, Rammerhead, etc.), school laptop freedom tools, unlimited AI chat, and comprehensive
+						guides for bypassing school restrictions. Built by students for students, Flamepass helps you enjoy unrestricted access
+						to content on your school network.
+					</p>
+				</div>
+				<div style="animation: fade-in-left 1s" class="settingsection settingsection11">
+					<h1>What if Flamepass.com is blocked at school?</h1>
+					<p>
+						If Flamepass is blocked and you want to access it at school, simply find a working unblocker link from Flamepass on a
+						personal device before school. You can also access Flamepass in the unblocker by typing app.flamepass.com in the
+						unblocker, Then login to access all Flamepass features during school!
+					</p>
+				</div>
+				<div style="animation: fade-in-left 1s" class="settingsection settingsection11">
+					<h1>How do I play Fortnite and other AAA games?</h1>
+					<p>
+						First, check out our <a href="guides.html" target="_blank">Guides</a> for helpful tips. Then, head over to <a
+							href="g.html" target="_blank">the Games page</a> and choose a game you want to play.
+
+						If it's a AAA game (like Fortnite, Roblox, or Call of Duty), it will likely be a cloud game. In that case, you’ll need a
+						Cloud Gaming Service Provider. We offer access to over 2,000 cloud games, so just click "Proxy" under your chosen
+						service provider on the game page.
+
+						If you're already using Flamepass through an unblocker, simply click "Direct"—it will still open through a proxy since
+						you’re already connected.
 					</p>
 				</div>
 				<div class="settingsection settingsection11">
@@ -1095,7 +1031,7 @@
 						community.
 					</p>
 				</div>
-				<div class="settingsection settingsection11">
+				<!-- <div class="settingsection settingsection11">
 					<h1>
 						How can I make links? (BYOD)
 						<span
@@ -1189,7 +1125,7 @@
 						<a href="https://discord.com/invite/gVaXCTqJDq">Discord</a>
 						and our team will gladly help you.
 					</p>
-				</div>
+				</div> -->
 				<div class="settingsection settingsection11">
 					<h1>I found a bug, what now?</h1>
 					<p>
