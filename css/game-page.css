@@ -965,7 +965,7 @@
         margin: 0;
     }
 
-    .advanced-tip-content p {
+    .advanced-tip-content a {
         color: var(--accent-primary);
     }
 
