@@ -191,6 +191,30 @@
       height: 100vh;
     }
     
+    /* Neo Button Styles */
+    #neoButton {
+      background: linear-gradient(135deg, #9b4dca, #ff69b4);
+      border: none;
+      color: white;
+      box-shadow: 0 4px 15px rgba(155, 77, 202, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    #neoButton:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(155, 77, 202, 0.6);
+      background: linear-gradient(135deg, #a55ddb, #ff7ac4);
+    }
+    
+    #neoButton img {
+      filter: brightness(1.2);
+      transition: all 0.3s ease;
+    }
+    
+    #neoButton:hover img {
+      filter: brightness(1.4);
+      transform: scale(1.1);
+    }
    
   </style>
 </head>
@@ -293,6 +317,14 @@
             Get Started<i style="width: 18px; margin-left: 5px" alt="Get started icon" data-lucide="sparkles"></i>
           </p>
         </button>
+        <a href="/@/index.html?uul=https://app.flamepass.com" style="text-decoration: none;">
+          <button style="opacity: 0; animation: fade-in-bottom 0.6s ease-in-out forwards; animation-fill-mode: visible; animation-delay: 1.4s; display: inline-flex; margin-top:20px; margin-left: 10px;" class="btn" id="neoButton">
+            <p style="font-weight: 600; margin: 7px; font-size: 14px; display: flex; align-items: center; font-family: 'DM Sans', sans-serif;">
+              <img src="/assets/neo.png" alt="Neo logo" style="width: 18px; height: 18px; margin-right: 5px;">
+              (NEO) Open Flamepass
+            </p>
+          </button>
+        </a>
       </div>
     </div>
   </div>
