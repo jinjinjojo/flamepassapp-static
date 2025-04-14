@@ -4,17 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play ${game.name} Unblocked on Flamepass</title>
+    <title>
+        ${game.category === 'cloud' 
+            ? `Is ${game.name} Playable Through Cloud Gaming?` 
+            : game.category === 'emulator'
+                ? `Play ${game.name} (${game.type.toUpperCase()}) Unblocked Online`
+                : `Play ${game.name} Unblocked Online With Flamepass!`}
+    </title>
     <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
 
     <!-- Meta tags for SEO -->
-    <meta name="description"
-        content="Play ${game.name} unblocked at school with Flamepass, the next gen school proxy. No downloads required, bypasses school filters, works directly in your browser." />
-    <meta name="keywords"
-        content="Unblocked Games, School Games, ${game.name} Unblocked, Bypass School Filters, Flamepass" />
-    <meta property="og:image" content="/assets/logo.webp" />
-    <meta property="og:title" content="Play ${game.name} Unblocked | Flamepass" />
+    <meta name="description" content="${game.category === 'cloud' 
+        ? `Yes, ${game.name} is playable on cloud gaming. You can play it on ${Object.keys(game.serviceProviders || {}).length} different cloud gaming services including ${Object.keys(game.serviceProviders || {}).join(', ')}. ${game.description || ''}`
+        : `Play ${game.name} unblocked online with Flamepass! ${game.description || ''}`}" />
+    
+    <meta name="keywords" content="Unblocked Games, School Games, ${game.name} Unblocked, Bypass School Filters, Flamepass${game.category === 'emulator' ? `, ${game.type.toUpperCase()} Games` : ''}${game.category === 'cloud' ? ', Cloud Gaming' : ''}${game.tags ? ', ' + game.tags.join(', ') : ''}" />
+    
+    <meta property="og:image" content="${game.img || '/assets/logo.webp'}" />
+    <meta property="og:title" content="${game.category === 'cloud' 
+        ? `Is ${game.name} Playable Through Cloud Gaming?` 
+        : game.category === 'emulator'
+            ? `Play ${game.name} (${game.type.toUpperCase()}) Unblocked Online`
+            : `Play ${game.name} Unblocked Online With Flamepass!`}" />
+    <meta property="og:description" content="${game.category === 'cloud' 
+        ? `Yes, ${game.name} is playable on cloud gaming. You can play it on ${Object.keys(game.serviceProviders || {}).length} different cloud gaming services including ${Object.keys(game.serviceProviders || {}).join(', ')}. ${game.description || ''}`
+        : `Play ${game.name} unblocked online with Flamepass! ${game.description || ''}`}" />
     <link rel="canonical" href="/game/${game.slug}" />
+    
+    <!-- Additional meta tags for rich snippets -->
+    <meta property="og:type" content="website" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "${game.name}",
+        "description": "${game.category === 'cloud' 
+            ? `Yes, ${game.name} is playable on cloud gaming. You can play it on ${Object.keys(game.serviceProviders || {}).length} different cloud gaming services including ${Object.keys(game.serviceProviders || {}).join(', ')}. ${game.description || ''}`
+            : `Play ${game.name} unblocked online with Flamepass! ${game.description || ''}`}",
+        "image": "${game.img || '/assets/logo.webp'}",
+        ${game.releaseDate ? `"datePublished": "${game.releaseDate}",` : ''}
+        ${game.publisher ? `"publisher": {
+            "@type": "Organization",
+            "name": "${game.publisher}"
+        },` : ''}
+        "gamePlatform": ${game.category === 'cloud' 
+            ? JSON.stringify(Object.keys(game.serviceProviders || {}))
+            : game.category === 'emulator'
+                ? `"${game.type.toUpperCase()}"`
+                : '"Web Browser"'}
+        ${game.tags && game.tags.length > 0 ? `,"genre": ${JSON.stringify(game.tags)}` : ''}
+    }
+    </script>
+
+    <!-- Hidden game links for SEO -->
+    <div style="display: none;">
+        ${randomGames.map(game => `<a href="/game/${game.slug}">${game.name}</a>`).join('')}
+    </div>
 
     <!-- Font imports -->
     <link rel="preload" as="style"
@@ -255,6 +304,7 @@
     <script>
         // Initialize particles.js
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialize particles.js
             if (window.particlesJS && document.getElementById('particles-js')) {
                 particlesJS('particles-js', {
                     particles: {
