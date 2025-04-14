@@ -1173,10 +1173,341 @@ async function loadSmallShortcuts() {
 	}
 }
 
+// Function to set up category selector
+function setupCategorySelector() {
+	const categoryContainer = document.querySelector('.category-container');
+	if (!categoryContainer) return;
+
+	// Define categories
+	const categories = [
+		{ id: 'cloud', name: 'Cloud Gaming', icon: 'cloud' },
+		{ id: 'emulator', name: 'Emulator Games', icon: 'gamepad' },
+		{ id: 'browser', name: 'Browser Games', icon: 'web' },
+		{ id: 'all', name: 'All Games', icon: 'apps' }
+	];
+
+	// Clear existing content
+	categoryContainer.innerHTML = '';
+
+	// Create category buttons
+	categories.forEach(category => {
+		const button = document.createElement('button');
+		button.className = 'category-button';
+		button.dataset.category = category.id;
+		button.innerHTML = `
+			<span class="material-symbols-outlined">${category.icon}</span>
+			<span>${category.name}</span>
+		`;
+
+		// Add click event
+		button.addEventListener('click', () => {
+			// Update URL without reloading the page
+			const url = new URL(window.location.href);
+			url.searchParams.set('category', category.id);
+			url.searchParams.set('page', '1'); // Reset to first page when changing category
+			window.history.pushState({}, '', url);
+
+			// Update active button
+			updateActiveCategoryButton(category.id);
+
+			// Reload games for the selected category
+			loadGamesForCategory(category.id);
+		});
+
+		categoryContainer.appendChild(button);
+	});
+}
+
+// Function to update active category button
+function updateActiveCategoryButton(category) {
+	const buttons = document.querySelectorAll('.category-button');
+	buttons.forEach(button => {
+		if (button.dataset.category === category) {
+			button.classList.add('active');
+		} else {
+			button.classList.remove('active');
+		}
+	});
+}
+
+// Function to load games for a specific category
+async function loadGamesForCategory(category) {
+	try {
+		// Get games data
+		const data = await fetchGames();
+
+		// Filter games by category
+		let filteredGames = filterGamesByCategory(data, category);
+
+		// Reset to first page
+		const currentPage = 1;
+		const gamesPerPage = 50;
+		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
+		const startIndex = 0;
+		const endIndex = gamesPerPage;
+		const currentGames = filteredGames.slice(startIndex, endIndex);
+
+		// Update UI
+		createPaginationControls(currentPage, totalPages, category);
+		renderGames(currentGames, category, filteredGames);
+	} catch (error) {
+		console.error('Error loading games for category:', error);
+	}
+}
+
+// Function to filter games by category
+function filterGamesByCategory(games, category) {
+	if (!games || !Array.isArray(games)) return [];
+	
+	if (category === 'all') {
+		return games;
+	}
+	
+	return games.filter(game => {
+		// Handle games with no category
+		if (!game.category) {
+			return category === 'browser'; // Default to browser if no category
+		}
+		
+		return game.category === category;
+	});
+}
+
+// Function to create pagination controls
+function createPaginationControls(currentPage, totalPages, category) {
+	const paginationContainer = document.querySelector('.pagination-container');
+	if (!paginationContainer) return;
+
+	// Clear existing content
+	paginationContainer.innerHTML = '';
+
+	// Don't show pagination if there's only one page
+	if (totalPages <= 1) return;
+
+	// Create previous button
+	const prevButton = document.createElement('button');
+	prevButton.className = 'pagination-button';
+	prevButton.innerHTML = '<span class="material-symbols-outlined">chevron_left</span>';
+	prevButton.disabled = currentPage === 1;
+	prevButton.addEventListener('click', () => {
+		if (currentPage > 1) {
+			changePage(currentPage - 1, category);
+		}
+	});
+	paginationContainer.appendChild(prevButton);
+
+	// Create page buttons
+	const maxVisiblePages = 5;
+	let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+	let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+	// Adjust start page if we're near the end
+	if (endPage - startPage + 1 < maxVisiblePages) {
+		startPage = Math.max(1, endPage - maxVisiblePages + 1);
+	}
+
+	// First page button
+	if (startPage > 1) {
+		const firstPageButton = document.createElement('button');
+		firstPageButton.className = 'pagination-button';
+		firstPageButton.textContent = '1';
+		firstPageButton.addEventListener('click', () => changePage(1, category));
+		paginationContainer.appendChild(firstPageButton);
+
+		// Ellipsis if needed
+		if (startPage > 2) {
+			const ellipsis = document.createElement('span');
+			ellipsis.className = 'pagination-ellipsis';
+			ellipsis.textContent = '...';
+			paginationContainer.appendChild(ellipsis);
+		}
+	}
+
+	// Page buttons
+	for (let i = startPage; i <= endPage; i++) {
+		const pageButton = document.createElement('button');
+		pageButton.className = 'pagination-button';
+		if (i === currentPage) {
+			pageButton.classList.add('active');
+		}
+		pageButton.textContent = i;
+		pageButton.addEventListener('click', () => changePage(i, category));
+		paginationContainer.appendChild(pageButton);
+	}
+
+	// Last page button
+	if (endPage < totalPages) {
+		// Ellipsis if needed
+		if (endPage < totalPages - 1) {
+			const ellipsis = document.createElement('span');
+			ellipsis.className = 'pagination-ellipsis';
+			ellipsis.textContent = '...';
+			paginationContainer.appendChild(ellipsis);
+		}
+
+		const lastPageButton = document.createElement('button');
+		lastPageButton.className = 'pagination-button';
+		lastPageButton.textContent = totalPages;
+		lastPageButton.addEventListener('click', () => changePage(totalPages, category));
+		paginationContainer.appendChild(lastPageButton);
+	}
+
+	// Create next button
+	const nextButton = document.createElement('button');
+	nextButton.className = 'pagination-button';
+	nextButton.innerHTML = '<span class="material-symbols-outlined">chevron_right</span>';
+	nextButton.disabled = currentPage === totalPages;
+	nextButton.addEventListener('click', () => {
+		if (currentPage < totalPages) {
+			changePage(currentPage + 1, category);
+		}
+	});
+	paginationContainer.appendChild(nextButton);
+}
+
+// Function to change page
+function changePage(page, category) {
+	// Update URL without reloading the page
+	const url = new URL(window.location.href);
+	url.searchParams.set('page', page);
+	url.searchParams.set('category', category);
+	window.history.pushState({}, '', url);
+
+	// Reload games for the current category and page
+	loadGamesForCategoryAndPage(category, page);
+}
+
+// Function to load games for a specific category and page
+async function loadGamesForCategoryAndPage(category, page) {
+	try {
+		// Get games data
+		const data = await fetchGames();
+
+		// Filter games by category
+		let filteredGames = filterGamesByCategory(data, category);
+
+		// Calculate pagination
+		const gamesPerPage = 50;
+		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
+		const startIndex = (page - 1) * gamesPerPage;
+		const endIndex = startIndex + gamesPerPage;
+		const currentGames = filteredGames.slice(startIndex, endIndex);
+
+		// Update UI
+		createPaginationControls(page, totalPages, category);
+		renderGames(currentGames, category, filteredGames);
+	} catch (error) {
+		console.error('Error loading games for category and page:', error);
+	}
+}
+
+// Function to render games
+function renderGames(games, category, allGames) {
+	const gameContainer = document.querySelector('.gameContain');
+	if (!gameContainer) return;
+
+	// Clear existing content
+	gameContainer.innerHTML = '';
+
+	// Add category title
+	const categoryTitle = document.createElement('h2');
+	categoryTitle.className = 'category-title';
+	categoryTitle.textContent = category === 'all' 
+		? 'All Games' 
+		: category === 'cloud' 
+			? 'Cloud Gaming' 
+			: category === 'emulator' 
+				? 'Emulator Games' 
+				: 'Browser Games';
+	gameContainer.appendChild(categoryTitle);
+
+	// Add game count
+	const gameCount = document.createElement('p');
+	gameCount.className = 'game-count';
+	gameCount.textContent = `Showing ${games.length} of ${allGames.length} games`;
+	gameContainer.appendChild(gameCount);
+
+	// Create games grid
+	const gamesGrid = document.createElement('div');
+	gamesGrid.className = 'games-grid';
+	gameContainer.appendChild(gamesGrid);
+
+	// Add games
+	games.forEach(game => {
+		const gameCard = document.createElement('a');
+		gameCard.href = `/game/${game.slug}`;
+		gameCard.className = 'gameAnchor';
+		gameCard.dataset.category = game.category || 'browser';
+		gameCard.dataset.name = game.name.toLowerCase();
+
+		// Add game image
+		const gameImage = document.createElement('img');
+		gameImage.src = game.img || '/assets/game-placeholder.jpg';
+		gameImage.alt = game.name;
+		gameImage.className = 'gameImage';
+		gameImage.onerror = () => {
+			gameImage.src = '/assets/game-placeholder.jpg';
+		};
+		gameCard.appendChild(gameImage);
+
+		// Add game overlay with title
+		const gameOverlay = document.createElement('div');
+		gameOverlay.className = 'game-overlay';
+		
+		const gameTitle = document.createElement('h3');
+		gameTitle.className = 'game-title';
+		gameTitle.textContent = game.name;
+		gameOverlay.appendChild(gameTitle);
+		
+		gameCard.appendChild(gameOverlay);
+
+		// Add lock overlay for cloud games if not logged in
+		if (game.category === 'cloud' && window.isLoggedIn && !window.isLoggedIn()) {
+			addLockOverlay(gameCard);
+		}
+
+		gamesGrid.appendChild(gameCard);
+	});
+
+	// Add pagination container if not already present
+	let paginationContainer = document.querySelector('.pagination-container');
+	if (!paginationContainer) {
+		paginationContainer = document.createElement('div');
+		paginationContainer.className = 'pagination-container';
+		gameContainer.appendChild(paginationContainer);
+	}
+}
+
+// Function to add lock overlay to game card
+function addLockOverlay(element) {
+	const overlay = document.createElement('div');
+	overlay.className = 'lock-overlay';
+	overlay.innerHTML = '<span class="material-symbols-outlined">lock</span>';
+
+	element.addEventListener('mouseenter', () => {
+		overlay.style.opacity = '1';
+	});
+
+	element.addEventListener('mouseleave', () => {
+		overlay.style.opacity = '0.7';
+	});
+
+	// Add click event to show login popup
+	overlay.addEventListener('click', (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		// Show a basic login popup if auth-controller is not available
+		showBasicLoginPopup();
+	});
+
+	element.appendChild(overlay);
+}
+
 // Optimized function to load games page using IndexedDB
 async function loadGamesPage() {
 	try {
-		// Only set up category selector and pagination controls once
+		// Set up category selector
 		setupCategorySelector();
 
 		// Get games data using the dedicated function for games with order preservation
@@ -1187,7 +1518,7 @@ async function loadGamesPage() {
 		const currentCategory = urlParams.get('category') || 'cloud'; // Default to Cloud Gaming
 		const currentPage = parseInt(urlParams.get('page') || '1');
 
-		// Continue with the rest of the function as before
+		// Update active category button
 		updateActiveCategoryButton(currentCategory);
 
 		// Filter games by category without sorting
