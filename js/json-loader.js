@@ -128,7 +128,7 @@ function openIndexedDB(dbName, version) {
 
 // Helper function to create a consistent ID for a game
 function createGameId(game) {
-	return game.slug || game.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+	return game.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
 }
 
 // 1. Modify storeGamesInDB function to use a simpler approach
@@ -1173,341 +1173,10 @@ async function loadSmallShortcuts() {
 	}
 }
 
-// Function to set up category selector
-function setupCategorySelector() {
-	const categoryContainer = document.querySelector('.category-container');
-	if (!categoryContainer) return;
-
-	// Define categories
-	const categories = [
-		{ id: 'cloud', name: 'Cloud Gaming', icon: 'cloud' },
-		{ id: 'emulator', name: 'Emulator Games', icon: 'gamepad' },
-		{ id: 'browser', name: 'Browser Games', icon: 'web' },
-		{ id: 'all', name: 'All Games', icon: 'apps' }
-	];
-
-	// Clear existing content
-	categoryContainer.innerHTML = '';
-
-	// Create category buttons
-	categories.forEach(category => {
-		const button = document.createElement('button');
-		button.className = 'category-button';
-		button.dataset.category = category.id;
-		button.innerHTML = `
-			<span class="material-symbols-outlined">${category.icon}</span>
-			<span>${category.name}</span>
-		`;
-
-		// Add click event
-		button.addEventListener('click', () => {
-			// Update URL without reloading the page
-			const url = new URL(window.location.href);
-			url.searchParams.set('category', category.id);
-			url.searchParams.set('page', '1'); // Reset to first page when changing category
-			window.history.pushState({}, '', url);
-
-			// Update active button
-			updateActiveCategoryButton(category.id);
-
-			// Reload games for the selected category
-			loadGamesForCategory(category.id);
-		});
-
-		categoryContainer.appendChild(button);
-	});
-}
-
-// Function to update active category button
-function updateActiveCategoryButton(category) {
-	const buttons = document.querySelectorAll('.category-button');
-	buttons.forEach(button => {
-		if (button.dataset.category === category) {
-			button.classList.add('active');
-		} else {
-			button.classList.remove('active');
-		}
-	});
-}
-
-// Function to load games for a specific category
-async function loadGamesForCategory(category) {
-	try {
-		// Get games data
-		const data = await fetchGames();
-
-		// Filter games by category
-		let filteredGames = filterGamesByCategory(data, category);
-
-		// Reset to first page
-		const currentPage = 1;
-		const gamesPerPage = 50;
-		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
-		const startIndex = 0;
-		const endIndex = gamesPerPage;
-		const currentGames = filteredGames.slice(startIndex, endIndex);
-
-		// Update UI
-		createPaginationControls(currentPage, totalPages, category);
-		renderGames(currentGames, category, filteredGames);
-	} catch (error) {
-		console.error('Error loading games for category:', error);
-	}
-}
-
-// Function to filter games by category
-function filterGamesByCategory(games, category) {
-	if (!games || !Array.isArray(games)) return [];
-	
-	if (category === 'all') {
-		return games;
-	}
-	
-	return games.filter(game => {
-		// Handle games with no category
-		if (!game.category) {
-			return category === 'browser'; // Default to browser if no category
-		}
-		
-		return game.category === category;
-	});
-}
-
-// Function to create pagination controls
-function createPaginationControls(currentPage, totalPages, category) {
-	const paginationContainer = document.querySelector('.pagination-container');
-	if (!paginationContainer) return;
-
-	// Clear existing content
-	paginationContainer.innerHTML = '';
-
-	// Don't show pagination if there's only one page
-	if (totalPages <= 1) return;
-
-	// Create previous button
-	const prevButton = document.createElement('button');
-	prevButton.className = 'pagination-button';
-	prevButton.innerHTML = '<span class="material-symbols-outlined">chevron_left</span>';
-	prevButton.disabled = currentPage === 1;
-	prevButton.addEventListener('click', () => {
-		if (currentPage > 1) {
-			changePage(currentPage - 1, category);
-		}
-	});
-	paginationContainer.appendChild(prevButton);
-
-	// Create page buttons
-	const maxVisiblePages = 5;
-	let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-	let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-	// Adjust start page if we're near the end
-	if (endPage - startPage + 1 < maxVisiblePages) {
-		startPage = Math.max(1, endPage - maxVisiblePages + 1);
-	}
-
-	// First page button
-	if (startPage > 1) {
-		const firstPageButton = document.createElement('button');
-		firstPageButton.className = 'pagination-button';
-		firstPageButton.textContent = '1';
-		firstPageButton.addEventListener('click', () => changePage(1, category));
-		paginationContainer.appendChild(firstPageButton);
-
-		// Ellipsis if needed
-		if (startPage > 2) {
-			const ellipsis = document.createElement('span');
-			ellipsis.className = 'pagination-ellipsis';
-			ellipsis.textContent = '...';
-			paginationContainer.appendChild(ellipsis);
-		}
-	}
-
-	// Page buttons
-	for (let i = startPage; i <= endPage; i++) {
-		const pageButton = document.createElement('button');
-		pageButton.className = 'pagination-button';
-		if (i === currentPage) {
-			pageButton.classList.add('active');
-		}
-		pageButton.textContent = i;
-		pageButton.addEventListener('click', () => changePage(i, category));
-		paginationContainer.appendChild(pageButton);
-	}
-
-	// Last page button
-	if (endPage < totalPages) {
-		// Ellipsis if needed
-		if (endPage < totalPages - 1) {
-			const ellipsis = document.createElement('span');
-			ellipsis.className = 'pagination-ellipsis';
-			ellipsis.textContent = '...';
-			paginationContainer.appendChild(ellipsis);
-		}
-
-		const lastPageButton = document.createElement('button');
-		lastPageButton.className = 'pagination-button';
-		lastPageButton.textContent = totalPages;
-		lastPageButton.addEventListener('click', () => changePage(totalPages, category));
-		paginationContainer.appendChild(lastPageButton);
-	}
-
-	// Create next button
-	const nextButton = document.createElement('button');
-	nextButton.className = 'pagination-button';
-	nextButton.innerHTML = '<span class="material-symbols-outlined">chevron_right</span>';
-	nextButton.disabled = currentPage === totalPages;
-	nextButton.addEventListener('click', () => {
-		if (currentPage < totalPages) {
-			changePage(currentPage + 1, category);
-		}
-	});
-	paginationContainer.appendChild(nextButton);
-}
-
-// Function to change page
-function changePage(page, category) {
-	// Update URL without reloading the page
-	const url = new URL(window.location.href);
-	url.searchParams.set('page', page);
-	url.searchParams.set('category', category);
-	window.history.pushState({}, '', url);
-
-	// Reload games for the current category and page
-	loadGamesForCategoryAndPage(category, page);
-}
-
-// Function to load games for a specific category and page
-async function loadGamesForCategoryAndPage(category, page) {
-	try {
-		// Get games data
-		const data = await fetchGames();
-
-		// Filter games by category
-		let filteredGames = filterGamesByCategory(data, category);
-
-		// Calculate pagination
-		const gamesPerPage = 50;
-		const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
-		const startIndex = (page - 1) * gamesPerPage;
-		const endIndex = startIndex + gamesPerPage;
-		const currentGames = filteredGames.slice(startIndex, endIndex);
-
-		// Update UI
-		createPaginationControls(page, totalPages, category);
-		renderGames(currentGames, category, filteredGames);
-	} catch (error) {
-		console.error('Error loading games for category and page:', error);
-	}
-}
-
-// Function to render games
-function renderGames(games, category, allGames) {
-	const gameContainer = document.querySelector('.gameContain');
-	if (!gameContainer) return;
-
-	// Clear existing content
-	gameContainer.innerHTML = '';
-
-	// Add category title
-	const categoryTitle = document.createElement('h2');
-	categoryTitle.className = 'category-title';
-	categoryTitle.textContent = category === 'all' 
-		? 'All Games' 
-		: category === 'cloud' 
-			? 'Cloud Gaming' 
-			: category === 'emulator' 
-				? 'Emulator Games' 
-				: 'Browser Games';
-	gameContainer.appendChild(categoryTitle);
-
-	// Add game count
-	const gameCount = document.createElement('p');
-	gameCount.className = 'game-count';
-	gameCount.textContent = `Showing ${games.length} of ${allGames.length} games`;
-	gameContainer.appendChild(gameCount);
-
-	// Create games grid
-	const gamesGrid = document.createElement('div');
-	gamesGrid.className = 'games-grid';
-	gameContainer.appendChild(gamesGrid);
-
-	// Add games
-	games.forEach(game => {
-		const gameCard = document.createElement('a');
-		gameCard.href = `/game/${game.slug}`;
-		gameCard.className = 'gameAnchor';
-		gameCard.dataset.category = game.category || 'browser';
-		gameCard.dataset.name = game.name.toLowerCase();
-
-		// Add game image
-		const gameImage = document.createElement('img');
-		gameImage.src = game.img || '/assets/game-placeholder.jpg';
-		gameImage.alt = game.name;
-		gameImage.className = 'gameImage';
-		gameImage.onerror = () => {
-			gameImage.src = '/assets/game-placeholder.jpg';
-		};
-		gameCard.appendChild(gameImage);
-
-		// Add game overlay with title
-		const gameOverlay = document.createElement('div');
-		gameOverlay.className = 'game-overlay';
-		
-		const gameTitle = document.createElement('h3');
-		gameTitle.className = 'game-title';
-		gameTitle.textContent = game.name;
-		gameOverlay.appendChild(gameTitle);
-		
-		gameCard.appendChild(gameOverlay);
-
-		// Add lock overlay for cloud games if not logged in
-		if (game.category === 'cloud' && window.isLoggedIn && !window.isLoggedIn()) {
-			addLockOverlay(gameCard);
-		}
-
-		gamesGrid.appendChild(gameCard);
-	});
-
-	// Add pagination container if not already present
-	let paginationContainer = document.querySelector('.pagination-container');
-	if (!paginationContainer) {
-		paginationContainer = document.createElement('div');
-		paginationContainer.className = 'pagination-container';
-		gameContainer.appendChild(paginationContainer);
-	}
-}
-
-// Function to add lock overlay to game card
-function addLockOverlay(element) {
-	const overlay = document.createElement('div');
-	overlay.className = 'lock-overlay';
-	overlay.innerHTML = '<span class="material-symbols-outlined">lock</span>';
-
-	element.addEventListener('mouseenter', () => {
-		overlay.style.opacity = '1';
-	});
-
-	element.addEventListener('mouseleave', () => {
-		overlay.style.opacity = '0.7';
-	});
-
-	// Add click event to show login popup
-	overlay.addEventListener('click', (e) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		// Show a basic login popup if auth-controller is not available
-		showBasicLoginPopup();
-	});
-
-	element.appendChild(overlay);
-}
-
 // Optimized function to load games page using IndexedDB
 async function loadGamesPage() {
 	try {
-		// Set up category selector
+		// Only set up category selector and pagination controls once
 		setupCategorySelector();
 
 		// Get games data using the dedicated function for games with order preservation
@@ -1518,7 +1187,7 @@ async function loadGamesPage() {
 		const currentCategory = urlParams.get('category') || 'cloud'; // Default to Cloud Gaming
 		const currentPage = parseInt(urlParams.get('page') || '1');
 
-		// Update active category button
+		// Continue with the rest of the function as before
 		updateActiveCategoryButton(currentCategory);
 
 		// Filter games by category without sorting
@@ -1544,56 +1213,29 @@ async function loadGamesPage() {
 
 // Implement the missing setupGameSearch function
 function setupGameSearchFunction(games) {
-	const searchInput = document.querySelector('.gameSearchInput');
+	const searchInput = document.getElementById('gameSearch');
 	if (!searchInput) return;
 
 	const gameContainer = document.querySelector('.gameContain');
 	if (!gameContainer) return;
 
-	// Create search results container if it doesn't exist
-	let searchResultsContainer = document.querySelector('.search-results-container');
-	if (!searchResultsContainer) {
-		searchResultsContainer = document.createElement('div');
-		searchResultsContainer.className = 'search-results-container';
-		searchResultsContainer.style.display = 'none';
-		searchResultsContainer.style.position = 'absolute';
-		searchResultsContainer.style.top = '100%';
-		searchResultsContainer.style.left = '0';
-		searchResultsContainer.style.right = '0';
-		searchResultsContainer.style.backgroundColor = 'var(--dropdown-background-color)';
-		searchResultsContainer.style.borderRadius = '12px';
-		searchResultsContainer.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.25)';
-		searchResultsContainer.style.zIndex = '9999';
-		searchResultsContainer.style.maxHeight = '500px';
-		searchResultsContainer.style.overflowY = 'auto';
-		searchResultsContainer.style.marginTop = '10px';
-		searchResultsContainer.style.border = '1px solid var(--border-color)';
-		searchResultsContainer.style.backdropFilter = 'blur(10px)';
-		searchResultsContainer.style.transition = 'all 0.3s ease';
-		
-		// Add the container after the search input
-		const searchHeader = document.querySelector('.search-header');
-		if (searchHeader) {
-			searchHeader.style.position = 'relative';
-			searchHeader.appendChild(searchResultsContainer);
-		}
+	// Clear any previous search results info
+	const existingResultsInfo = document.querySelector('.search-results-info');
+	if (existingResultsInfo) {
+		existingResultsInfo.remove();
 	}
 
-	// Set up the input event listener with debounce
-	let debounceTimer;
-	searchInput.addEventListener('input', function() {
-		clearTimeout(debounceTimer);
-		
+	// Set up the input event listener
+	searchInput.addEventListener('input', function () {
 		const searchValue = this.value.toLowerCase().trim();
-		
-		if (!searchValue || searchValue.length < 2) {
-			// If search is empty or too short, hide results and show all games
-			searchResultsContainer.style.display = 'none';
+
+		if (!searchValue) {
+			// If search is empty, show all games
 			const gameLinks = gameContainer.querySelectorAll('.gameAnchor');
 			gameLinks.forEach(game => {
 				game.style.display = '';
 			});
-			
+
 			// Remove any search results info
 			const resultsInfo = document.querySelector('.search-results-info');
 			if (resultsInfo) {
@@ -1601,330 +1243,322 @@ function setupGameSearchFunction(games) {
 			}
 			return;
 		}
-		
-		// Show loading state
-		searchResultsContainer.style.display = 'block';
-		searchResultsContainer.innerHTML = `
-			<div class="search-message" style="padding: 30px; text-align: center;">
-				<div class="loader" style="width: 40px; height: 40px; margin: 0 auto 15px;">
-					<svg viewBox="0 0 80 80">
-						<circle cx="40" cy="40" r="32" class="loader-circle" style="stroke: var(--accent-color); stroke-width: 4; fill: none;" />
-					</svg>
-				</div>
-				<p style="color: var(--text-color); font-size: 16px; margin: 0;">Searching...</p>
-			</div>
-		`;
-		
-		// Debounce search request
-		debounceTimer = setTimeout(() => {
-			// Get all games from the DOM first
-			const gameElements = gameContainer.querySelectorAll('.gameAnchor');
-			const domGames = Array.from(gameElements).map(element => {
-				const titleElement = element.querySelector('.game-title');
-				const imgElement = element.querySelector('.game-image');
-				const categoryElement = element.querySelector('.game-category');
-				
-				return {
-					name: titleElement ? titleElement.textContent : '',
-					img: imgElement ? imgElement.src : '/assets/game-placeholder.jpg',
-					category: categoryElement ? categoryElement.textContent : 'Browser Game',
-					slug: element.getAttribute('href') ? element.getAttribute('href').replace('/game/', '') : '',
-					element: element
-				};
-			});
-			
-			// If we have games from the parameter, use those for more comprehensive search
-			if (games && Array.isArray(games) && games.length > 0) {
-				performGameSearch(searchValue, games);
+
+		// Filter games based on search
+		let matchCount = 0;
+		const gameLinks = gameContainer.querySelectorAll('.gameAnchor');
+
+		gameLinks.forEach(game => {
+			const gameTitle = game.querySelector('.game-title').textContent.toLowerCase();
+
+			if (gameTitle.includes(searchValue)) {
+				game.style.display = '';
+				matchCount++;
 			} else {
-				// Otherwise use the DOM games
-				performGameSearchFromDOM(searchValue, domGames);
+				game.style.display = 'none';
 			}
-		}, 300);
-	});
-	
-	// Close search results when clicking outside
-	document.addEventListener('click', function(e) {
-		if (!searchInput.contains(e.target) && !searchResultsContainer.contains(e.target)) {
-			searchResultsContainer.style.display = 'none';
-		}
-	});
-	
-	// Function to perform search using DOM elements
-	function performGameSearchFromDOM(query, domGames) {
-		// Filter games based on query
-		const filteredGames = domGames.filter(game => 
-			(game.name && game.name.toLowerCase().includes(query)) ||
-			(game.category && game.category.toLowerCase().includes(query))
-		);
-		
-		// Display results
-		if (filteredGames.length === 0) {
-			searchResultsContainer.innerHTML = `
-				<div class="search-message" style="padding: 40px; text-align: center;">
-					<span class="material-symbols-outlined" style="font-size: 48px; color: var(--text-color); opacity: 0.7;">sentiment_dissatisfied</span>
-					<p style="color: var(--text-color); font-size: 18px; margin: 15px 0 0 0;">No games found matching "${query}"</p>
-					<p style="color: var(--text-secondary); font-size: 14px; margin: 5px 0 0 0;">Try a different search term</p>
-				</div>
-			`;
-		} else {
-			searchResultsContainer.innerHTML = '';
-			
-			// Add search results info
-			const resultsInfo = document.createElement('div');
+		});
+
+		// Update or create search results info
+		let resultsInfo = document.querySelector('.search-results-info');
+		if (!resultsInfo) {
+			resultsInfo = document.createElement('div');
 			resultsInfo.className = 'search-results-info';
-			resultsInfo.style.padding = '15px 20px';
-			resultsInfo.style.borderBottom = '1px solid var(--border-color)';
-			resultsInfo.style.display = 'flex';
-			resultsInfo.style.justifyContent = 'space-between';
-			resultsInfo.style.alignItems = 'center';
-			resultsInfo.style.backgroundColor = 'var(--hover-color)';
-			resultsInfo.style.borderTopLeftRadius = '12px';
-			resultsInfo.style.borderTopRightRadius = '12px';
-			
-			// Create clear button
-			const clearButton = document.createElement('button');
-			clearButton.className = 'clear-search-button';
-			clearButton.textContent = 'Clear';
-			clearButton.style.padding = '8px 16px';
-			clearButton.style.backgroundColor = 'var(--accent-color)';
-			clearButton.style.color = 'white';
-			clearButton.style.border = 'none';
-			clearButton.style.borderRadius = '6px';
-			clearButton.style.cursor = 'pointer';
-			clearButton.style.fontWeight = 'bold';
-			clearButton.style.transition = 'all 0.2s ease';
-			clearButton.addEventListener('mouseover', () => {
-				clearButton.style.transform = 'translateY(-2px)';
-				clearButton.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-			});
-			clearButton.addEventListener('mouseout', () => {
-				clearButton.style.transform = 'translateY(0)';
-				clearButton.style.boxShadow = 'none';
-			});
-			clearButton.addEventListener('click', () => {
-				searchInput.value = '';
-				searchResultsContainer.style.display = 'none';
-				searchInput.dispatchEvent(new Event('input'));
-			});
-			
-			resultsInfo.innerHTML = `<span style="font-weight: bold; color: var(--text-color);">Found ${filteredGames.length} game${filteredGames.length === 1 ? '' : 's'} matching "${query}"</span>`;
-			resultsInfo.appendChild(clearButton);
-			searchResultsContainer.appendChild(resultsInfo);
-			
-			// Add game results
-			filteredGames.slice(0, 8).forEach(game => {
-				const resultItem = document.createElement('a');
-				resultItem.href = `/game/${game.slug}`;
-				resultItem.className = 'search-result-item';
-				resultItem.style.display = 'flex';
-				resultItem.style.padding = '15px 20px';
-				resultItem.style.textDecoration = 'none';
-				resultItem.style.color = 'var(--text-color)';
-				resultItem.style.borderBottom = '1px solid var(--border-color)';
-				resultItem.style.alignItems = 'center';
-				resultItem.style.transition = 'all 0.2s ease';
-				
-				resultItem.innerHTML = `
-					<div class="search-result-image" style="width: 60px; height: 60px; margin-right: 15px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-						<img src="${game.img}" alt="${game.name}" style="width: 100%; height: 100%; object-fit: cover;">
-					</div>
-					<div class="search-result-info" style="flex: 1;">
-						<h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">${game.name}</h3>
-						<div class="search-result-meta" style="display: flex; gap: 8px; font-size: 12px;">
-							<span class="category-pill" style="background-color: var(--accent-color); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 500;">${game.category}</span>
-						</div>
-					</div>
-					<span class="material-symbols-outlined" style="color: var(--text-secondary); font-size: 24px;">arrow_forward</span>
-				`;
-				
-				// Add hover effect
-				resultItem.addEventListener('mouseover', () => {
-					resultItem.style.backgroundColor = 'var(--hover-color)';
-					resultItem.style.transform = 'translateX(5px)';
-				});
-				
-				resultItem.addEventListener('mouseout', () => {
-					resultItem.style.backgroundColor = 'transparent';
-					resultItem.style.transform = 'translateX(0)';
-				});
-				
-				searchResultsContainer.appendChild(resultItem);
-			});
-			
-			// Add "View all" link if there are more results
-			if (filteredGames.length > 8) {
-				const viewAll = document.createElement('a');
-				viewAll.href = `/g.html?search=${encodeURIComponent(query)}`;
-				viewAll.className = 'view-all-results';
-				viewAll.style.display = 'block';
-				viewAll.style.padding = '15px 20px';
-				viewAll.style.textAlign = 'center';
-				viewAll.style.backgroundColor = 'var(--hover-color)';
-				viewAll.style.color = 'var(--accent-color)';
-				viewAll.style.textDecoration = 'none';
-				viewAll.style.fontWeight = 'bold';
-				viewAll.style.borderBottomLeftRadius = '12px';
-				viewAll.style.borderBottomRightRadius = '12px';
-				viewAll.style.transition = 'all 0.2s ease';
-				viewAll.innerHTML = `View all ${filteredGames.length} results <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 18px;">arrow_forward</span>`;
-				
-				// Add hover effect
-				viewAll.addEventListener('mouseover', () => {
-					viewAll.style.backgroundColor = 'var(--accent-color)';
-					viewAll.style.color = 'white';
-				});
-				
-				viewAll.addEventListener('mouseout', () => {
-					viewAll.style.backgroundColor = 'var(--hover-color)';
-					viewAll.style.color = 'var(--accent-color)';
-				});
-				
-				searchResultsContainer.appendChild(viewAll);
-			}
+			gameContainer.parentNode.insertBefore(resultsInfo, gameContainer);
 		}
-	}
-	
-	// Function to perform the actual search with full game data
-	function performGameSearch(query, allGames) {
-		// Filter games based on query
-		const filteredGames = allGames.filter(game => 
-			(game.name && game.name.toLowerCase().includes(query)) ||
-			(game.description && game.description.toLowerCase().includes(query)) ||
-			(game.category && game.category.toLowerCase().includes(query)) ||
-			(game.publisher && game.publisher.toLowerCase().includes(query)) ||
-			(game.tags && Array.isArray(game.tags) && game.tags.some(tag => tag.toLowerCase().includes(query)))
-		);
-		
-		// Display results
-		if (filteredGames.length === 0) {
-			searchResultsContainer.innerHTML = `
-				<div class="search-message" style="padding: 40px; text-align: center;">
-					<span class="material-symbols-outlined" style="font-size: 48px; color: var(--text-color); opacity: 0.7;">sentiment_dissatisfied</span>
-					<p style="color: var(--text-color); font-size: 18px; margin: 15px 0 0 0;">No games found matching "${query}"</p>
-					<p style="color: var(--text-secondary); font-size: 14px; margin: 5px 0 0 0;">Try a different search term</p>
-				</div>
-			`;
-		} else {
-			searchResultsContainer.innerHTML = '';
-			
-			// Add search results info
-			const resultsInfo = document.createElement('div');
-			resultsInfo.className = 'search-results-info';
-			resultsInfo.style.padding = '15px 20px';
-			resultsInfo.style.borderBottom = '1px solid var(--border-color)';
-			resultsInfo.style.display = 'flex';
-			resultsInfo.style.justifyContent = 'space-between';
-			resultsInfo.style.alignItems = 'center';
-			resultsInfo.style.backgroundColor = 'var(--hover-color)';
-			resultsInfo.style.borderTopLeftRadius = '12px';
-			resultsInfo.style.borderTopRightRadius = '12px';
-			
-			// Create clear button
-			const clearButton = document.createElement('button');
-			clearButton.className = 'clear-search-button';
-			clearButton.textContent = 'Clear';
-			clearButton.style.padding = '8px 16px';
-			clearButton.style.backgroundColor = 'var(--accent-color)';
-			clearButton.style.color = 'white';
-			clearButton.style.border = 'none';
-			clearButton.style.borderRadius = '6px';
-			clearButton.style.cursor = 'pointer';
-			clearButton.style.fontWeight = 'bold';
-			clearButton.style.transition = 'all 0.2s ease';
-			clearButton.addEventListener('mouseover', () => {
-				clearButton.style.transform = 'translateY(-2px)';
-				clearButton.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-			});
-			clearButton.addEventListener('mouseout', () => {
-				clearButton.style.transform = 'translateY(0)';
-				clearButton.style.boxShadow = 'none';
-			});
-			clearButton.addEventListener('click', () => {
-				searchInput.value = '';
-				searchResultsContainer.style.display = 'none';
-				searchInput.dispatchEvent(new Event('input'));
-			});
-			
-			resultsInfo.innerHTML = `<span style="font-weight: bold; color: var(--text-color);">Found ${filteredGames.length} game${filteredGames.length === 1 ? '' : 's'} matching "${query}"</span>`;
-			resultsInfo.appendChild(clearButton);
-			searchResultsContainer.appendChild(resultsInfo);
-			
-			// Add game results
-			filteredGames.slice(0, 8).forEach(game => {
-				const resultItem = document.createElement('a');
-				resultItem.href = `/game/${game.slug}`;
-				resultItem.className = 'search-result-item';
-				resultItem.style.display = 'flex';
-				resultItem.style.padding = '15px 20px';
-				resultItem.style.textDecoration = 'none';
-				resultItem.style.color = 'var(--text-color)';
-				resultItem.style.borderBottom = '1px solid var(--border-color)';
-				resultItem.style.alignItems = 'center';
-				resultItem.style.transition = 'all 0.2s ease';
-				
-				resultItem.innerHTML = `
-					<div class="search-result-image" style="width: 60px; height: 60px; margin-right: 15px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-						<img src="${game.img || '/assets/game-placeholder.jpg'}" alt="${game.name}" style="width: 100%; height: 100%; object-fit: cover;">
-					</div>
-					<div class="search-result-info" style="flex: 1;">
-						<h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">${game.name}</h3>
-						<div class="search-result-meta" style="display: flex; gap: 8px; font-size: 12px;">
-							<span class="category-pill" style="background-color: var(--accent-color); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 500;">${game.category ? game.category.charAt(0).toUpperCase() + game.category.slice(1) : 'Browser Game'}</span>
-							${game.publisher ? `<span class="publisher" style="color: var(--text-secondary); background-color: var(--hover-color); padding: 4px 10px; border-radius: 20px;">${game.publisher}</span>` : ''}
-						</div>
-					</div>
-					<span class="material-symbols-outlined" style="color: var(--text-secondary); font-size: 24px;">arrow_forward</span>
-				`;
-				
-				// Add hover effect
-				resultItem.addEventListener('mouseover', () => {
-					resultItem.style.backgroundColor = 'var(--hover-color)';
-					resultItem.style.transform = 'translateX(5px)';
-				});
-				
-				resultItem.addEventListener('mouseout', () => {
-					resultItem.style.backgroundColor = 'transparent';
-					resultItem.style.transform = 'translateX(0)';
-				});
-				
-				searchResultsContainer.appendChild(resultItem);
-			});
-			
-			// Add "View all" link if there are more results
-			if (filteredGames.length > 8) {
-				const viewAll = document.createElement('a');
-				viewAll.href = `/g.html?search=${encodeURIComponent(query)}`;
-				viewAll.className = 'view-all-results';
-				viewAll.style.display = 'block';
-				viewAll.style.padding = '15px 20px';
-				viewAll.style.textAlign = 'center';
-				viewAll.style.backgroundColor = 'var(--hover-color)';
-				
-				viewAll.style.color = 'var(--accent-color)';
-				viewAll.style.textDecoration = 'none';
-				viewAll.style.fontWeight = 'bold';
-				viewAll.style.borderBottomLeftRadius = '12px';
-				viewAll.style.borderBottomRightRadius = '12px';
-				viewAll.style.transition = 'all 0.2s ease';
-				viewAll.innerHTML = `View all ${filteredGames.length} results <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 18px;">arrow_forward</span>`;
-				
-				// Add hover effect
-				viewAll.addEventListener('mouseover', () => {
-					viewAll.style.backgroundColor = 'var(--accent-color)';
-					viewAll.style.color = 'white';
-				});
-				
-				viewAll.addEventListener('mouseout', () => {
-					viewAll.style.backgroundColor = 'var(--hover-color)';
-					viewAll.style.color = 'var(--accent-color)';
-				});
-				
-				searchResultsContainer.appendChild(viewAll);
-			}
-		}
+
+		// Create clear button
+		const clearButton = document.createElement('button');
+		clearButton.className = 'clear-search-button';
+		clearButton.textContent = 'Clear';
+		clearButton.addEventListener('click', () => {
+			searchInput.value = '';
+			searchInput.dispatchEvent(new Event('input'));
+		});
+
+		resultsInfo.innerHTML = `Found ${matchCount} game${matchCount === 1 ? '' : 's'} matching "${searchValue}"`;
+		resultsInfo.appendChild(clearButton);
+	});
+}
+
+function setupCategorySelector() {
+	const categoryContainer = document.getElementById('category-container');
+	if (!categoryContainer || categoryContainer.querySelector('.category-selector')) {
+		return; // Already set up or container doesn't exist
 	}
 
+	const categorySelector = document.createElement('div');
+	categorySelector.className = 'category-selector';
+
+	const categories = [
+		{ id: 'cloud', name: 'Cloud Gaming', icon: 'cloud', requiresAuth: true },
+		{ id: 'browser', name: 'Browser Games', icon: 'language', requiresAuth: false },
+		{ id: 'emulator', name: 'Emulator Games', icon: 'videogame_asset', requiresAuth: false }
+	];
+
+	categories.forEach(category => {
+		const button = document.createElement('button');
+		button.className = 'category-button';
+		button.dataset.category = category.id;
+
+		// Add lock for categories that require authentication
+		let buttonContent = `
+          <span class="material-symbols-outlined category-icon">${category.icon}</span>
+          <span class="category-text">${category.name}</span>
+        `;
+		if (category.requiresAuth && !localStorage.getItem("loginData")) {
+			buttonContent += `<span class="material-symbols-outlined lock-icon">lock</span>`;
+		}
+
+		button.innerHTML = buttonContent;
+
+		button.addEventListener('click', () => {
+			// Update URL with new category and reset to page 1
+			const url = new URL(window.location);
+			url.searchParams.set('category', category.id);
+			url.searchParams.set('page', '1');
+			window.location.href = url.toString();
+		});
+
+		categorySelector.appendChild(button);
+	});
+
+	categoryContainer.appendChild(categorySelector);
+
+	// Add styles for lock icon
+	const style = document.createElement('style');
+	style.textContent = `
+        .lock-icon {
+            font-size: 16px;
+            margin-left: 5px;
+            color: #ff6600;
+        }
+    `;
+	document.head.appendChild(style);
+}
+
+function updateActiveCategoryButton(currentCategory) {
+	const categoryButtons = document.querySelectorAll('.category-button');
+	categoryButtons.forEach(button => {
+		button.classList.toggle('active', button.dataset.category === currentCategory);
+	});
+}
+
+function filterGamesByCategory(games, category) {
+	return games.filter(game => (game.category || 'browser') === category);
+}
+
+// Memoized sorting function for better performance - NOT USED for games to maintain original order
+const sortGames = (() => {
+	const cache = {};
+
+	return (games) => {
+		const cacheKey = games.map(g => g.id || g.slug).join('-');
+
+		if (cache[cacheKey]) {
+			return cache[cacheKey];
+		}
+
+		const sorted = [...games].sort((a, b) => a.name.localeCompare(b.name));
+		cache[cacheKey] = sorted;
+
+		return sorted;
+	};
+})();
+
+function createPaginationControls(currentPage, totalPages, category) {
+	const containers = [
+		document.getElementById('pagination-top'),
+		document.getElementById('pagination-bottom')
+	];
+
+	containers.forEach(container => {
+		if (!container) return;
+
+		container.innerHTML = '';
+
+		const paginationContainer = document.createElement('div');
+		paginationContainer.className = 'pagination-controls';
+
+		// Previous button
+		const prevButton = document.createElement('button');
+		prevButton.className = 'pagination-button prev';
+		prevButton.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back';
+		prevButton.disabled = currentPage <= 1;
+		prevButton.addEventListener('click', () => {
+			if (currentPage > 1) {
+				const url = new URL(window.location);
+				url.searchParams.set('page', (currentPage - 1).toString());
+				window.location.href = url.toString();
+			}
+		});
+
+		// Page info
+		const pageInfo = document.createElement('span');
+		pageInfo.className = 'pagination-info';
+		pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+		// Next button
+		const nextButton = document.createElement('button');
+		nextButton.className = 'pagination-button next';
+		nextButton.innerHTML = 'Next <i class="fa-solid fa-arrow-right"></i>';
+		nextButton.disabled = currentPage >= totalPages;
+		nextButton.addEventListener('click', () => {
+			if (currentPage < totalPages) {
+				const url = new URL(window.location);
+				url.searchParams.set('page', (currentPage + 1).toString());
+				window.location.href = url.toString();
+			}
+		});
+
+		// Page jump selector
+		const pageJump = document.createElement('select');
+		pageJump.className = 'page-jump';
+
+		for (let i = 1; i <= totalPages; i++) {
+			const option = document.createElement('option');
+			option.value = i;
+			option.textContent = `Page ${i}`;
+			if (i === currentPage) {
+				option.selected = true;
+			}
+			pageJump.appendChild(option);
+		}
+
+		pageJump.addEventListener('change', (e) => {
+			const url = new URL(window.location);
+			url.searchParams.set('page', e.target.value);
+			window.location.href = url.toString();
+		});
+
+		// Append all controls
+		paginationContainer.appendChild(prevButton);
+		paginationContainer.appendChild(pageInfo);
+		paginationContainer.appendChild(pageJump);
+		paginationContainer.appendChild(nextButton);
+
+		container.appendChild(paginationContainer);
+	});
+}
+
+function renderGames(games, currentCategory, allGamesInCategory) {
+	const gameContainer = document.querySelector('.gameContain');
+	if (!gameContainer) return;
+
+	// Clear existing games
+	gameContainer.innerHTML = '';
+
+	// Use DocumentFragment for better performance
+	const fragment = document.createDocumentFragment();
+
+	// Check if this category requires authentication
+	const requiresAuth = currentCategory === 'cloud';
+	const isLoggedIn = window.isLoggedIn ? window.isLoggedIn() : false;
+
+	// Update game container data attributes for search functionality
+	gameContainer.dataset.category = currentCategory;
+	gameContainer.dataset.totalGames = allGamesInCategory.length;
+
+	// Add custom styles for game overlays and other required styles if not already present
+	addGameOverlayStyles();
+	addCustomGameStyles();
+
+	games.forEach(game => {
+		const gameLink = document.createElement('a');
+
+		// Ensure each game has a slug
+		if (!game.slug) {
+			game.slug = createSlug(game.name);
+		}
+
+		// Use the correct SEO-friendly URL format
+		gameLink.href = `/game/${game.slug}`;
+		gameLink.className = 'gameAnchor';
+		gameLink.style.position = 'relative'; // Required for overlay positioning
+
+		// Add tags as classes for filtering
+		if (game.tags && game.name) {
+			game.tags.forEach(tag => {
+				gameLink.id = (gameLink.id ? gameLink.id + ' ' : '') + tag;
+			});
+
+			let gameNameClass = game.name
+				.toLowerCase()
+				.replace(/\s+/g, '-')
+				.replace(/[^a-z0-9]/g, '-');
+			gameLink.className += ' ' + gameNameClass;
+		}
+
+		// Add category as data attribute
+		if (game.category) {
+			gameLink.dataset.category = game.category;
+		}
+
+		// Add proxy flag as data attribute
+		if (game.proxy !== undefined) {
+			gameLink.dataset.proxy = game.proxy;
+		}
+
+		const gameImage = document.createElement('img');
+		gameImage.src = game.img;
+		gameImage.alt = game.name;
+		gameImage.title = game.name;
+		gameImage.className = 'gameImage';
+
+		// Add game overlay with name
+		const gameOverlay = document.createElement('div');
+		gameOverlay.className = 'game-overlay';
+
+		const gameTitle = document.createElement('h3');
+		gameTitle.className = 'game-title';
+		gameTitle.textContent = game.name;
+
+		gameOverlay.appendChild(gameTitle);
+
+		gameLink.appendChild(gameImage);
+		gameLink.appendChild(gameOverlay);
+
+		// Add lock overlay for auth-required games if user not logged in
+		if (requiresAuth && !isLoggedIn) {
+			// Use the auth-controller function if available
+			if (window.addLockOverlay) {
+				window.addLockOverlay(gameLink, 0.7);
+			} else {
+				// Fallback if auth-controller not loaded
+				addLockOverlayFallback(gameLink);
+			}
+		}
+
+		fragment.appendChild(gameLink);
+	});
+
+	gameContainer.appendChild(fragment);
+}
+
+// Fallback function to add lock overlay if auth-controller not loaded
+function addLockOverlayFallback(element) {
+	const overlay = document.createElement('div');
+	overlay.className = 'lock-overlay';
+	overlay.innerHTML = '<i class="fa-solid fa-lock"></i>';
+	overlay.style.position = 'absolute';
+	overlay.style.top = '0';
+	overlay.style.left = '0';
+	overlay.style.width = '100%';
+	overlay.style.height = '100%';
+	overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+	overlay.style.display = 'flex';
+	overlay.style.justifyContent = 'center';
+	overlay.style.alignItems = 'center';
+	overlay.style.color = 'white';
+	overlay.style.fontSize = '24px';
+	overlay.style.zIndex = '100';
+	overlay.style.cursor = 'pointer';
+	overlay.style.opacity = '0.7';
+	overlay.style.transition = 'opacity 0.3s ease';
+
+	element.style.position = 'relative';
+
+	// Add hover effect
 	element.addEventListener('mouseenter', () => {
 		overlay.style.opacity = '1';
 	});
@@ -2296,7 +1930,7 @@ function isMobileDevice() {
 
 // Initialize event listeners and add some performance optimizations
 document.addEventListener('DOMContentLoaded', () => {
-	
+
 
 	// Optimize for mobile devices
 	if (isMobileDevice()) {
