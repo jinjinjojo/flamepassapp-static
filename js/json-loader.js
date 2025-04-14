@@ -128,7 +128,7 @@ function openIndexedDB(dbName, version) {
 
 // Helper function to create a consistent ID for a game
 function createGameId(game) {
-	return game.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-');
+	return game.slug || game.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
 }
 
 // 1. Modify storeGamesInDB function to use a simpler approach

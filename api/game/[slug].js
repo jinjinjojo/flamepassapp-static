@@ -49,13 +49,11 @@ export default async function handler(req, res) {
       proxy: game.proxy !== undefined ? game.proxy : false
     };
 
-    // Get random games for SEO links (ensure we have at least 10)
+    // Get random games for SEO links (ensure we have at least 20)
     const otherGames = gamesData.filter(g => g.slug !== slug);
     const randomGames = otherGames.length > 20 
       ? [...otherGames].sort(() => 0.5 - Math.random()).slice(0, 20)
-      : otherGames.length > 10 
-        ? [...otherGames].sort(() => 0.5 - Math.random()).slice(0, 10)
-        : otherGames;
+      : otherGames;
 
     // Read your HTML template
     let htmlTemplate = fs.readFileSync(path.join(process.cwd(), '/game-template.html'), 'utf8');
@@ -160,6 +158,54 @@ export default async function handler(req, res) {
       ? `Yes, ${escapeForJson(safeGame.name)} is playable on cloud gaming. You can play it on ${Object.keys(safeGame.serviceProviders).length} different cloud gaming services including ${Object.keys(safeGame.serviceProviders).join(', ')}. ${escapeForJson(safeGame.description)}`
       : `Play ${escapeForJson(safeGame.name)} unblocked online with Flamepass! ${escapeForJson(safeGame.description)}`;
 
+    // Generate enhanced Schema.org markup
+    const schemaMarkup = {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": escapeForJson(safeGame.name),
+      "description": description,
+      "image": safeGame.img,
+      "url": `https://flamepass.net/game/${safeGame.slug}`,
+      "inLanguage": "en",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web Browser",
+      "gamePlatform": safeGame.category === 'cloud' 
+        ? Object.keys(safeGame.serviceProviders)
+        : safeGame.category === 'emulator'
+          ? safeGame.type.toUpperCase()
+          : "Web Browser"
+    };
+
+    // Add optional Schema.org properties
+    if (safeGame.releaseDate) {
+      schemaMarkup.datePublished = safeGame.releaseDate;
+    }
+
+    if (safeGame.publisher) {
+      schemaMarkup.publisher = {
+        "@type": "Organization",
+        "name": escapeForJson(safeGame.publisher)
+      };
+    }
+
+    if (safeGame.tags && safeGame.tags.length > 0) {
+      schemaMarkup.genre = safeGame.tags;
+    }
+
+    // Add cloud gaming specific Schema.org properties
+    if (safeGame.category === 'cloud' && Object.keys(safeGame.serviceProviders).length > 0) {
+      schemaMarkup.offers = Object.entries(safeGame.serviceProviders).map(([provider, details]) => ({
+        "@type": "Offer",
+        "name": `Play on ${escapeForJson(provider)}`,
+        "url": details.url,
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "Organization",
+          "name": escapeForJson(provider)
+        }
+      }));
+    }
+
     // Replace all template variables
     const replacements = {
       '${game.name}': escapeForJson(safeGame.name),
@@ -174,7 +220,8 @@ export default async function handler(req, res) {
       '${Object.keys(game.serviceProviders || {}).join(", ")}': Object.keys(safeGame.serviceProviders).join(", "),
       '${game.type ? game.type.toUpperCase() : "BROWSER"}': safeGame.type ? safeGame.type.toUpperCase() : "BROWSER",
       '${game.category === "cloud" ? `Is ${game.name} Playable Through Cloud Gaming?` : game.category === "emulator" ? `Play ${game.name} (${game.type.toUpperCase()}) Unblocked Online` : `Play ${game.name} Unblocked Online With Flamepass!`}': title,
-      '${game.category === "cloud" ? `Yes, ${game.name} is playable on cloud gaming. You can play it on ${Object.keys(game.serviceProviders || {}).length} different cloud gaming services including ${Object.keys(game.serviceProviders || {}).join(", ")}. ${game.description || ""}` : `Play ${game.name} unblocked online with Flamepass! ${game.description || ""}`}': description
+      '${game.category === "cloud" ? `Yes, ${game.name} is playable on cloud gaming. You can play it on ${Object.keys(game.serviceProviders || {}).length} different cloud gaming services including ${Object.keys(game.serviceProviders || {}).join(", ")}. ${game.description || ""}` : `Play ${game.name} unblocked online with Flamepass! ${game.description || ""}`}': description,
+      '"@context": "https://schema.org"': JSON.stringify(schemaMarkup, null, 2)
     };
 
     // Apply all replacements
@@ -199,26 +246,18 @@ function getErrorHTML(title, message) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Error - Flamepass</title>
+      <title>${escapeForJson(title)} - Flamepass</title>
       <link rel="icon" type="icon/x-icon" href="/assets/favicon.ico" />
-      <!-- Include your CSS files here -->
       <link rel="stylesheet" href="/css/index.css" />
       <link rel="stylesheet" href="/css/themes.css" />
       <link rel="stylesheet" href="/css/common.css" />
-      <link rel="stylesheet" href="/css/game-page.css" />
     </head>
     <body>
-      <!-- Include your navbar HTML here -->
-      <main class="main-content">
-        <div id="game-container" class="game-container">
-          <div class="error-message">
-            <span class="material-symbols-outlined">error</span>
-            <h3>${title}</h3>
-            <p>${message}</p>
-            <a href="/g.html" class="retry-button">Browse All Games</a>
-          </div>
-        </div>
-      </main>
+      <div class="error-container">
+        <h1>${escapeForJson(title)}</h1>
+        <p>${escapeForJson(message)}</p>
+        <a href="/g.html" class="error-button">Back to Games</a>
+      </div>
     </body>
     </html>
   `;
