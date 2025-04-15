@@ -1228,14 +1228,14 @@ function setupGameSearchFunction(games) {
 	// Set up the input event listener
 	searchInput.addEventListener('input', function () {
 		const searchValue = this.value.toLowerCase().trim();
-
+		
 		if (!searchValue) {
 			// If search is empty, show all games
 			const gameLinks = gameContainer.querySelectorAll('.gameAnchor');
 			gameLinks.forEach(game => {
 				game.style.display = '';
 			});
-
+			
 			// Remove any search results info
 			const resultsInfo = document.querySelector('.search-results-info');
 			if (resultsInfo) {
@@ -1243,7 +1243,7 @@ function setupGameSearchFunction(games) {
 			}
 			return;
 		}
-
+		
 		// Filter games based on search
 		let matchCount = 0;
 		const gameLinks = gameContainer.querySelectorAll('.gameAnchor');
@@ -1266,18 +1266,18 @@ function setupGameSearchFunction(games) {
 			resultsInfo.className = 'search-results-info';
 			gameContainer.parentNode.insertBefore(resultsInfo, gameContainer);
 		}
-
-		// Create clear button
-		const clearButton = document.createElement('button');
-		clearButton.className = 'clear-search-button';
-		clearButton.textContent = 'Clear';
-		clearButton.addEventListener('click', () => {
-			searchInput.value = '';
-			searchInput.dispatchEvent(new Event('input'));
-		});
-
+			
+			// Create clear button
+			const clearButton = document.createElement('button');
+			clearButton.className = 'clear-search-button';
+			clearButton.textContent = 'Clear';
+			clearButton.addEventListener('click', () => {
+				searchInput.value = '';
+				searchInput.dispatchEvent(new Event('input'));
+			});
+			
 		resultsInfo.innerHTML = `Found ${matchCount} game${matchCount === 1 ? '' : 's'} matching "${searchValue}"`;
-		resultsInfo.appendChild(clearButton);
+			resultsInfo.appendChild(clearButton);
 	});
 }
 
@@ -1930,7 +1930,7 @@ function isMobileDevice() {
 
 // Initialize event listeners and add some performance optimizations
 document.addEventListener('DOMContentLoaded', () => {
-
+	
 
 	// Optimize for mobile devices
 	if (isMobileDevice()) {
