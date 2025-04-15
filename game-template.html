@@ -14,7 +14,7 @@
     
     <meta property="og:image" content="${game.img}" />
     <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
+    <meta property="og:description" content="${ogDescription}" />
     <link rel="canonical" href="/game/${game.slug}" />
     
     <!-- Additional meta tags for rich snippets -->
@@ -58,9 +58,27 @@
         gtag('js', new Date());
         gtag('config', 'G-SPVQHBL4J1');
     </script>
+    
+    <!-- SEO-only H1 styling -->
+    <style>
+        .seo-only-h1 {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- SEO-only H1 tag (visible to crawlers but hidden from users) -->
+    <h1 class="seo-only-h1">${title}</h1>
+    
     <!-- Navigation Sidebar - Using the YouTube channels style -->
     <ul class="navbar">
         <li style="margin-left: -1px; margin-top: 2px">

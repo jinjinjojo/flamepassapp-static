@@ -14,6 +14,13 @@ function escapeForJson(str) {
     .replace(/\f/g, '\\f');
 }
 
+// Helper function to truncate text to a specific length
+function truncateText(text, maxLength = 160) {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - 3) + '...';
+}
+
 export default async function handler(req, res) {
   const { slug } = req.query;
 
@@ -158,6 +165,9 @@ export default async function handler(req, res) {
     const description = safeGame.category === 'cloud'
       ? `Yes, ${escapeForJson(safeGame.name)} is playable on cloud gaming. You can play it on ${Object.keys(safeGame.serviceProviders).length} different cloud gaming services including ${Object.keys(safeGame.serviceProviders).join(', ')}. ${escapeForJson(safeGame.description)}`
       : `${escapeForJson(safeGame.description)} Play ${escapeForJson(safeGame.name)} unblocked online with Flamepass!`;
+    
+    // Create a truncated description for og:description (max 160 characters)
+    const ogDescription = truncateText(description, 160);
 
     // Generate keywords
     const keywords = `Unblocked Games, School Games, ${escapeForJson(safeGame.name)} Unblocked, Bypass School Filters, Flamepass${
@@ -220,6 +230,7 @@ export default async function handler(req, res) {
     const replacements = {
       '${title}': title,
       '${description}': description,
+      '${ogDescription}': ogDescription,
       '${schemaMarkup}': JSON.stringify(schemaMarkup, null, 2),
       '${game.name}': escapeForJson(safeGame.name),
       '${game.slug}': safeGame.slug,
