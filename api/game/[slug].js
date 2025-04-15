@@ -208,20 +208,22 @@ export default async function handler(req, res) {
 
     // Replace all template variables
     const replacements = {
+      '${title}': title,
+      '${description}': description,
+      '${schemaMarkup}': JSON.stringify(schemaMarkup, null, 2),
       '${game.name}': escapeForJson(safeGame.name),
       '${game.slug}': safeGame.slug,
       '${game.img}': safeGame.img,
       '${game.description}': escapeForJson(safeGame.description),
+      '${game.category}': safeGame.category,
+      '${game.type}': safeGame.type,
       '${game.tags}': tagsHtml,
       '${game.metadata}': metadataHtml,
       '${game.cloudProviders}': cloudProvidersHtml,
       '${randomGames.map(game => `<a href="/game/${game.slug}">${escapeForJson(game.name)}</a>`).join("")}': randomGames.map(game => `<a href="/game/${game.slug}">${escapeForJson(game.name)}</a>`).join(""),
       '${Object.keys(game.serviceProviders || {}).length}': Object.keys(safeGame.serviceProviders).length,
       '${Object.keys(game.serviceProviders || {}).join(", ")}': Object.keys(safeGame.serviceProviders).join(", "),
-      '${game.type ? game.type.toUpperCase() : "BROWSER"}': safeGame.type ? safeGame.type.toUpperCase() : "BROWSER",
-      '${game.category === "cloud" ? `Is ${game.name} Playable Through Cloud Gaming?` : game.category === "emulator" ? `Play ${game.name} (${game.type.toUpperCase()}) Unblocked Online` : `Play ${game.name} Unblocked Online With Flamepass!`}': title,
-      '${game.category === "cloud" ? `Yes, ${game.name} is playable on cloud gaming. You can play it on ${Object.keys(game.serviceProviders || {}).length} different cloud gaming services including ${Object.keys(game.serviceProviders || {}).join(", ")}. ${game.description || ""}` : `Play ${game.name} unblocked online with Flamepass! ${game.description || ""}`}': description,
-      '"@context": "https://schema.org"': JSON.stringify(schemaMarkup, null, 2)
+      '${game.type ? game.type.toUpperCase() : "BROWSER"}': safeGame.type ? safeGame.type.toUpperCase() : "BROWSER"
     };
 
     // Apply all replacements
