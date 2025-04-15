@@ -10,9 +10,9 @@
     <!-- Meta tags for SEO -->
     <meta name="description" content="${description}" />
     
-    <meta name="keywords" content="Unblocked Games, School Games, ${game.name} Unblocked, Bypass School Filters, Flamepass${game.category === 'emulator' ? `, ${game.type.toUpperCase()} Games` : ''}${game.category === 'cloud' ? ', Cloud Gaming' : ''}${game.tags ? ', ' + game.tags.join(', ') : ''}" />
+    <meta name="keywords" content="${keywords}" />
     
-    <meta property="og:image" content="${game.img || '/assets/logo.webp'}" />
+    <meta property="og:image" content="${game.img}" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
     <link rel="canonical" href="/game/${game.slug}" />

@@ -154,9 +154,19 @@ export default async function handler(req, res) {
         ? `Play ${escapeForJson(safeGame.name)} (${safeGame.type.toUpperCase()}) Unblocked Online`
         : `Play ${escapeForJson(safeGame.name)} Unblocked Online With Flamepass!`;
 
+    // Create a proper description that's different from the title
     const description = safeGame.category === 'cloud'
       ? `Yes, ${escapeForJson(safeGame.name)} is playable on cloud gaming. You can play it on ${Object.keys(safeGame.serviceProviders).length} different cloud gaming services including ${Object.keys(safeGame.serviceProviders).join(', ')}. ${escapeForJson(safeGame.description)}`
-      : `Play ${escapeForJson(safeGame.name)} unblocked online with Flamepass! ${escapeForJson(safeGame.description)}`;
+      : `${escapeForJson(safeGame.description)} Play ${escapeForJson(safeGame.name)} unblocked online with Flamepass!`;
+
+    // Generate keywords
+    const keywords = `Unblocked Games, School Games, ${escapeForJson(safeGame.name)} Unblocked, Bypass School Filters, Flamepass${
+      safeGame.category === 'emulator' ? `, ${safeGame.type.toUpperCase()} Games` : ''
+    }${
+      safeGame.category === 'cloud' ? ', Cloud Gaming' : ''
+    }${
+      safeGame.tags && safeGame.tags.length > 0 ? ', ' + safeGame.tags.join(', ') : ''
+    }`;
 
     // Generate enhanced Schema.org markup
     const schemaMarkup = {
@@ -223,7 +233,8 @@ export default async function handler(req, res) {
       '${randomGames.map(game => `<a href="/game/${game.slug}">${escapeForJson(game.name)}</a>`).join("")}': randomGames.map(game => `<a href="/game/${game.slug}">${escapeForJson(game.name)}</a>`).join(""),
       '${Object.keys(game.serviceProviders || {}).length}': Object.keys(safeGame.serviceProviders).length,
       '${Object.keys(game.serviceProviders || {}).join(", ")}': Object.keys(safeGame.serviceProviders).join(", "),
-      '${game.type ? game.type.toUpperCase() : "BROWSER"}': safeGame.type ? safeGame.type.toUpperCase() : "BROWSER"
+      '${game.type ? game.type.toUpperCase() : "BROWSER"}': safeGame.type ? safeGame.type.toUpperCase() : "BROWSER",
+      '${keywords}': keywords
     };
 
     // Apply all replacements
