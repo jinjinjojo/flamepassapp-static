@@ -281,7 +281,7 @@ function getErrorHTML(title, message) {
         <h1>${escapeForJson(title)}</h1>
         <p>${escapeForJson(message)}</p>
         <a href="/g.html" class="error-button">Back to Games</a>
-      </div>
+        </div>
     </body>
     </html>
   `;
