@@ -292,6 +292,220 @@
 			}
 		});
 	</script>
+
+	<!-- Game Search Implementation -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Get the search input
+			const searchInput = document.querySelector('.gameSearchInput');
+			if (!searchInput) return;
+
+			// Create search results container
+			const searchResultsContainer = document.createElement('div');
+			searchResultsContainer.className = 'search-results-container';
+			searchResultsContainer.style.cssText = `
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				background-color: rgba(30, 30, 30, 0.95);
+				border-radius: 8px;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+				max-height: 400px;
+				overflow-y: auto;
+				z-index: 2000;
+				display: none;
+				margin-top: 5px;
+				padding: 10px;
+			`;
+
+			// Add the search results container after the search input's parent
+			const searchContainer = document.querySelector('.search-container');
+			if (searchContainer) {
+				searchContainer.style.position = 'relative';
+				searchContainer.appendChild(searchResultsContainer);
+			}
+
+			// Add styles for search result cards
+			const style = document.createElement('style');
+			style.textContent = `
+				.search-result-card {
+					display: flex;
+					align-items: center;
+					padding: 10px;
+					margin-bottom: 8px;
+					background-color: rgba(50, 50, 50, 0.7);
+					border-radius: 6px;
+					cursor: pointer;
+					transition: background-color 0.2s ease;
+					text-decoration: none;
+					color: white;
+				}
+				.search-result-card:hover {
+					background-color: rgba(70, 70, 70, 0.9);
+				}
+				.search-result-image {
+					width: 60px;
+					height: 60px;
+					object-fit: cover;
+					border-radius: 4px;
+					margin-right: 15px;
+				}
+				.search-result-info {
+					flex: 1;
+				}
+				.search-result-title {
+					font-weight: 600;
+					margin-bottom: 4px;
+					font-size: 16px;
+				}
+				.search-result-category {
+					font-size: 12px;
+					color: #aaa;
+				}
+				.no-results {
+					padding: 15px;
+					text-align: center;
+					color: #aaa;
+				}
+				.search-results-container::-webkit-scrollbar {
+					width: 8px;
+				}
+				.search-results-container::-webkit-scrollbar-track {
+					background: rgba(30, 30, 30, 0.5);
+					border-radius: 4px;
+				}
+				.search-results-container::-webkit-scrollbar-thumb {
+					background: rgba(255, 102, 0, 0.7);
+					border-radius: 4px;
+				}
+				.search-results-container::-webkit-scrollbar-thumb:hover {
+					background: rgba(255, 102, 0, 0.9);
+				}
+			`;
+			document.head.appendChild(style);
+
+			// Function to fetch games from IndexedDB
+			async function fetchGames() {
+				try {
+					// Check if we have the fetchGames function from json-loader.js
+					if (window.fetchGames) {
+						return await window.fetchGames();
+					}
+					
+					// Fallback to direct fetch if the function is not available
+					const response = await fetch('/json/g.json');
+					if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+					return await response.json();
+				} catch (error) {
+					console.error('Error fetching games:', error);
+					return [];
+				}
+			}
+
+			// Function to create a search result card
+			function createSearchResultCard(game) {
+				const card = document.createElement('a');
+				card.href = `/game/${game.slug || game.name.toLowerCase().replace(/\s+/g, '-')}`;
+				card.className = 'search-result-card';
+				
+				const image = document.createElement('img');
+				image.src = game.img || '/assets/default.png';
+				image.alt = game.name;
+				image.className = 'search-result-image';
+				image.onerror = () => {
+					image.src = '/assets/default.png';
+				};
+				
+				const info = document.createElement('div');
+				info.className = 'search-result-info';
+				
+				const title = document.createElement('div');
+				title.className = 'search-result-title';
+				title.textContent = game.name;
+				
+				const category = document.createElement('div');
+				category.className = 'search-result-category';
+				category.textContent = game.category ? 
+					game.category.charAt(0).toUpperCase() + game.category.slice(1) + ' Game' : 
+					'Browser Game';
+				
+				info.appendChild(title);
+				info.appendChild(category);
+				
+				card.appendChild(image);
+				card.appendChild(info);
+				
+				return card;
+			}
+
+			// Function to perform search
+			async function performSearch(query) {
+				if (!query) {
+					searchResultsContainer.style.display = 'none';
+					return;
+				}
+				
+				// Show loading state
+				searchResultsContainer.innerHTML = '<div class="no-results">Searching...</div>';
+				searchResultsContainer.style.display = 'block';
+				
+				try {
+					// Get all games
+					const games = await fetchGames();
+					
+					// Filter games based on search query
+					const searchResults = games.filter(game => 
+						game.name.toLowerCase().includes(query.toLowerCase())
+					).slice(0, 10); // Limit to 10 results
+					
+					// Clear previous results
+					searchResultsContainer.innerHTML = '';
+					
+					if (searchResults.length === 0) {
+						searchResultsContainer.innerHTML = '<div class="no-results">No games found</div>';
+					} else {
+						// Add search result cards
+						searchResults.forEach(game => {
+							searchResultsContainer.appendChild(createSearchResultCard(game));
+						});
+					}
+				} catch (error) {
+					console.error('Error performing search:', error);
+					searchResultsContainer.innerHTML = '<div class="no-results">Error searching games</div>';
+				}
+			}
+
+			// Set up debounce function to limit API calls
+			function debounce(func, wait) {
+				let timeout;
+				return function(...args) {
+					clearTimeout(timeout);
+					timeout = setTimeout(() => func.apply(this, args), wait);
+				};
+			}
+
+			// Add event listener to search input with debounce
+			searchInput.addEventListener('input', debounce(function() {
+				const query = this.value.trim();
+				performSearch(query);
+			}, 300));
+
+			// Close search results when clicking outside
+			document.addEventListener('click', function(event) {
+				if (!searchContainer.contains(event.target)) {
+					searchResultsContainer.style.display = 'none';
+				}
+			});
+
+			// Show search results when focusing on search input
+			searchInput.addEventListener('focus', function() {
+				if (this.value.trim()) {
+					searchResultsContainer.style.display = 'block';
+				}
+			});
+		});
+	</script>
 </body>
 
 </html>
