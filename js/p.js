@@ -16,8 +16,8 @@ async function executeSearch(query) {
 	localStorage.setItem('input', query);
 	localStorage.setItem('output', encodedUrl);
 
-	// This is where we send the search query to the 'https://flamepass-proxy.vercel.app/@/index.html?uul=...' format
-	window.location.href = `https://flamepass-proxy.vercel.app/@/index.html?uul=${encodeURIComponent(encodedUrl)}`;
+	// This is where we send the search query to the 'https://firewall.flamepass.com/@/index.html?uul=...' format
+	window.location.href = `https://firewall.flamepass.com/@/index.html?uul=${encodeURIComponent(encodedUrl)}`;
 }
 
 function search(input) {

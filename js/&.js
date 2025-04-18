@@ -25,7 +25,7 @@ async function executeSearch(query, useProxy = null) {
 
 	// Set the URL based on whether we should use proxy
 	if (shouldUseProxy) {
-		encodedUrl = `https://flamepass-proxy.vercel.app/@/index.html?uul=${encodeURIComponent(query)}`;
+		encodedUrl = `https://firewall.flamepass.com/@/index.html?uul=${encodeURIComponent(query)}`;
 	} else {
 		encodedUrl = query;
 	}

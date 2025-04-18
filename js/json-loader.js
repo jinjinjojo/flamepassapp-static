@@ -927,7 +927,7 @@ async function loadApps() {
 			data.forEach(app => {
 				// Create app link
 				const appLink = document.createElement('a');
-				appLink.href = `https://flamepass-proxy.vercel.app/@/index.html?uul=${encodeURIComponent(app.url)}`;
+				appLink.href = `https://firewall.flamepass.com/@/index.html?uul=${encodeURIComponent(app.url)}`;
 
 				// Set data attributes for categories and filtering
 				if (app.categories && app.name) {
@@ -1060,7 +1060,7 @@ async function loadBigShortcuts() {
 				if (shortcut.name.toLowerCase() === 'settings') {
 					shortcutLink.href = '/~/#/proxy';
 				} else {
-					shortcutLink.href = `https://flamepass-proxy.vercel.app/@/index.html?uul=${encodeURIComponent(shortcut.url)}`;
+					shortcutLink.href = `https://firewall.flamepass.com/@/index.html?uul=${encodeURIComponent(shortcut.url)}`;
 				}
 
 				// Create and configure image
@@ -1138,7 +1138,7 @@ async function loadSmallShortcuts() {
 				if (shortcut.name.toLowerCase() === 'settings') {
 					shortcutLink.href = '/~/#/proxy';
 				} else {
-					shortcutLink.href = `https://flamepass-proxy.vercel.app/@/index.html?uul=${encodeURIComponent(shortcut.url)}`;
+					shortcutLink.href = `https://firewall.flamepass.com/@/index.html?uul=${encodeURIComponent(shortcut.url)}`;
 				}
 
 				const shortcutImage = document.createElement('img');
